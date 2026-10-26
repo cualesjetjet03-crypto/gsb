@@ -1,0 +1,19 @@
+Options -Indexes
+RewriteEngine On
+
+# Redirect HTTP to HTTPS in production
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Default document
+DirectoryIndex index.php index.html
+
+# Block access to sensitive files
+<FilesMatch "(config\.php|\.env|composer\.json|Dockerfile|docker-entrypoint\.sh|\.gitignore)$">
+    Require all denied
+</FilesMatch>
+
+# Block access to hidden directories
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
