@@ -36,12 +36,30 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/customer\n\
     DirectoryIndex index.php index.html\n\
+    Alias /images /var/www/html/images\n\
+    Alias /admin /var/www/html/admin\n\
+    Alias /includes /var/www/html/includes\n\
     <Directory /var/www/html>\n\
         Options FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
     </Directory>\n\
     <Directory /var/www/html/customer>\n\
+        Options FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    <Directory /var/www/html/images>\n\
+        Options FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    <Directory /var/www/html/admin>\n\
+        Options FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    <Directory /var/www/html/includes>\n\
         Options FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
