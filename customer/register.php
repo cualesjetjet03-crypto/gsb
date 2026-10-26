@@ -84,7 +84,7 @@ if(isset($_POST['register'])){
                     $_POST = [];
 
                 } catch (Exception $e) {
-                    $register_error = "Registration saved, but verification email could not be sent. Please contact support.";
+                    $register_error = "Email error: " . $mail->ErrorInfo;
                     error_log("PHPMailer error (register): " . $mail->ErrorInfo);
                 }
             } else {
