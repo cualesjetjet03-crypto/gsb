@@ -74,7 +74,7 @@ $reviews_result = $conn->query($reviews_query);
         </div>
 
         <div class="section-image">
-            <img src="../customer/images/Cleaning.png" alt="Air conditioning unit installed indoors" loading="lazy">
+            <img src="images/Cleaning.png" alt="Air conditioning unit installed indoors" loading="lazy">
         </div>
     </section>
 
@@ -83,7 +83,7 @@ $reviews_result = $conn->query($reviews_query);
     ========================= -->
     <section class="about-section services-section">
         <div class="section-image service-image">
-            <img src="../customer/images/pic1.png" alt="Air conditioning technician providing service" loading="lazy">
+            <img src="images/pic1.png" alt="Air conditioning technician providing service" loading="lazy">
         </div>
 
         <div class="section-content service-content">
