@@ -34,7 +34,7 @@ if (isset($_POST['forgot_password'])) {
             if ($upd->execute()) {
                 $upd->close();
 
-                $reset_link = rtrim(APP_BASE_URL, '/') . '/customer/reset_password.php?token=' . urlencode($reset_token);
+                $reset_link = rtrim(APP_BASE_URL, '/') . '/reset_password.php?token=' . urlencode($reset_token);
 
                 $body = "Hi <b>" . htmlspecialchars($fullname) . "</b>,<br><br>"
                     . "We received a request to reset your password. "

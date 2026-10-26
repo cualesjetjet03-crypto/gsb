@@ -54,7 +54,7 @@ if(isset($_POST['register'])){
             if ($ins->execute()) {
                 $ins->close();
 
-                $verify_link = rtrim(APP_BASE_URL, '/') . '/customer/verify.php?token=' . urlencode($verification_code);
+                $verify_link = rtrim(APP_BASE_URL, '/') . '/verify.php?token=' . urlencode($verification_code);
 
                 $body = "Hi <b>" . htmlspecialchars($fullname) . "</b>,<br><br>"
                     . "Thank you for registering at GSB Airconditioning Services. "
