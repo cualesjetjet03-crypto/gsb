@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     libwebp-dev \
     libzip-dev \
     unzip \
+    dos2unix \
     && docker-php-ext-configure gd --with-jpeg --with-webp \
     && docker-php-ext-install gd mysqli pdo pdo_mysql zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -22,7 +23,7 @@ COPY . /var/www/html/
 
 # Write config.php from environment variables at container startup
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+RUN dos2unix /usr/local/bin/docker-entrypoint.sh && chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
