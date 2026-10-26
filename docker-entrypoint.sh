@@ -17,10 +17,14 @@ define('SMTP_HOST', getenv('SMTP_HOST') ?: 'smtp.gmail.com');
 define('SMTP_PORT', (int)(getenv('SMTP_PORT') ?: 587));
 define('SMTP_USER', getenv('SMTP_USER') ?: '');
 define('SMTP_PASS', getenv('SMTP_PASS') ?: '');
-// Temporarily show errors for debugging — disable after fixing
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-ini_set('log_errors', '1');
+if (APP_ENV === 'production') {
+    error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
+    ini_set('display_errors', '0');
+    ini_set('log_errors', '1');
+} else {
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+}
 PHPEOF
 
 chown www-data:www-data /var/www/html/config.php

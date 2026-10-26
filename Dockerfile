@@ -12,8 +12,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd mysqli pdo pdo_mysql zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
+# Enable Apache mod_rewrite and set PHP output buffering
 RUN a2enmod rewrite
+RUN echo "output_buffering = On" >> /usr/local/etc/php/php.ini-production \
+    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 # Set working directory
 WORKDIR /var/www/html
