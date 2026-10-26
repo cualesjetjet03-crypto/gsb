@@ -1,0 +1,603 @@
+/* =========================================================
+   MASTER NAVBAR STYLES
+========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+.navbar {
+    box-sizing: border-box;
+    height: 100px;
+    width: 100%;
+    background-color: #001b94;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap; 
+    padding: 0 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* =========================================================
+   LOGO (IMAGE + TEXT) STYLING 
+========================================================= */
+.logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    text-decoration: none !important; 
+}
+
+.brand-img {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white; 
+}
+
+/* "GSB AIRCONDITIONING" */
+.brand-top {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+    color: white;
+}
+
+/* Container for the bottom row */
+.brand-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+}
+
+/* "SERVICES" */
+.brand-bottom .text {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: #ffffff;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0; /* Prevents the text from collapsing when box-sizing changes */
+}
+
+/* The lines on the left and right of "SERVICES" */
+.brand-bottom .line {
+    flex: 1;
+    height: 1px;
+    background-color: #ffffff;
+}
+
+/* =========================================================
+   NAVBAR SEARCH BAR
+========================================================= */
+.nav-search-container {
+    flex: 1; 
+    display: flex;
+    justify-content: center;
+    margin: 0 40px; 
+    max-width: 500px;
+}
+
+.nav-search-form {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 30px; 
+    padding: 10px 20px;
+    width: 100%;
+}
+
+.nav-search-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.nav-search-input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #111827;
+    background: transparent;
+}
+
+.nav-search-input::placeholder {
+    color: #7d8ea3; 
+    font-weight: 500;
+}
+
+/* QUICK DELETE 'X' ICON */
+.nav-search-clear {
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.nav-search-clear:hover {
+    stroke: #c90000; /* Darkens to match the magnifying glass when hovered */
+    transform: scale(1.1);
+}
+
+/* =========================================================
+   SEARCH CATEGORY DROPDOWN
+========================================================= */
+.nav-search-select {
+    appearance: none; /* Removes the ugly default browser arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #475569;
+    cursor: pointer;
+    padding-left: 15px;
+    padding-right: 25px; /* Space for custom arrow */
+    
+    /* Custom sleek dropdown arrow */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 10px auto;
+}
+
+/* Style the actual dropdown list slightly */
+.nav-search-select option {
+    background: #ffffff;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+/* The vertical divider line */
+.nav-search-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #cbd5e1;
+    margin: 0 12px;
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   RIGHT SIDE WRAPPER (Links + Profile)
+========================================================= */
+.nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+}
+
+/* =========================================================
+   NAVIGATION LINKS
+========================================================= */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links > a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ffffff;
+    font-size: 15px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-links > a:hover {
+    color: #e0e7ff;
+}
+
+/* ACTIVE PAGE STYLING */
+.nav-links > a.active {
+    color: #0ea5e9; /* Yellow highlight text */
+    font-weight: 700;
+}
+
+/* MINI WRENCH ICON STYLING */
+.nav-wrench {
+    width: 16px;
+    height: 16px;
+    color: #0ea5e9; /* Yellow wrench */
+}
+
+/* =========================================================
+   AUTH BUTTONS
+========================================================= */
+.auth-nav-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 15px;
+    text-decoration: none;
+    transition: 0.3s ease;
+    white-space: nowrap;
+}
+
+.login-nav {
+    border: 1px solid white;
+    background: transparent;
+    color: white !important;
+}
+
+.login-nav:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.register-nav {
+    background: white;
+    color: #001b94 !important;
+}
+
+.register-nav:hover {
+    background: #f1f5f9;
+}
+
+/* =========================================================
+   USER PROFILE & DROPDOWN MENU
+========================================================= */
+.menu-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Modern Profile Menu Button (Avatar + Hamburger) */
+.profile-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    padding: 5px 14px 5px 5px; /* Extra space is on the right side */
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease; 
+    border: 2px solid transparent;
+}
+
+.profile-menu-btn:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Button "press down" animation when clicked */
+.profile-menu-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.profile-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+}
+
+/* =========================================================
+   PROFILE HAMBURGER 'X' ANIMATION 
+========================================================= */
+.profile-hamburger {
+    width: 20px;
+    height: 20px;
+    color: #001b94;
+}
+
+/* Set the animation origin to the center of EACH individual line */
+.profile-hamburger line {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: center; 
+    transform-box: fill-box; /* FIX: Forces the origin to the line itself, not the whole SVG */
+}
+
+/* Move the top line DOWN 6px into the middle, then rotate it */
+.profile-menu-btn.open .line-top {
+    transform: translateY(6px) rotate(45deg);
+}
+
+/* Shrink and fade the middle line so it disappears cleanly */
+.profile-menu-btn.open .line-mid {
+    opacity: 0;
+    transform: scale(0); 
+}
+
+/* Move the bottom line UP 6px into the middle, then rotate it */
+.profile-menu-btn.open .line-bot {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Dropdown Menu Sliding Animation */
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 65px;
+    width: auto; /* FIX: Changed from 200px to auto so it hugs the text */
+    min-width: 150px; /* Optional: Sets a minimum width so it doesn't get too skinny */
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 9999;
+    
+    /* Starting state for animation */
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.dropdown-menu.show {
+    /* Ending state for animation */
+    max-height: 250px; 
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu a {
+    padding: 12px 20px; /* Adjust padding: slightly less vertical, consistent horizontal */
+    text-decoration: none;
+    color: #001b94;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+    margin: 0;
+    font-size: 14px;
+    transition: background 0.2s ease, color 0.2s ease;
+    white-space: nowrap; /* Ensures text stays on one line */
+}
+
+/* Remove the border from the very last link so it looks cleaner at the bottom */
+.dropdown-menu a:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+    background: #001b94;
+    color: white;
+}
+
+/* =========================================================
+   NOTIFICATION BELL & BADGE ANIMATIONS
+========================================================= */
+
+/* Make the whole notification button interactive */
+.notification-wrapper {
+    transition: transform 0.2s ease;
+}
+
+.notification-wrapper:hover {
+    transform: scale(1.05); /* Slight pop-out effect on hover */
+}
+
+/* Set the anchor point to the top center so it swings like a real bell */
+.notification-wrapper svg {
+    transform-origin: top center; 
+}
+
+/* Trigger the ringing animation only on hover */
+.notification-wrapper:hover svg {
+    animation: ringBell 0.8s ease-in-out both;
+}
+
+/* Bell ringing keyframes */
+@keyframes ringBell {
+    0% { transform: rotate(0); }
+    15% { transform: rotate(20deg); }
+    30% { transform: rotate(-15deg); }
+    45% { transform: rotate(10deg); }
+    60% { transform: rotate(-5deg); }
+    75% { transform: rotate(2deg); }
+    100% { transform: rotate(0); }
+}
+
+/* Continuous glowing pulse effect for the red badge */
+.notification-badge {
+    animation: pulseBadge 2s infinite;
+}
+
+/* Badge pulsing keyframes (creates a radar-like outward glow) */
+@keyframes pulseBadge {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); 
+    }
+    70% { 
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); 
+    }
+    100% { 
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); 
+    }
+}
+
+/* =========================================================
+   MOBILE HAMBURGER MENU 
+========================================================= */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    width: 30px;
+    z-index: 10000;
+    flex-shrink: 0;
+}
+
+.mobile-menu-toggle span {
+    height: 3px;
+    width: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: 0.4s ease;
+}
+
+.mobile-menu-toggle.open span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-toggle.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN (Tablets & Mobile)
+========================================================= */
+
+@media (max-width: 992px) {
+    .navbar {
+        padding: 0 15px; 
+        height: 80px; 
+    }
+
+    .brand-text {
+        display: none;
+    }
+
+    .brand-img {
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+    }
+
+    .nav-search-container {
+        margin: 0 15px;
+        max-width: 100%;
+    }
+
+    .nav-search-form {
+        padding: 8px 12px;
+    }
+
+    .nav-search-input {
+        font-size: 13px; 
+    }
+
+    .nav-search-icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+
+    .nav-search-select {
+        font-size: 12px;
+        padding-left: 10px;
+        padding-right: 20px;
+        background-position: right 5px center;
+    }
+    
+    .nav-search-divider {
+        margin: 0 8px;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .nav-right {
+        position: absolute;
+        top: 80px; 
+        left: -100%; 
+        width: 100%;
+        height: calc(100vh - 80px); 
+        background-color: #001b94;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 40px;
+        gap: 30px;
+        transition: 0.4s ease-in-out;
+        overflow-y: auto;
+    }
+
+    .nav-right.active {
+        left: 0;
+    }
+
+    .nav-links {
+        flex-direction: column;
+    }
+
+    .nav-links > a {
+        font-size: 18px;
+    }
+
+    .menu-container {
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 10px;
+    }
+
+    .dropdown-menu {
+        position: relative;
+        top: 0;
+        width: 100%;
+        min-width: 250px;
+        box-shadow: none;
+        background: rgba(0, 0, 0, 0.15); 
+        text-align: center;
+        border-radius: 8px;
+        
+        /* Override animation constraints for mobile view */
+        max-height: 1000px; /* Allow full height expansion */
+        transform: none; /* Remove vertical transform slide */
+        transition: none; /* Disable transition logic for direct toggles on mobile */
+    }
+    
+    .dropdown-menu.show {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .dropdown-menu a {
+        color: white;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-menu a:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+}

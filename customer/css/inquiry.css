@@ -1,0 +1,748 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #0f1f78;
+    --primary-hover: #1a2c9c;
+    --accent: #2563eb;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --border-color: #d1d5db;
+    --bg-page: #f4f7fc;
+    --bg-card: #ffffff;
+    --danger: #dc2626;
+    --danger-bg: #fee2e2;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-card: 0 12px 32px rgba(15, 31, 120, 0.08);
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-page);
+    margin: 0;
+    padding: 0;
+    padding-top: 80px;
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.inquiry-container {
+    padding: 40px 20px;
+}
+
+.inquiry-split-layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+.back-btn-wrapper {
+    max-width: 1280px;
+    margin: 0 auto 24px auto;
+    display: flex;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 28px;
+    border: 1.5px solid var(--primary);
+    border-radius: 50px;
+    color: var(--primary);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    background-color: transparent;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+/* =========================================================
+   LEFT SIDEBAR
+========================================================= */
+
+.order-summary-sidebar {
+    width: 380px;
+    min-width: 340px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+}
+
+.form-main-column {
+    flex: 1;
+    min-width: 0;
+}
+
+/* =========================================================
+   REVIEW CARD
+========================================================= */
+
+.review-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+
+/* =========================================================
+   CAROUSEL
+========================================================= */
+
+.carousel-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f1f5f9;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.carousel-arrow-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.carousel-arrow-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+.carousel-arrow-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.carousel-counter-text {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* =========================================================
+   BRAND + AVAILABILITY
+========================================================= */
+
+.sidebar-top-badge {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.brand-pill {
+    background: #eef2ff;
+    color: var(--primary);
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.availability-pill {
+    background: #dcfce7;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
+.product-preview-img-container {
+    width: 100%;
+    height: 260px;
+    background: #f9fafb;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid #f3f4f6;
+    box-sizing: border-box;
+}
+
+.product-preview-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    padding: 8px;
+    box-sizing: border-box;
+    transition: transform 0.2s ease;
+}
+
+.product-preview-img-container:hover img {
+    transform: scale(1.03);
+}
+
+/* =========================================================
+   PRODUCT INFORMATION
+========================================================= */
+
+.product-identity-block {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.product-series-title {
+    margin: 0 0 2px 0;
+    color: var(--primary);
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.product-model-code {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.product-display-price {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* =========================================================
+   SPECIFICATION GRID
+========================================================= */
+
+.specs-mini-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.spec-tile {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.spec-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.spec-value {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: #475569;
+    display: block;
+    line-height: 1.4;
+}
+
+/* =========================================================
+   LONG SPECIFICATIONS
+========================================================= */
+
+.spec-long-block {
+    margin-top: 14px;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.spec-long-block .spec-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.spec-value-text {
+    margin: 0;
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.spec-list {
+    margin: 0 0 0 20px;
+    padding: 0;
+    list-style-type: disc;
+}
+
+.spec-list li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+    font-size: 13.5px;
+    color: #4b5563;
+}
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.form-card {
+    width: 100%;
+    background: var(--bg-card);
+    padding: 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    box-sizing: border-box;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 35px;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 20px;
+}
+
+.form-header h2 {
+    margin: 0 0 6px 0;
+    color: var(--primary);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.form-header p {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   FORM GRID & INPUTS
+========================================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 20px;
+}
+
+.form-group.full {
+    grid-column: span 2;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.calendar-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+    color: var(--text-main);
+    background-color: #ffffff;
+    transition: var(--transition);
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(15, 31, 120, 0.08);
+    outline: none;
+}
+
+input[readonly],
+select:disabled {
+    background-color: #f9fafb;
+    color: var(--text-muted);
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   CALENDAR BUTTON
+========================================================= */
+
+.calendar-btn {
+    text-align: left;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3crect x='3' y='4' width='18' height='18' rx='2'%3e%3c/rect%3e%3cline x1='16' y1='2' x2='16' y2='6'%3e%3c/line%3e%3cline x1='8' y1='2' x2='8' y2='6'%3e%3c/line%3e%3cline x1='3' y1='10' x2='21' y2='10'%3e%3c/line%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 18px;
+    padding-right: 40px;
+}
+
+.calendar-btn:hover {
+    border-color: var(--primary);
+    color: var(--text-main);
+}
+
+/* =========================================================
+   TERMS ALERT & BUTTON STATES (NEW)
+========================================================= */
+
+.terms-alert {
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    transition: var(--transition);
+}
+
+.terms-alert p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.terms-alert i {
+    color: var(--danger);
+    font-size: 14px;
+}
+
+.terms-alert a {
+    color: var(--text-main);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.terms-alert a:hover {
+    color: var(--primary);
+}
+
+/* Accepted State */
+.terms-alert.accepted {
+    background-color: #dcfce7;
+    border-color: #86efac;
+}
+
+.terms-alert.accepted p,
+.terms-alert.accepted a,
+.terms-alert.accepted i {
+    color: #166534 !important;
+}
+
+.btn-disabled {
+    background-color: #cbd5e1 !important;
+    cursor: not-allowed !important;
+    color: white !important;
+    box-shadow: none !important;
+    border: none;
+}
+
+.btn-enabled {
+    background-color: var(--danger) !important;
+    cursor: pointer !important;
+    color: white !important;
+    border: none;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.btn-enabled:hover {
+    background-color: #b91c1c !important;
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Modal Specific Styles */
+.terms-modal-header {
+    background-color: var(--primary);
+    color: white;
+}
+.terms-modal-header h3 {
+    color: white !important;
+}
+.terms-modal-header button {
+    color: white !important;
+    opacity: 0.8;
+}
+.terms-modal-header button:hover {
+    opacity: 1;
+}
+
+/* Submit Button Standard */
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+
+/* =========================================================
+   CALENDAR MODAL
+========================================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.65);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+    background: white;
+    margin: 8vh auto;
+    padding: 20px;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 550px; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: relative;
+    animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-muted);
+    line-height: 1;
+    transition: color 0.2s;
+    z-index: 50; 
+}
+
+.close-btn:hover {
+    color: var(--text-main);
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.96);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   FULLCALENDAR
+========================================================= */
+
+#calendar {
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.fc .fc-daygrid-day-frame {
+    min-height: 55px !important; 
+}
+
+.fc-toolbar.fc-header-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 12px !important; 
+}
+
+.fc-toolbar .fc-left { position: absolute; left: 0; }
+.fc-toolbar .fc-right { position: absolute; right: 0; }
+
+.fc-toolbar .fc-center h2 {
+    font-size: 1.1rem !important; 
+    font-weight: 600;
+    color: var(--primary);
+    margin: 0;
+}
+
+.fc-button {
+    background: #f9fafb !important;
+    border: 1px solid var(--border-color) !important;
+    color: #374151 !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+    text-transform: capitalize;
+    font-weight: 500 !important;
+    padding: 4px 10px !important;
+    font-size: 12px !important;
+    transition: var(--transition);
+}
+
+.fc-button:hover,
+.fc-state-hover {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+}
+
+.fc-state-active {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1024px) {
+    .inquiry-split-layout { flex-direction: column; }
+    .order-summary-sidebar { width: 100%; position: static; }
+}
+
+@media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; gap: 16px; }
+    .form-group.full { grid-column: span 1; }
+    .form-card, .review-card { padding: 25px 20px; border-radius: var(--radius-sm); }
+    .inquiry-container { padding: 20px 15px; }
+    .product-preview-img-container { height: 230px; }
+}
+
+/* =========================================================
+   CALENDAR STATES
+========================================================= */
+/* Highlight Today */
+.fc td.fc-today { 
+    background-color: #fef9c3 !important; 
+    box-shadow: none !important;
+    cursor: not-allowed !important; 
+}
+
+/* Make past days and buffer days greyed out (grayscale) */
+.fc td.fc-past-day,
+.fc td.fc-buffer-day { 
+    background-color: #f1f5f9 !important; 
+    box-shadow: none !important;
+    cursor: not-allowed !important; 
+}
+
+/* Red background for fully booked/unavailable days */
+.fc td.fc-unavailable-day { 
+    background-color: var(--danger-bg) !important; 
+    cursor: not-allowed !important; 
+}
+
+/* Grayscale out the text numbers for all unselectable days */
+.fc-disabled-day-text .fc-day-number {
+    color: #9ca3af !important;
+    opacity: 0.7;
+    cursor: not-allowed !important;
+}
+
+/* =========================================================
+   TOOLTIP / INFO BOX
+========================================================= */
+.info-icon-btn {
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 15px;
+    transition: color 0.2s;
+}
+.info-icon-btn:hover {
+    color: var(--accent);
+}
+
+.date-info-message {
+    display: none;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    color: #3730a3;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    animation: fadeIn 0.2s ease-out;
+}

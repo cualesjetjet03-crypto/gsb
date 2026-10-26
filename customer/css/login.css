@@ -1,0 +1,375 @@
+:root {
+    --primary: #0020C2;
+    --primary-hover: #0020C2;
+    --text-dark: #2D3748;
+    --text-muted: #718096;
+    --bg-light: #F7FAFC;
+    --input-bg: #F8FAFC;
+    --input-border: #E2E8F0;
+    --success: #28a745;
+    --danger: #d9534f;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Main Container */
+.auth-wrapper {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+/* Split Card Layout */
+.auth-card {
+    background: #ffffff;
+    display: flex;
+    flex-direction: row; /* Keeps Photo on Left, Form on Right */
+    align-items: center;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    padding: 40px;
+    gap: 40px;
+}
+
+/* Left Column - Image */
+.auth-illustration {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-illustration img {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Right Column - Form */
+.auth-form-container {
+    flex: 1.2;
+}
+
+.form-header h2 {
+    color: var(--primary);
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.form-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* Error Alert Box */
+.error-alert {
+    background: #FFF5F5;
+    color: #E53E3E;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    border: 1px solid #FEB2B2;
+}
+
+/* Side-by-side Input Row */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+.form-group.full-width {
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+.form-group label .req {
+    color: var(--primary);
+}
+
+/* Input Fields with Icons */
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon-wrapper .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #A0AEC0;
+    font-size: 14px;
+}
+
+.input-icon-wrapper input {
+    width: 100%;
+    padding: 12px 14px 12px 40px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.input-icon-wrapper input:focus {
+    border-color: var(--primary);
+    background-color: #ffffff;
+}
+
+.input-icon-wrapper .eye-btn {
+    position: absolute;
+    right: 14px;
+    cursor: pointer;
+    color: #A0AEC0;
+    font-size: 14px;
+}
+
+.input-icon-wrapper .eye-btn:hover {
+    color: var(--text-dark);
+}
+
+/* Dropdown Styling */
+.address-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: var(--text-dark);
+    background-color: var(--input-bg);
+    outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23A0AEC0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px top 50%;
+    background-size: 12px auto;
+}
+
+.address-select:focus {
+    border-color: var(--primary);
+    background-color: #ffffff;
+}
+
+.address-select:disabled {
+    background-color: #e9ecef;
+    color: #A0AEC0;
+    cursor: not-allowed;
+    border-color: var(--input-border);
+}
+
+/* Password Rules Styling */
+.password-rules {
+    margin: 5px 0 20px 0;
+}
+
+.password-rules p {
+    font-size: 12px;
+    margin: 2px 0;
+}
+
+.valid-rule {
+    color: var(--success) !important;
+}
+
+.invalid-rule {
+    color: var(--danger) !important;
+}
+
+/* Action Button */
+.auth-btn {
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.auth-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Footer Link */
+.auth-footer {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .auth-card {
+        flex-direction: column;
+        padding: 25px;
+    }
+
+    .auth-illustration img {
+        max-width: 200px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* --- SUCCESS MODAL STYLES --- */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.custom-modal {
+    background: #ffffff;
+    padding: 35px 30px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.4s ease;
+}
+
+.custom-modal .modal-icon {
+    font-size: 55px;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.custom-modal h3 {
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.custom-modal p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.custom-modal .modal-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.custom-modal .modal-btn:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 4px 12px rgba(0, 32, 194, 0.3);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- ERROR MODAL SPECIFIC STYLES --- */
+#errorModalOverlay {
+    display: none; /* Hidden by default until JavaScript calls it */
+}
+
+.error-modal .modal-icon {
+    color: var(--danger);
+}
+
+.error-modal .modal-btn {
+    background-color: var(--danger);
+}
+
+.error-modal .modal-btn:hover {
+    background-color: #c9302c; /* Slightly darker red on hover */
+    box-shadow: 0 4px 12px rgba(217, 83, 79, 0.3);
+}
+
+/* --- BACK TO HOME LINK --- */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}

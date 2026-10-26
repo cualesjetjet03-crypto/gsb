@@ -1,0 +1,190 @@
+/* --- LAYOUT FIX: Forces topbar flush to edges across all pages --- */
+.main-content {
+    padding: 0 !important; 
+}
+
+/* Re-applies padding to direct children (both div and section) */
+.main-content > *:not(#gsb-custom-topbar):not(.modal-overlay) {
+    padding: 24px !important; 
+}
+/* ---------------------------------------------------------------- */
+
+/* Scoped strictly to #gsb-custom-topbar */
+#gsb-custom-topbar {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background-color: #ffffff !important;
+    width: 100% !important; 
+    padding: 0 24px !important;
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
+    font-family: inherit !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+#gsb-custom-topbar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Left: Hamburger */
+#gsb-custom-topbar .topbar-left {
+    display: flex;
+    align-items: center;
+}
+#gsb-custom-topbar .topbar-left i {
+    font-size: 1.25rem;
+    color: #4b5563;
+}
+
+/* Right: Notifications & Profile */
+#gsb-custom-topbar .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Notification Bell */
+#gsb-custom-topbar .bell-wrapper {
+    position: relative;
+    cursor: pointer;
+    color: #4b5563;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+#gsb-custom-topbar .bell-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Profile Section */
+#gsb-custom-topbar .profile-dropdown {
+    position: relative;
+}
+#gsb-custom-topbar .profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+#gsb-custom-topbar .avatar-icon {
+    background: #f3f4f6;
+    color: #9ca3af;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+#gsb-custom-topbar .profile-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+#gsb-custom-topbar .profile-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+}
+#gsb-custom-topbar .profile-role {
+    font-size: 0.75rem;
+    color: #6b7280;
+    line-height: 1.2;
+}
+#gsb-custom-topbar .dropdown-icon {
+    color: #9ca3af;
+    font-size: 0.8rem;
+    margin-left: 4px;
+}
+
+/* Dropdown Menu */
+#gsb-custom-topbar .dropdown-menu {
+    display: none !important; 
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 12px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    min-width: 180px;
+    flex-direction: column;
+    overflow: hidden;
+}
+#gsb-custom-topbar .dropdown-menu.show {
+    display: flex !important;
+}
+#gsb-custom-topbar .dropdown-menu a {
+    padding: 12px 16px;
+    color: #374151;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    border-bottom: none;
+}
+#gsb-custom-topbar .dropdown-menu a:hover {
+    background: #f9fafb;
+}
+#gsb-custom-topbar .dropdown-menu a i {
+    color: #6b7280;
+    width: 16px;
+    text-align: center;
+}
+#gsb-custom-topbar .dropdown-menu a.logout {
+    color: #dc2626;
+    border-top: 1px solid #f3f4f6;
+}
+#gsb-custom-topbar .dropdown-menu a.logout i {
+    color: #dc2626;
+}
+
+/* ── Sidebar collapse toggle ── */
+.sidebar.collapsed {
+    width: 76px;
+}
+.sidebar.collapsed .brand-box h2,
+.sidebar.collapsed .brand-box p,
+.sidebar.collapsed .side-nav a span:not(.nav-badge) {
+    display: none;
+}
+.sidebar.collapsed .side-nav a {
+    justify-content: center;
+    padding: 14px 0;
+}
+.sidebar.collapsed .brand-box {
+    justify-content: center;
+}
+.sidebar.collapsed .brand-box .brand-icon {
+    margin: 0;
+}
+
+.main-content.sidebar-collapsed {
+    margin-left: 76px;
+    width: calc(100% - 76px);
+}

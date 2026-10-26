@@ -1,0 +1,529 @@
+/* Inquiries page now uses admin_dashboard.css layout classes */
+
+.inquiry-search-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.inquiry-search-form .mini-search {
+    width: 330px;
+}
+
+/* Reduced min-width now that 4 columns are inside the modal */
+.product-panel table {
+    width: 100%;
+    min-width: 950px;
+}
+
+/* =========================================================
+   VIEW DETAILS BUTTON & MODAL STYLING
+========================================================= */
+.view-details-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.view-details-btn:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+.details-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.details-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.details-section h4,
+.details-message-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.details-section h4 i,
+.details-message-section h4 i {
+    color: #2563eb;
+}
+
+.details-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+}
+
+.details-row:last-child {
+    margin-bottom: 0;
+}
+
+.details-label {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.details-value {
+    color: #1e293b;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.details-value a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.details-value a:hover {
+    text-decoration: underline;
+}
+
+.install-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e0f2fe;
+    color: #0284c7;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.details-message-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.details-message-box {
+    color: #475569;
+    font-size: 13.5px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+@media (max-width: 650px) {
+    .details-modal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Status update form */
+.status-update-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-update-form select {
+    height: 38px;
+    min-width: 130px;
+    border: 1px solid #d9e0ec;
+    border-radius: 8px;
+    padding: 0 10px;
+    outline: none;
+    background: #fff;
+    color: #334155;
+}
+
+.status-update-form select:focus {
+    border-color: #2563eb;
+}
+
+.mini-btn {
+    padding: 8px 11px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.delete-icon {
+    color: #64748b;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.delete-icon:hover {
+    color: #dc2626;
+}
+
+/* Email links */
+td a[href^="mailto:"] {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+td a[href^="mailto:"]:hover {
+    text-decoration: underline;
+}
+
+/* Modal small adjustment */
+.modal-card {
+    width: min(720px, 100%);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .inquiry-search-form {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .inquiry-search-form .mini-search {
+        width: 100%;
+    }
+
+    .status-update-form {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* =========================================================
+   MODERN FULLCALENDAR OVERRIDES
+========================================================= */
+
+#calendarPickerModal { 
+    z-index: 9999;
+} 
+
+#calendarPickerModal .modal-card { 
+    max-width: 750px; 
+    width: 100%;
+    padding: 30px;
+    border-radius: 12px;
+    position: relative;
+}
+
+/* Ensure the Custom Alert modal overlaps everything */
+#customAlertModal {
+    z-index: 10000;
+}
+
+/* Styled Close Button positioning for the Modal */
+#calendarPickerModal .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 20px;
+    color: #6b7280;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+#calendarPickerModal .modal-close:hover {
+    color: #111827;
+}
+
+/* Toolbar Header overrides to use Flexbox */
+.fc-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px !important;
+}
+
+.fc-toolbar .fc-left, 
+.fc-toolbar .fc-center, 
+.fc-toolbar .fc-right {
+    float: none !important; 
+    display: flex;
+    align-items: center;
+}
+
+.fc-toolbar .fc-center {
+    flex-grow: 1;
+    justify-content: center;
+}
+
+/* Modal Title */
+.fc-toolbar h2 {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #1e3a8a !important; 
+    margin: 0 !important;
+    font-family: inherit;
+}
+
+/* Buttons Styling (prev, next, today) */
+.fc-state-default {
+    background: #ffffff !important;
+    background-image: none !important; 
+    border: 1px solid #d1d5db !important;
+    color: #374151 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+    height: 38px;
+    padding: 0 16px !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.fc-state-hover {
+    background: #f3f4f6 !important;
+    cursor: pointer;
+}
+
+.fc-state-down, .fc-state-active {
+    background: #e5e7eb !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+
+/* Un-group buttons */
+.fc-button-group {
+    display: flex;
+    gap: 8px;
+}
+.fc-button-group .fc-button {
+    border-radius: 6px !important;
+    margin: 0 !important;
+}
+.fc-button.fc-today-button {
+    margin-left: 12px !important; 
+}
+
+/* Grid layout borders */
+.fc-unthemed th, 
+.fc-unthemed td, 
+.fc-unthemed thead, 
+.fc-unthemed tbody, 
+.fc-unthemed .fc-divider, 
+.fc-unthemed .fc-row, 
+.fc-unthemed .fc-popover {
+    border-color: #e5e7eb !important;
+}
+
+/* Day Headers (Sun, Mon, Tue) */
+.fc-head .fc-day-header {
+    padding: 12px 0 !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    border-bottom-width: 1px !important;
+    font-size: 14px;
+}
+
+/* Day Cells Layout */
+.fc-day-top {
+    padding: 8px 10px !important;
+    text-align: right !important; 
+}
+
+.fc-day-number {
+    float: none !important;
+    color: #4b5563 !important;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+/* Day State styling */
+.fc-past { 
+    background-color: #f9fafb !important; 
+    opacity: 0.6; 
+    cursor: not-allowed; 
+}
+
+.fc-day:hover:not(.fc-past) { 
+    background-color: #f3f4f6 !important; 
+    cursor: pointer; 
+}
+
+/* Highlighted selected day (Current / Selected) */
+.fc-unthemed .fc-today {
+    background-color: #eff6ff !important;
+    box-shadow: inset 0 0 0 2px #93c5fd !important;
+    border: none !important; 
+}
+
+.fc-unthemed td.fc-today {
+    border-left: 1px solid #e5e7eb !important;
+    border-right: 1px solid #e5e7eb !important;
+    border-top: 1px solid #e5e7eb !important;
+}
+
+/* =========================================================
+   STANDARDIZED STATUS BADGES
+========================================================= */
+
+.tracker-current-status, span.status, .badge { 
+    display: inline-block; 
+    white-space: nowrap; 
+    padding: 6px 14px; 
+    border-radius: 20px; 
+    font-size: 12px; 
+    font-weight: 700; 
+    text-transform: capitalize; 
+    text-align: center;
+}
+
+/* 1. Pending (Yellow/Orange - Waiting for action) */
+.tracker-current-status.pending, span.status.pending, .badge.pending { 
+    background: #fef3c7; 
+    color: #b45309; 
+}
+
+/* 2. Approved (Indigo/Purple - Confirmed but waiting to move) */
+.tracker-current-status.approved, span.status.approved, .badge.approved { 
+    background: #e0e7ff; 
+    color: #4338ca; 
+}
+
+/* 3. Out for Delivery (Blue - In transit) */
+.tracker-current-status.out-for-delivery, span.status.out-for-delivery, .badge.out-for-delivery { 
+    background: #dbeafe; 
+    color: #1d4ed8; 
+}
+
+/* 4. Installation (Teal - Active physical work) */
+.tracker-current-status.installation, span.status.installation, .badge.installation { 
+    background: #ccfbf1; 
+    color: #0f766e; 
+}
+
+/* Ongoing (Blue - Currently being handled) */
+.tracker-current-status.ongoing, span.status.ongoing, .badge.ongoing { 
+    background: #dbeafe; 
+    color: #1d4ed8; 
+}
+
+/* 5. Sold / Completed (Green - Success/Finished) */
+.tracker-current-status.sold, span.status.sold, .badge.sold,
+.tracker-current-status.completed, span.status.completed, .badge.completed { 
+    background: #dcfce7; 
+    color: #15803d; 
+}
+
+/* 6. Cancelled (Red - Failed or Stopped) */
+.tracker-current-status.cancelled, span.status.cancelled, .badge.cancelled { 
+    background: #fee2e2; 
+    color: #b91c1c; 
+}
+
+/* =========================================================
+   TABS CSS (ADDED FROM ADMIN INQUIRIES PHP)
+========================================================= */
+/* Base Tab Button */
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+.tab-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+/* MATCH TAB COLORS TO STATUS BADGES */
+
+/* Pending Tab (Orange/Yellow) */
+.tab-btn.tab-pending.active {
+    background: #fef3c7; 
+    color: #b45309;
+    font-weight: 700;
+}
+
+/* Approved Tab (Purple) */
+.tab-btn.tab-approved.active {
+    background: #e0e7ff; 
+    color: #4338ca;
+    font-weight: 700;
+}
+
+/* Out for Delivery Tab (Blue) */
+.tab-btn.tab-delivery.active {
+    background: #dbeafe; 
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+/* Installation Tab (Teal) */
+.tab-btn.tab-installation.active {
+    background: #ccfbf1; 
+    color: #0f766e;
+    font-weight: 700;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+.tab-content.active {
+    display: block;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   SUMMARY GRID OVERRIDE (To fit 5 cards perfectly)
+========================================================= */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1400px) {
+    .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
