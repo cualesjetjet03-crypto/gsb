@@ -6,15 +6,9 @@ images/products/
 images/technicians/
 images/ratings/
 customer/assets/uploads/
-customer/images/*.png
-customer/images/*.jpg
-customer/images/*.jpeg
-customer/images/*.gif
-customer/images/*.webp
 admin/assets/uploads/
 
 # Keep the folder structure but not the uploaded files
-!customer/images/users.png
 !images/products/.gitkeep
 !images/technicians/.gitkeep
 !images/ratings/.gitkeep
