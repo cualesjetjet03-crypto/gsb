@@ -2,13 +2,6 @@
 include "db_connect.php";
 require_once __DIR__ . '/../includes/mailer.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'PHPMailer/Exception.php';
-require 'PHPMailer/PHPMailer.php';
-require 'PHPMailer/SMTP.php';
-
 $error_msg        = "";
 $show_success_modal = false;
 
@@ -40,29 +33,23 @@ if (isset($_POST['forgot_password'])) {
 
             if ($upd->execute()) {
                 $upd->close();
-                $mail = gsb_mailer();
-                try {
-                    $mail->addAddress($email, $fullname);
 
-                    $mail->isHTML(true);
-                    $mail->Subject = 'Reset Your GSB Account Password';
+                $reset_link = rtrim(APP_BASE_URL, '/') . '/customer/reset_password.php?token=' . urlencode($reset_token);
 
-                    // Build link from config — works on any environment
-                    $reset_link = rtrim(APP_BASE_URL, '/') . '/customer/reset_password.php?token=' . urlencode($reset_token);
+                $body = "Hi <b>" . htmlspecialchars($fullname) . "</b>,<br><br>"
+                    . "We received a request to reset your password. "
+                    . "Click the link below — it expires in 1 hour:<br><br>"
+                    . "<a href='" . htmlspecialchars($reset_link) . "'>Reset My Password</a><br><br>"
+                    . "If you did not request this, you can safely ignore this email.";
 
-                    $mail->Body = "Hi <b>" . htmlspecialchars($fullname) . "</b>,<br><br>"
-                        . "We received a request to reset your password. "
-                        . "Click the link below — it expires in 1 hour:<br><br>"
-                        . "<a href='" . htmlspecialchars($reset_link) . "'>Reset My Password</a><br><br>"
-                        . "If you did not request this, you can safely ignore this email.";
+                $result = gsb_send_email($email, $fullname, 'Reset Your GSB Account Password', $body);
 
-                    $mail->send();
+                if ($result === true) {
                     $show_success_modal = true;
                     $_POST = [];
-
-                } catch (Exception $e) {
+                } else {
                     $error_msg = "Could not send reset email. Please try again later.";
-                    error_log("PHPMailer error (forgot_password): " . $mail->ErrorInfo);
+                    error_log("gsb_send_email error (forgot_password): " . $result);
                 }
             } else {
                 $upd->close();

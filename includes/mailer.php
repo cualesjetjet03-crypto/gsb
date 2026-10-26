@@ -1,41 +1,68 @@
 <?php
 /**
- * GSB — PHPMailer factory
+ * GSB — Email sender using Brevo HTTP API
  *
- * Returns a pre-configured PHPMailer instance ready to send.
- * Credentials come exclusively from config.php — never hardcoded here.
+ * Uses Brevo's transactional email API over HTTPS (port 443).
+ * This works on Render free tier which blocks outbound SMTP ports.
  *
  * Usage:
- *   $mail = gsb_mailer();
- *   $mail->addAddress($email, $name);
- *   $mail->Subject = '...';
- *   $mail->Body    = '...';
- *   $mail->send();
+ *   $result = gsb_send_email($toEmail, $toName, $subject, $htmlBody);
+ *   if ($result !== true) { // error string returned }
+ *
+ * Legacy PHPMailer-style wrapper also available via gsb_mailer_send()
  */
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
-function gsb_mailer(): PHPMailer
+/**
+ * Send email via Brevo HTTP API
+ * Returns true on success, error string on failure
+ */
+function gsb_send_email(string $toEmail, string $toName, string $subject, string $htmlBody): bool|string
 {
-    $mail = new PHPMailer(true); // true = throw exceptions
+    $apiKey  = defined('BREVO_API_KEY') ? BREVO_API_KEY : getenv('BREVO_API_KEY');
+    $fromEmail = defined('SMTP_FROM') ? SMTP_FROM : (defined('SMTP_USER') ? SMTP_USER : '');
+    $fromName  = 'GSB Airconditioning Services';
 
-    $mail->isSMTP();
-    $mail->Host       = defined('SMTP_HOST') ? SMTP_HOST : 'smtp.gmail.com';
-    $mail->SMTPAuth   = true;
-    $mail->Username   = defined('SMTP_USER') ? SMTP_USER : '';
-    $mail->Password   = defined('SMTP_PASS') ? SMTP_PASS : '';
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = defined('SMTP_PORT') ? SMTP_PORT : 587;
-    $mail->CharSet    = 'UTF-8';
+    if (empty($apiKey)) {
+        error_log('GSB Mailer: BREVO_API_KEY is not set');
+        return 'BREVO_API_KEY is not configured';
+    }
 
-    $mail->setFrom(
-        defined('SMTP_USER') ? SMTP_USER : '',
-        'GSB Airconditioning Services'
-    );
+    $payload = json_encode([
+        'sender'      => ['name' => $fromName, 'email' => $fromEmail],
+        'to'          => [['email' => $toEmail, 'name' => $toName]],
+        'subject'     => $subject,
+        'htmlContent' => $htmlBody,
+    ]);
 
-    $mail->isHTML(true);
+    $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $payload,
+        CURLOPT_HTTPHEADER     => [
+            'accept: application/json',
+            'api-key: ' . $apiKey,
+            'content-type: application/json',
+        ],
+        CURLOPT_TIMEOUT        => 15,
+    ]);
 
-    return $mail;
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($curlError) {
+        error_log('GSB Mailer cURL error: ' . $curlError);
+        return 'cURL error: ' . $curlError;
+    }
+
+    if ($httpCode >= 200 && $httpCode < 300) {
+        return true;
+    }
+
+    $decoded = json_decode($response, true);
+    $errMsg  = $decoded['message'] ?? $response;
+    error_log('GSB Mailer Brevo API error (' . $httpCode . '): ' . $errMsg);
+    return 'Brevo API error: ' . $errMsg;
 }

@@ -2,14 +2,6 @@
 include "db_connect.php";
 require_once __DIR__ . '/../includes/mailer.php';
 
-// PHPMailer classes
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require 'PHPMailer/Exception.php';
-require 'PHPMailer/PHPMailer.php';
-require 'PHPMailer/SMTP.php';
-
 $register_error = "";
 $show_success_modal = false; 
 
@@ -61,31 +53,23 @@ if(isset($_POST['register'])){
 
             if ($ins->execute()) {
                 $ins->close();
-                
-                // Send verification email via shared mailer — credentials live in config.php only
-                $mail = gsb_mailer();
-                try {
-                    $mail->addAddress($email, $fullname);
 
-                    $mail->isHTML(true);
-                    $mail->Subject = 'Verify Your GSB Account';
+                $verify_link = rtrim(APP_BASE_URL, '/') . '/customer/verify.php?token=' . urlencode($verification_code);
 
-                    // Build verify link from config so it works on any environment
-                    $verify_link = rtrim(APP_BASE_URL, '/') . '/customer/verify.php?token=' . urlencode($verification_code);
+                $body = "Hi <b>" . htmlspecialchars($fullname) . "</b>,<br><br>"
+                    . "Thank you for registering at GSB Airconditioning Services. "
+                    . "Please click the link below to verify your email address:<br><br>"
+                    . "<a href='" . htmlspecialchars($verify_link) . "'>Verify My Account</a><br><br>"
+                    . "If you did not request this, please ignore this email.";
 
-                    $mail->Body = "Hi <b>" . htmlspecialchars($fullname) . "</b>,<br><br>"
-                        . "Thank you for registering at GSB Airconditioning Services. "
-                        . "Please click the link below to verify your email address:<br><br>"
-                        . "<a href='" . htmlspecialchars($verify_link) . "'>Verify My Account</a><br><br>"
-                        . "If you did not request this, please ignore this email.";
+                $result = gsb_send_email($email, $fullname, 'Verify Your GSB Account', $body);
 
-                    $mail->send();
+                if ($result === true) {
                     $show_success_modal = true;
                     $_POST = [];
-
-                } catch (Exception $e) {
-                    $register_error = "Email error: " . $mail->ErrorInfo;
-                    error_log("PHPMailer error (register): " . $mail->ErrorInfo);
+                } else {
+                    $register_error = "Registration saved, but verification email could not be sent. Please contact support.";
+                    error_log("gsb_send_email error (register): " . $result);
                 }
             } else {
                 $ins->close();

@@ -18,6 +18,7 @@ define('SMTP_PORT', (int)(getenv('SMTP_PORT') ?: 587));
 define('SMTP_USER', getenv('SMTP_USER') ?: '');
 define('SMTP_PASS', getenv('SMTP_PASS') ?: '');
 define('SMTP_FROM', getenv('SMTP_FROM') ?: (getenv('SMTP_USER') ?: ''));
+define('BREVO_API_KEY', getenv('BREVO_API_KEY') ?: '');
 if (APP_ENV === 'production') {
     error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
     ini_set('display_errors', '0');
