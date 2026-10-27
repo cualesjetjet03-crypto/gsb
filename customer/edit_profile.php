@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone = trim($_POST['phone']);
     $gender = trim($_POST['gender']);
     $birthdate = trim($_POST['birthdate']);
+    $birthdate = !empty($birthdate) ? $birthdate : null;
     
     // Backend Phone Validation (11 digits starting with 09)
     if (!empty($phone) && !preg_match('/^09\d{9}$/',$phone)) {
@@ -160,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     } catch (Throwable $e) {
         error_log("edit_profile POST error: " . $e->getMessage());
-        echo "<script>alert('Error: " . addslashes($e->getMessage()) . " in " . addslashes(basename($e->getFile())) . " line " . $e->getLine() . "'); window.history.back();</script>";
+        echo "<script>alert('An error occurred. Please try again.'); window.history.back();</script>";
         exit();
     }
 }
