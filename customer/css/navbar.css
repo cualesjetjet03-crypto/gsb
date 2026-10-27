@@ -280,6 +280,14 @@
     flex-shrink: 0;
 }
 
+/* wrapper for profile pill + notification bell */
+.profile-nav-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
 /* Modern Profile Menu Button (Avatar + Hamburger) */
 .profile-menu-btn {
     display: flex;
@@ -579,21 +587,28 @@
         padding: 0 16px;
     }
 
+    /* On mobile: stack profile button + dropdown vertically, centered */
+    .profile-nav-wrapper {
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        position: static !important;
+        gap: 12px !important;
+    }
+
     .dropdown-menu {
-        position: relative;
-        top: 0;
-        width: 100%;
-        min-width: unset;
-        max-width: 100%;
-        box-sizing: border-box;
+        position: relative !important;
+        top: 0 !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: unset !important;
+        box-sizing: border-box !important;
         box-shadow: none;
-        background: rgba(0, 0, 0, 0.15); 
+        background: rgba(0, 0, 0, 0.15);
         text-align: center;
         border-radius: 8px;
-        left: auto;
-        right: auto;
-        
-        /* Override animation constraints for mobile view */
         max-height: 1000px;
         transform: none;
         transition: none;

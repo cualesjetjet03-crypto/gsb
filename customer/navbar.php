@@ -153,7 +153,7 @@ if (!function_exists('nav_link')) {
                 <?php if($is_logged_in): ?>
                     
                     <!-- Added a wrapper to align the profile pill and the bell horizontally -->
-                    <div style="display: flex; align-items: center; gap: 12px; position: relative;">
+                    <div class="profile-nav-wrapper">
                         
                         <!-- PROFILE HAMBURGER & AVATAR BUTTON -->
                         <div class="profile-menu-btn" id="profilePic" onclick="toggleProfileMenu()">
