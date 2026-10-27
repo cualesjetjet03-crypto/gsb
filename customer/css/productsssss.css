@@ -833,11 +833,9 @@ body {
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 10000; /* above floating cart (900) and compare bar (9998) */
     padding: 20px;
 }
-
-.product-modal.show {
     display: flex;
 }
 
@@ -1042,12 +1040,11 @@ body {
     padding: 16px 22px; 
     box-shadow: 0 10px 25px rgba(0, 27, 148, 0.4);
     cursor: pointer;
-    z-index: 9999;
+    z-index: 900; /* below modal overlay (10000) */
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    /* ensure it sits above compare bar (70px) on all screens */
 }
 
 .floating-cart:hover { 
@@ -1277,11 +1274,23 @@ body {
     .product-image-wrapper { height: 170px; margin-top: 18px; }
 
     /* Modal */
-    .modal-body     { padding: 20px 16px; }
-    .modal-info h2  { font-size: 20px; }
-    .modal-info h3  { font-size: 17px; }
-    .modal-price    { font-size: 22px; }
-    .modal-image-actions { flex-direction: column; gap: 10px; }
+    .modal-content  { max-width: 100%; border-radius: 16px; }
+    .modal-body     { 
+        grid-template-columns: 1fr; 
+        gap: 12px; 
+        padding: 16px 14px;
+    }
+    .modal-image-box { 
+        padding: 12px; 
+        margin-top: 8px;
+    }
+    .modal-image-box img { height: 180px; }
+    .modal-info     { max-height: none; overflow-y: visible; padding-right: 0; }
+    .modal-info h2  { font-size: 18px; }
+    .modal-info h3  { font-size: 15px; }
+    .modal-price    { font-size: 20px; margin: 10px 0; }
+    .modal-image-actions { flex-direction: column; gap: 8px; }
+    .modal-details-grid { grid-template-columns: 1fr 1fr; }
     .modal-image-actions button { padding: 12px; font-size: 14px; }
 
     /* Cart */
