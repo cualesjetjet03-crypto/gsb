@@ -1,10 +1,6 @@
 ﻿<?php
 session_start();
 
-// Temporary: show errors to diagnose white page
-ini_set('display_errors', '1');
-error_reporting(E_ALL);
-
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -44,9 +40,9 @@ $offset      = ($page - 1) * $per_page;
 
 // ── Fetch notifications ───────────────────────────────────────────────────────
 $notifications = [];
-$fetch = $conn->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?");
+$fetch = $conn->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT " . (int)$per_page . " OFFSET " . (int)$offset);
 if ($fetch) {
-    $fetch->bind_param("iii", $user_id, $per_page, $offset);
+    $fetch->bind_param("i", $user_id);
     $fetch->execute();
     $res = $fetch->get_result();
     while ($row = $res->fetch_assoc()) $notifications[] = $row;
