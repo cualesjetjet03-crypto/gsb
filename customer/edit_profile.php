@@ -35,6 +35,7 @@ if ($addr_stmt) {
 
 /* Update Profile */
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    try {
     $fullname = trim($_POST['fullname']);
     $email = trim($_POST['email']);
     $username = trim($_POST['username']);
@@ -82,36 +83,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // ── Profile picture upload with full server-side validation ──────────────
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
         $allowed_exts  = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         $max_bytes     = 3 * 1024 * 1024; // 3 MB
 
         $up_size = $_FILES['profile_picture']['size'];
         $up_tmp  = $_FILES['profile_picture']['tmp_name'];
         $up_ext  = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
 
-        $finfo   = new finfo(FILEINFO_MIME_TYPE);
-        $up_mime = $finfo->file($up_tmp);
+        // Use getimagesize for MIME detection (more portable than finfo)
+        $img_info = @getimagesize($up_tmp);
+        $up_mime  = $img_info ? $img_info['mime'] : '';
+        $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
         if ($up_size > $max_bytes) {
-            die("<script>alert('Profile picture must be under 3 MB.'); window.history.back();</script>");
+            echo "<script>alert('Profile picture must be under 3 MB.'); window.history.back();</script>";
+            exit();
         } elseif (!in_array($up_ext, $allowed_exts, true)) {
-            die("<script>alert('Only JPG, PNG, WEBP, or GIF images are allowed.'); window.history.back();</script>");
+            echo "<script>alert('Only JPG, PNG, WEBP, or GIF images are allowed.'); window.history.back();</script>";
+            exit();
         } elseif (!in_array($up_mime, $allowed_mimes, true)) {
-            die("<script>alert('Invalid image file.'); window.history.back();</script>");
-        } elseif (@getimagesize($up_tmp) === false) {
-            die("<script>alert('Uploaded file is not a valid image.'); window.history.back();</script>");
+            echo "<script>alert('Invalid image file.'); window.history.back();</script>";
+            exit();
         } else {
-            $target_dir   = __DIR__ . '/images/';
+            $target_dir = __DIR__ . '/images/';
             if (!is_dir($target_dir)) {
-                mkdir($target_dir, 0755, true);
+                @mkdir($target_dir, 0755, true);
             }
             $new_filename = bin2hex(random_bytes(12)) . '.' . $up_ext;
             $full_path    = $target_dir . $new_filename;
             if (move_uploaded_file($up_tmp, $full_path)) {
                 $profile_picture = 'images/' . $new_filename;
             } else {
-                // Upload failed — keep existing picture, don't crash
                 error_log("edit_profile: move_uploaded_file failed. target=$full_path");
+                // Keep existing picture — don't crash
             }
         }
     }
@@ -150,9 +153,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               </script>";
         exit();
     } else {
-        die("Update Failed: " . $conn->error);
+        echo "<script>alert('Update failed: " . addslashes($conn->error) . "'); window.history.back();</script>";
+        exit();
     }
     $update_stmt->close();
+
+    } catch (Throwable $e) {
+        error_log("edit_profile POST error: " . $e->getMessage());
+        echo "<script>alert('An error occurred. Please try again.'); window.history.back();</script>";
+        exit();
+    }
 }
 ?>
 <!DOCTYPE html>
