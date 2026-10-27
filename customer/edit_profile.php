@@ -83,33 +83,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $profile_picture = !empty($user['profile_picture']) ? $user['profile_picture'] : 'images/users.png';
 
     // ── Profile picture upload — store as base64 data URI (Render has ephemeral filesystem) ──
-    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
-        $allowed_exts  = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        $max_bytes     = 2 * 1024 * 1024; // 2 MB
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $upload_error = $_FILES['profile_picture']['error'];
+
+        if ($upload_error !== UPLOAD_ERR_OK) {
+            $upload_err_msgs = [
+                UPLOAD_ERR_INI_SIZE   => 'Image is too large (server limit). Please resize it below 2MB.',
+                UPLOAD_ERR_FORM_SIZE  => 'Image exceeds maximum allowed size.',
+                UPLOAD_ERR_PARTIAL    => 'Image upload was interrupted. Please try again.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Server error: missing temp folder.',
+                UPLOAD_ERR_CANT_WRITE => 'Server error: cannot write file.',
+            ];
+            $_SESSION['profile_error'] = $upload_err_msgs[$upload_error] ?? 'Image upload failed. Please try again.';
+            header("Location: edit_profile.php"); exit();
+        }
+
+        $allowed_exts  = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic', 'heif'];
+        $max_bytes     = 5 * 1024 * 1024; // 5 MB (mobile photos can be large)
 
         $up_size = $_FILES['profile_picture']['size'];
         $up_tmp  = $_FILES['profile_picture']['tmp_name'];
-        $up_ext  = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
+        $up_name = $_FILES['profile_picture']['name'];
+        $up_ext  = strtolower(pathinfo($up_name, PATHINFO_EXTENSION));
 
         // Use getimagesize for MIME detection
         $img_info = @getimagesize($up_tmp);
-        $up_mime  = $img_info ? $img_info['mime'] : '';
-        $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        $up_mime  = $img_info ? $img_info['mime'] : mime_content_type($up_tmp);
+        $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
 
         if ($up_size > $max_bytes) {
-            $_SESSION['profile_error'] = 'Profile picture must be under 2 MB.';
+            $_SESSION['profile_error'] = 'Profile picture must be under 5 MB.';
             header("Location: edit_profile.php"); exit();
-        } elseif (!in_array($up_ext, $allowed_exts, true)) {
-            $_SESSION['profile_error'] = 'Only JPG, PNG, WEBP, or GIF images are allowed.';
-            header("Location: edit_profile.php"); exit();
-        } elseif (!in_array($up_mime, $allowed_mimes, true) || !$img_info) {
-            $_SESSION['profile_error'] = 'Invalid image file.';
+        } elseif (!in_array($up_ext, $allowed_exts, true) && !in_array($up_mime, $allowed_mimes, true)) {
+            $_SESSION['profile_error'] = 'Only JPG, PNG, WEBP, GIF, or HEIC images are allowed.';
             header("Location: edit_profile.php"); exit();
         } else {
             // Convert to base64 data URI — works on any server without filesystem
             $image_data = file_get_contents($up_tmp);
             if ($image_data !== false) {
-                $profile_picture = 'data:' . $up_mime . ';base64,' . base64_encode($image_data);
+                // Force JPEG mime for HEIC files since browsers can't display HEIC
+                $display_mime = in_array($up_mime, ['image/heic', 'image/heif']) ? 'image/jpeg' : $up_mime;
+                $profile_picture = 'data:' . $display_mime . ';base64,' . base64_encode($image_data);
+            } else {
+                $_SESSION['profile_error'] = 'Could not read image file. Please try again.';
+                header("Location: edit_profile.php"); exit();
             }
         }
     }
@@ -346,7 +363,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!-- ── Styled Flash Modal (replaces browser alert) ── -->
 <div id="flashModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:99999; align-items:center; justify-content:center;">
     <div style="background:#fff; border-radius:18px; padding:36px 28px; max-width:340px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.25); animation:popIn 0.25s ease;">
-        <div id="flashIcon" style="font-size:52px; margin-bottom:14px;"></div>
+        <div id="flashIconWrap" style="width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:28px;"></div>
         <h3 id="flashTitle" style="margin:0 0 10px; font-size:20px; font-family:'Poppins',sans-serif; color:#0f1f78;"></h3>
         <p id="flashMsg" style="margin:0 0 24px; font-size:14px; color:#475569; font-family:'Poppins',sans-serif; line-height:1.6;"></p>
         <button id="flashOkBtn" onclick="closeFlash()" style="background:#0f1f78; color:#fff; border:none; padding:12px 40px; border-radius:30px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; transition:background 0.2s;">OK</button>
@@ -363,7 +380,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script>
     // ── Flash modal functions ──
     function showFlash(type, title, msg, redirect) {
-        document.getElementById('flashIcon').textContent = type === 'success' ? '✅' : '❌';
+        const iconWrap = document.getElementById('flashIconWrap');
+        if (type === 'success') {
+            iconWrap.style.background = '#f0fdf4';
+            iconWrap.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#16a34a;"></i>';
+        } else {
+            iconWrap.style.background = '#fef2f2';
+            iconWrap.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i>';
+        }
         document.getElementById('flashTitle').textContent = title;
         document.getElementById('flashMsg').textContent = msg;
         document.getElementById('flashOkBtn').onclick = function() {
