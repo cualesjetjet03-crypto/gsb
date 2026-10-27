@@ -307,3 +307,12 @@ body{
         padding-bottom: 0;
     }
 }
+
+/* ── Prevent white flash on mobile overscroll ── */
+html {
+    background-color: #04103a; /* matches footer dark background */
+}
+body {
+    background-color: #f4f7fc;
+    overscroll-behavior-y: none; /* disables rubber-band pull on supported browsers */
+}
