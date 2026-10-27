@@ -462,8 +462,25 @@ body { font-family: 'Poppins', sans-serif; background: #f5f7fb; margin: 0; paddi
         padding: 12px 8px;
         max-width: 100% !important;
     }
-    .fc-toolbar { flex-direction: row; flex-wrap: wrap; gap: 8px; }
-    .fc-toolbar h2 { font-size: 15px; }
+
+    /* Fix toolbar overlap on mobile — stack into 2 rows */
+    .fc-toolbar.fc-header-toolbar {
+        flex-direction: column !important;
+        gap: 8px !important;
+        position: static !important;
+        align-items: center !important;
+    }
+    .fc-toolbar .fc-left,
+    .fc-toolbar .fc-right,
+    .fc-toolbar .fc-center {
+        position: static !important;
+        left: auto !important;
+        right: auto !important;
+    }
+    .fc-toolbar .fc-center h2 { font-size: 16px; }
+    .fc-toolbar .fc-left { order: 2; }
+    .fc-toolbar .fc-center { order: 1; }
+    .fc-button { padding: 4px 10px !important; font-size: 12px !important; }
     .fc th, .fc td { font-size: 11px; padding: 4px 2px; }
 }
 
