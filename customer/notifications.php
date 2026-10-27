@@ -1,6 +1,10 @@
 ﻿<?php
 session_start();
 
+// Temporary: show errors to diagnose white page
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -21,8 +25,6 @@ if ($unread_stmt) {
 }
 
 // ── Mark all as read ──────────────────────────────────────────────────────────
-$conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ? AND is_read = 0")
-     ->execute() || null;
 $mark = $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ? AND is_read = 0");
 if ($mark) { $mark->bind_param("i", $user_id); $mark->execute(); $mark->close(); }
 
