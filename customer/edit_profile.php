@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     } catch (Throwable $e) {
         error_log("edit_profile POST error: " . $e->getMessage());
-        echo "<script>alert('An error occurred. Please try again.'); window.history.back();</script>";
+        echo "<script>alert('Error: " . addslashes($e->getMessage()) . " in " . addslashes(basename($e->getFile())) . " line " . $e->getLine() . "'); window.history.back();</script>";
         exit();
     }
 }
