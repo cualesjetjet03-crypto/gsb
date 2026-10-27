@@ -286,8 +286,8 @@ $catalog_result = $conn->query($catalog_query);
                     </div>
                     
                     <div class="promo-info promo-info-spaced">
-                        <h3><?php echo htmlspecialchars($prod['IndoorUnitModel'] ?:$prod['SeriesName']); ?></h3>
-                        <p><?php echo htmlspecialchars($prod['CapacityHP']); ?>HP <?php echo ($prod['is_non_inverter'] == 1) ? 'Non-Inverter' : 'Inverter'; ?> <?php echo htmlspecialchars($prod['midea_type']); ?> Type</p>
+                        <h3><?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?></h3>
+                        <p class="promo-model-code"><?php echo htmlspecialchars($prod['IndoorUnitModel'] ?: ''); ?></p>
                     </div>
                     
                     <div class="promo-card-bottom">

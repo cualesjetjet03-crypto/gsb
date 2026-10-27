@@ -296,9 +296,20 @@ html, body {
 }
 
 .promo-info h3 {
-    font-size: 13px;
-    margin: 0 0 5px;
-    color: #111;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 4px;
+    line-height: 1.4;
+}
+
+.promo-model-code {
+    font-size: 11.5px;
+    color: #6b7280;
+    font-weight: 500;
+    margin: 0 0 4px;
+    letter-spacing: 0.3px;
+}    color: #111;
     font-weight: 700;
 }
 
