@@ -1639,8 +1639,48 @@ body {
 
 @media(max-width: 768px) {
     .compare-table th { display: none; }
-    .compare-table td { width: 50%; padding: 12px; }
+    .compare-table td { width: 50%; padding: 8px; }
     .compare-table tr:nth-child(even) td { background: #f8fafc; }
+
+    /* Compare content — full screen bottom sheet on mobile */
+    .comparison-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: 92vh;
+        padding: 20px 14px 28px;
+        border-radius: 20px 20px 0 0;
+        margin-top: auto;
+    }
+    .comparison-modal {
+        align-items: flex-end;
+    }
+    .close-comparison-btn {
+        top: 14px;
+        right: 16px;
+        font-size: 24px;
+    }
+
+    /* Compact table cells */
+    .compare-table td img {
+        height: 120px;
+    }
+    .compare-table td h3 {
+        font-size: 13px;
+        word-break: break-all;
+    }
+    .compare-table td .comp-price {
+        font-size: 16px;
+    }
+    .compare-table td {
+        font-size: 12px;
+        padding: 8px 6px;
+        vertical-align: top;
+    }
+    .compare-table tr td:first-child {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 600;
+    }
 }
 
 /* =========================================================
