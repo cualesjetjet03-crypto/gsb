@@ -46,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Backend Phone Validation (11 digits starting with 09)
     if (!empty($phone) && !preg_match('/^09\d{9}$/',$phone)) {
-        die("<script>alert('Phone number must be exactly 11 digits and start with 09.'); window.history.back();</script>");
+        $_SESSION['profile_error'] = 'Phone number must be exactly 11 digits and start with 09.';
+        header("Location: edit_profile.php"); exit();
     }
 
     // Password update logic
@@ -54,25 +55,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if (!empty($new_password) or !empty($confirm_password)) {
         
-        // 1. Verify they provided their current password
         if (empty($current_password)) {
-            die("<script>alert('You must enter your Current Password to change it!'); window.history.back();</script>");
+            $_SESSION['profile_error'] = 'You must enter your Current Password to change it!';
+            header("Location: edit_profile.php"); exit();
         }
         
-        // 2. Verify the current password matches the database
         if (!password_verify($current_password,$user['password'])) {
-            die("<script>alert('Incorrect Current Password! Please try again.'); window.history.back();</script>");
+            $_SESSION['profile_error'] = 'Incorrect Current Password! Please try again.';
+            header("Location: edit_profile.php"); exit();
         }
 
-        // 3. Verify new passwords match
         if ($new_password !==$confirm_password) {
-            die("<script>alert('New Passwords do not match!'); window.history.back();</script>");
+            $_SESSION['profile_error'] = 'New Passwords do not match!';
+            header("Location: edit_profile.php"); exit();
         }
         
-        // 4. Verify new password strength
         $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%])[A-Za-z\d!@#$\%]{8,}$/';
         if (!preg_match($pattern,$new_password)) {
-            die("<script>alert('Password does not meet the security requirements!'); window.history.back();</script>");
+            $_SESSION['profile_error'] = 'Password must be at least 8 characters with uppercase, lowercase, number and special character (!@#$%).';
+            header("Location: edit_profile.php"); exit();
         }
         
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);$update_password = true;
@@ -96,14 +97,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
         if ($up_size > $max_bytes) {
-            echo "<script>alert('Profile picture must be under 2 MB.'); window.history.back();</script>";
-            exit();
+            $_SESSION['profile_error'] = 'Profile picture must be under 2 MB.';
+            header("Location: edit_profile.php"); exit();
         } elseif (!in_array($up_ext, $allowed_exts, true)) {
-            echo "<script>alert('Only JPG, PNG, WEBP, or GIF images are allowed.'); window.history.back();</script>";
-            exit();
+            $_SESSION['profile_error'] = 'Only JPG, PNG, WEBP, or GIF images are allowed.';
+            header("Location: edit_profile.php"); exit();
         } elseif (!in_array($up_mime, $allowed_mimes, true) || !$img_info) {
-            echo "<script>alert('Invalid image file.'); window.history.back();</script>";
-            exit();
+            $_SESSION['profile_error'] = 'Invalid image file.';
+            header("Location: edit_profile.php"); exit();
         } else {
             // Convert to base64 data URI — works on any server without filesystem
             $image_data = file_get_contents($up_tmp);
@@ -119,7 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $uniq->execute();
     if ($uniq->get_result()->num_rows > 0) {
         $uniq->close();
-        die("<script>alert('That email or username is already taken by another account.'); window.history.back();</script>");
+        $_SESSION['profile_error'] = 'That email or username is already taken by another account.';
+        header("Location: edit_profile.php"); exit();
     }
     $uniq->close();
 
@@ -141,20 +143,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($update_stmt->execute()) {
-        echo "<script>
-                alert('Profile updated successfully!');
-                window.location.href='profile.php';
-              </script>";
+        $update_stmt->close();
+        $_SESSION['profile_success'] = 'Profile updated successfully!';
+        header("Location: edit_profile.php");
         exit();
     } else {
-        echo "<script>alert('Update failed: " . addslashes($conn->error) . "'); window.history.back();</script>";
+        $_SESSION['profile_error'] = 'Update failed. Please try again.';
+        header("Location: edit_profile.php");
         exit();
     }
-    $update_stmt->close();
 
     } catch (Throwable $e) {
         error_log("edit_profile POST error: " . $e->getMessage());
-        echo "<script>alert('An error occurred. Please try again.'); window.history.back();</script>";
+        $_SESSION['profile_error'] = 'An error occurred. Please try again.';
+        header("Location: edit_profile.php");
         exit();
     }
 }
@@ -341,8 +343,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <?php include 'footer.php'; ?>
 
+<!-- ── Styled Flash Modal (replaces browser alert) ── -->
+<div id="flashModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:99999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:18px; padding:36px 28px; max-width:340px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.25); animation:popIn 0.25s ease;">
+        <div id="flashIcon" style="font-size:52px; margin-bottom:14px;"></div>
+        <h3 id="flashTitle" style="margin:0 0 10px; font-size:20px; font-family:'Poppins',sans-serif; color:#0f1f78;"></h3>
+        <p id="flashMsg" style="margin:0 0 24px; font-size:14px; color:#475569; font-family:'Poppins',sans-serif; line-height:1.6;"></p>
+        <button id="flashOkBtn" onclick="closeFlash()" style="background:#0f1f78; color:#fff; border:none; padding:12px 40px; border-radius:30px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; transition:background 0.2s;">OK</button>
+    </div>
+</div>
+<style>
+@keyframes popIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+</style>
+
 <!-- Scripts -->
 <script>
+    // ── Flash modal functions ──
+    function showFlash(type, title, msg, redirect) {
+        document.getElementById('flashIcon').textContent = type === 'success' ? '✅' : '❌';
+        document.getElementById('flashTitle').textContent = title;
+        document.getElementById('flashMsg').textContent = msg;
+        document.getElementById('flashOkBtn').onclick = function() {
+            closeFlash();
+            if (redirect) window.location.href = redirect;
+        };
+        const modal = document.getElementById('flashModal');
+        modal.style.display = 'flex';
+    }
+    function closeFlash() {
+        document.getElementById('flashModal').style.display = 'none';
+    }
+
+    <?php
+    // Show flash messages from session
+    if (!empty($_SESSION['profile_success'])) {
+        $msg = addslashes($_SESSION['profile_success']);
+        unset($_SESSION['profile_success']);
+        echo "showFlash('success', 'Profile Updated', '$msg', 'profile.php');";
+    } elseif (!empty($_SESSION['profile_error'])) {
+        $msg = addslashes($_SESSION['profile_error']);
+        unset($_SESSION['profile_error']);
+        echo "showFlash('error', 'Update Failed', '$msg', null);";
+    }
+    ?>
     // --- TOGGLE PASSWORD VISIBILITY ---
     function togglePasswordVisibility(inputId, btn) {
         const input = document.getElementById(inputId);
