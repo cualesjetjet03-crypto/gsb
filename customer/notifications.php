@@ -40,13 +40,10 @@ $offset      = ($page - 1) * $per_page;
 
 // ── Fetch notifications ───────────────────────────────────────────────────────
 $notifications = [];
-$fetch = $conn->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT " . (int)$per_page . " OFFSET " . (int)$offset);
-if ($fetch) {
-    $fetch->bind_param("i", $user_id);
-    $fetch->execute();
-    $res = $fetch->get_result();
-    while ($row = $res->fetch_assoc()) $notifications[] = $row;
-    $fetch->close();
+$sql = "SELECT * FROM notifications WHERE user_id = " . (int)$user_id . " ORDER BY created_at DESC LIMIT " . (int)$per_page . " OFFSET " . (int)$offset;
+$result = $conn->query($sql);
+if ($result) {
+    while ($row = $result->fetch_assoc()) $notifications[] = $row;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -384,6 +381,15 @@ function relative_time(string $datetime): string {
         <span style="margin-left:auto; font-size:12px;">
             Page <?php echo $page; ?> of <?php echo $total_pages; ?>
         </span>
+    </div>
+
+    <!-- DEBUG: remove after fix -->
+    <div style="background:#fee;padding:10px;margin-bottom:10px;font-size:12px;border-radius:8px;">
+        <strong>Debug:</strong> user_id=<?php echo $user_id; ?>, 
+        total=<?php echo $total_items; ?>, 
+        notifications count=<?php echo count($notifications); ?>,
+        sql_error=<?php echo $conn->error ?: 'none'; ?>,
+        offset=<?php echo $offset; ?>
     </div>
 
     <?php if (count($notifications) > 0): ?>
