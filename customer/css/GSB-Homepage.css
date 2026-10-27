@@ -982,6 +982,8 @@ html, body {
     .promo-section { margin-top: 40px; padding: 0 20px; }
     .p-modal-body { flex-direction: column; }
     .p-modal-left, .p-modal-right { width: 100%; }
+    .p-modal-right { max-height: none; overflow-y: visible; }
+    .p-modal-left  { position: static; min-height: unset; }
     
     .footer-container {
         grid-template-columns: 1fr 1fr;
@@ -991,6 +993,42 @@ html, body {
 
 @media (max-width: 768px) {
     .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Modal slides up from bottom on mobile */
+    .p-modal-overlay { align-items: flex-end; }
+    .p-modal-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: 92vh;
+        overflow-y: auto;
+        border-radius: 20px 20px 0 0;
+        padding: 20px 16px 32px;
+    }
+    .p-modal-close { top: 12px; right: 16px; }
+    .p-modal-body  { gap: 12px; }
+
+    /* Image */
+    .p-modal-image { max-width: 200px; padding: 12px; margin: 0 auto; }
+    .p-modal-image img { max-height: 160px; object-fit: contain; }
+
+    /* Action area */
+    .m-action-area { padding: 0; margin-top: 10px; }
+    .m-quantity-row { flex-wrap: nowrap; gap: 8px; }
+    .m-quantity-label { font-size: 13px; flex-shrink: 0; }
+    .m-stock-info { font-size: 11px; line-height: 1.4; }
+    .m-action-buttons { gap: 10px; margin-top: 10px; }
+    .m-btn { padding: 11px 12px; font-size: 13px; }
+
+    /* Details header — badges wrap above title */
+    .p-modal-header-top { flex-wrap: wrap; gap: 6px; padding-right: 36px; }
+    .p-modal-series { font-size: 18px; }
+    .p-modal-model  { font-size: 14px; margin-bottom: 10px; }
+    .p-modal-pricing .new-price { font-size: 22px; }
+    .p-modal-pricing .old-price { font-size: 15px; }
+    .p-specs-grid   { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .p-spec-box     { padding: 10px; }
+    .p-spec-box small  { font-size: 11px; }
+    .p-spec-box strong { font-size: 13px; }
 }
 
 @media (max-width: 576px) {

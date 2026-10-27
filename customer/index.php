@@ -330,7 +330,7 @@ $catalog_result = $conn->query($catalog_query);
                     <!-- Main Image -->
                     <div class="p-modal-image-wrapper">
                         <div class="p-modal-image">
-                            <img id="m-img" src="" alt="Product Image">
+                            <img id="m-img" src="" alt="Product Image" onerror="this.onerror=null;this.src='images/no-image.png';">
                         </div>
                     </div>
 
