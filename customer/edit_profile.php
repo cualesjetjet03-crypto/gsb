@@ -81,41 +81,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Default to existing picture
     $profile_picture = !empty($user['profile_picture']) ? $user['profile_picture'] : 'images/users.png';
 
-    // ── Profile picture upload with full server-side validation ──────────────
+    // ── Profile picture upload — store as base64 data URI (Render has ephemeral filesystem) ──
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
         $allowed_exts  = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        $max_bytes     = 3 * 1024 * 1024; // 3 MB
+        $max_bytes     = 2 * 1024 * 1024; // 2 MB
 
         $up_size = $_FILES['profile_picture']['size'];
         $up_tmp  = $_FILES['profile_picture']['tmp_name'];
         $up_ext  = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
 
-        // Use getimagesize for MIME detection (more portable than finfo)
+        // Use getimagesize for MIME detection
         $img_info = @getimagesize($up_tmp);
         $up_mime  = $img_info ? $img_info['mime'] : '';
         $allowed_mimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
         if ($up_size > $max_bytes) {
-            echo "<script>alert('Profile picture must be under 3 MB.'); window.history.back();</script>";
+            echo "<script>alert('Profile picture must be under 2 MB.'); window.history.back();</script>";
             exit();
         } elseif (!in_array($up_ext, $allowed_exts, true)) {
             echo "<script>alert('Only JPG, PNG, WEBP, or GIF images are allowed.'); window.history.back();</script>";
             exit();
-        } elseif (!in_array($up_mime, $allowed_mimes, true)) {
+        } elseif (!in_array($up_mime, $allowed_mimes, true) || !$img_info) {
             echo "<script>alert('Invalid image file.'); window.history.back();</script>";
             exit();
         } else {
-            $target_dir = __DIR__ . '/images/';
-            if (!is_dir($target_dir)) {
-                @mkdir($target_dir, 0755, true);
-            }
-            $new_filename = bin2hex(random_bytes(12)) . '.' . $up_ext;
-            $full_path    = $target_dir . $new_filename;
-            if (move_uploaded_file($up_tmp, $full_path)) {
-                $profile_picture = 'images/' . $new_filename;
-            } else {
-                error_log("edit_profile: move_uploaded_file failed. target=$full_path");
-                // Keep existing picture — don't crash
+            // Convert to base64 data URI — works on any server without filesystem
+            $image_data = file_get_contents($up_tmp);
+            if ($image_data !== false) {
+                $profile_picture = 'data:' . $up_mime . ';base64,' . base64_encode($image_data);
             }
         }
     }
