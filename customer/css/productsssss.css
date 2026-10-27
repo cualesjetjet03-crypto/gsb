@@ -836,6 +836,8 @@ body {
     z-index: 10000; /* above floating cart (900) and compare bar (9998) */
     padding: 20px;
 }
+
+.product-modal.show {
     display: flex;
 }
 
