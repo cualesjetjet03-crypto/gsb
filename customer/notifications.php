@@ -47,7 +47,7 @@ if ($result) {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function notif_icon(string $title): string {
+function notif_icon(string $title): array {
     $t = strtolower($title);
     if (str_contains($t, 'order') || str_contains($t, 'delivery') || str_contains($t, 'product'))
         return ['icon' => 'fa-box-open',      'color' => '#3b82f6', 'bg' => '#eff6ff', 'label' => 'Order'];
@@ -381,15 +381,6 @@ function relative_time(string $datetime): string {
         <span style="margin-left:auto; font-size:12px;">
             Page <?php echo $page; ?> of <?php echo $total_pages; ?>
         </span>
-    </div>
-
-    <!-- DEBUG: remove after fix -->
-    <div style="background:#fee;padding:10px;margin-bottom:10px;font-size:12px;border-radius:8px;">
-        <strong>Debug:</strong> user_id=<?php echo $user_id; ?>, 
-        total=<?php echo $total_items; ?>, 
-        notifications count=<?php echo count($notifications); ?>,
-        sql_error=<?php echo $conn->error ?: 'none'; ?>,
-        offset=<?php echo $offset; ?>
     </div>
 
     <?php if (count($notifications) > 0): ?>
