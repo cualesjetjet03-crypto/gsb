@@ -33,6 +33,34 @@ $name_parts = explode(" ", trim($fullname), 2);
 $first_name = $name_parts[0] ?? "";
 $last_name = $name_parts[1] ?? "";
 
+// Pre-fill address from user_addresses (default address) if available
+$pre_street   = "";
+$pre_province = "";
+$pre_province_name = "";
+$pre_city     = "";
+$pre_city_name = "";
+$pre_barangay = "";
+$pre_barangay_name = "";
+
+$addr_stmt = $conn->prepare("SELECT * FROM user_addresses WHERE user_id = ? AND is_default = 1 LIMIT 1");
+if ($addr_stmt) {
+    $addr_stmt->bind_param("i", $user_id);
+    $addr_stmt->execute();
+    $addr_result = $addr_stmt->get_result();
+    if ($addr_result && $addr_row = $addr_result->fetch_assoc()) {
+        $pre_street        = $addr_row['street_address'] ?? "";
+        $pre_province_name = $addr_row['province'] ?? "";
+        $pre_city_name     = $addr_row['city'] ?? "";
+        $pre_barangay_name = $addr_row['barangay'] ?? "";
+    }
+    $addr_stmt->close();
+}
+
+// Fallback: if no saved address, use the users.address string as street
+if (empty($pre_street)) {
+    $pre_street = $address;
+}
+
 function clean($value) {
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
@@ -240,18 +268,18 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                     <div class="form-grid" style="max-width: 800px; margin: 0 auto;">
                         <div class="form-group full">
                             <label>Street / Unit / House Number <span class="req">*</span></label>
-                            <input type="text" id="street" placeholder="House no., Street name, Subdivision" value="<?php echo clean($address); ?>" required>
+                            <input type="text" id="street" placeholder="House no., Street name, Subdivision" value="<?php echo clean($pre_street); ?>" required>
                         </div>
                         <div class="form-group">
                             <label>Province / Region <span class="req">*</span></label>
                             <select id="province" required>
-                                <option value="" disabled selected>Select Province/Region</option>
-                                <option value="NCR" data-name="Metro Manila (NCR)">Metro Manila (NCR)</option>
-                                <option value="0410" data-name="Batangas">Batangas</option>
-                                <option value="0421" data-name="Cavite">Cavite</option>
-                                <option value="0434" data-name="Laguna">Laguna</option>
-                                <option value="0456" data-name="Quezon">Quezon</option>
-                                <option value="0458" data-name="Rizal">Rizal</option>
+                                <option value="" disabled <?php echo empty($pre_province_name) ? 'selected' : ''; ?>>Select Province/Region</option>
+                                <option value="NCR" data-name="Metro Manila (NCR)" <?php echo ($pre_province_name === 'Metro Manila (NCR)' || $pre_province_name === 'NCR') ? 'selected' : ''; ?>>Metro Manila (NCR)</option>
+                                <option value="0410" data-name="Batangas" <?php echo ($pre_province_name === 'Batangas') ? 'selected' : ''; ?>>Batangas</option>
+                                <option value="0421" data-name="Cavite" <?php echo ($pre_province_name === 'Cavite') ? 'selected' : ''; ?>>Cavite</option>
+                                <option value="0434" data-name="Laguna" <?php echo ($pre_province_name === 'Laguna') ? 'selected' : ''; ?>>Laguna</option>
+                                <option value="0456" data-name="Quezon" <?php echo ($pre_province_name === 'Quezon') ? 'selected' : ''; ?>>Quezon</option>
+                                <option value="0458" data-name="Rizal" <?php echo ($pre_province_name === 'Rizal') ? 'selected' : ''; ?>>Rizal</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -267,6 +295,9 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                             </select>
                         </div>
                     </div>
+                    <!-- hidden pre-fill values for JS cascade -->
+                    <input type="hidden" id="pre_city_name"     value="<?php echo clean($pre_city_name); ?>">
+                    <input type="hidden" id="pre_barangay_name" value="<?php echo clean($pre_barangay_name); ?>">
                 </div>
 
                 <!-- STEP 5: Schedule -->
@@ -588,6 +619,11 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                 if (step === 5) {
                     setTimeout(() => { $('#calendar').fullCalendar('render'); }, 100);
                 }
+
+                // Auto-render calendar when step4 (schedule) becomes active
+                if (step === 4) {
+                    setTimeout(() => { $('#calendar').fullCalendar('render'); }, 150);
+                }
                 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -662,7 +698,7 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
             const citySelect = document.getElementById('city');
             const barangaySelect = document.getElementById('barangay');
 
-            function populateCities(data) {
+            function populateCities(data, preselectCity) {
                 citySelect.innerHTML = '<option value="" disabled selected>Select City / Municipality</option>';
                 data.sort((a, b) => a.name.localeCompare(b.name));
                 data.forEach(city => {
@@ -671,23 +707,37 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                     citySelect.appendChild(option);
                 });
                 citySelect.disabled = false;
+
+                // Auto-select city if pre-fill name matches
+                if (preselectCity) {
+                    for (let i = 0; i < citySelect.options.length; i++) {
+                        if (citySelect.options[i].dataset.name &&
+                            citySelect.options[i].dataset.name.toLowerCase() === preselectCity.toLowerCase()) {
+                            citySelect.selectedIndex = i;
+                            citySelect.dispatchEvent(new Event('change'));
+                            break;
+                        }
+                    }
+                }
             }
 
             provinceSelect.addEventListener('change', function() {
+                const preselectCity = document.getElementById('pre_city_name')?.value || '';
                 citySelect.innerHTML = '<option value="" disabled selected>Loading Cities...</option>';
                 barangaySelect.innerHTML = '<option value="" disabled selected>Select Barangay first</option>';
                 citySelect.disabled = true; barangaySelect.disabled = true;
                 const val = this.value;
                 if (val === 'NCR') {
                     fetch(`https://psgc.gitlab.io/api/regions/130000000/cities-municipalities/`)
-                        .then(res => res.json()).then(data => populateCities(data));
+                        .then(res => res.json()).then(data => populateCities(data, preselectCity));
                 } else {
                     fetch(`https://psgc.gitlab.io/api/regions/040000000/cities-municipalities/`)
-                        .then(res => res.json()).then(data => populateCities(data.filter(city => city.code.startsWith(val))));
+                        .then(res => res.json()).then(data => populateCities(data.filter(city => city.code.startsWith(val)), preselectCity));
                 }
             });
 
             citySelect.addEventListener('change', function() {
+                const preselectBrgy = document.getElementById('pre_barangay_name')?.value || '';
                 barangaySelect.innerHTML = '<option value="" disabled selected>Loading Barangays...</option>';
                 barangaySelect.disabled = true;
                 fetch(`https://psgc.gitlab.io/api/cities-municipalities/${this.value}/barangays/`)
@@ -701,8 +751,27 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                             barangaySelect.appendChild(option);
                         });
                         barangaySelect.disabled = false;
+
+                        // Auto-select barangay if pre-fill name matches
+                        if (preselectBrgy) {
+                            for (let i = 0; i < barangaySelect.options.length; i++) {
+                                if (barangaySelect.options[i].dataset.name &&
+                                    barangaySelect.options[i].dataset.name.toLowerCase() === preselectBrgy.toLowerCase()) {
+                                    barangaySelect.selectedIndex = i;
+                                    checkNextButton();
+                                    break;
+                                }
+                            }
+                        }
                     });
             });
+
+            // Auto-trigger province cascade on page load if pre-filled
+            (function autoFillAddress() {
+                if (provinceSelect.value) {
+                    provinceSelect.dispatchEvent(new Event('change'));
+                }
+            })();
 
             /* =======================================================
                STEP 5: FULLCALENDAR INITIALIZATION (UPDATED)

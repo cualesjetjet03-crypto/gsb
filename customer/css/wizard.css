@@ -433,14 +433,49 @@ body { font-family: 'Poppins', sans-serif; background: #f5f7fb; margin: 0; paddi
     .service-card:not(:hover):not(.selected) .sc-cta { display: none; }
     .service-card:not(:hover):not(.selected) .sc-icon-wrap { width: 46px; height: 46px; margin-bottom: 0; flex-shrink: 0; }
     .service-card:not(:hover):not(.selected) .sc-icon-wrap img { width: 26px; height: 26px; }
-    .form-grid { grid-template-columns: 1fr; }
+
+    /* Form grid single column */
+    .form-grid { grid-template-columns: 1fr; padding: 20px 16px; }
     .step-titles h2 { font-size: 22px; }
+
+    /* Wizard wrapper full width */
+    .wizard-wrapper { margin: 20px auto; padding: 0 12px; }
+
+    /* Form inputs full width */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        font-size: 14px;
+        padding: 12px 14px;
+    }
+
+    /* Navigation buttons */
+    .wizard-actions { gap: 12px; padding-bottom: 40px; }
+    .btn-back, .btn-next, .btn-submit {
+        padding: 13px 28px;
+        font-size: 14px;
+    }
+
+    /* Calendar container */
+    #calendar-container {
+        padding: 12px 8px;
+        max-width: 100% !important;
+    }
+    .fc-toolbar { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .fc-toolbar h2 { font-size: 15px; }
+    .fc th, .fc td { font-size: 11px; padding: 4px 2px; }
 }
 
 @media (max-width: 480px) {
     .service-card { height: 80px; }
     .service-card:hover, .service-card.selected { height: 230px; }
     .selection-preview-container { grid-template-columns: 1fr; }
+
+    /* Even more compact on tiny screens */
+    .form-grid { padding: 14px 10px; gap: 16px; }
+    .step-titles h2 { font-size: 19px; }
+    .btn-back, .btn-next, .btn-submit { padding: 11px 20px; font-size: 13px; }
 }
 
 /* =======================================================
