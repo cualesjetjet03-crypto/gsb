@@ -43,14 +43,14 @@ if (!$user) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Profile - GSB Airconditioning Services</title>
     <link rel="icon" type="image/png" href="favicon.png">
 
-    <link rel="stylesheet" href="css/navbar.css">
-    <link rel="stylesheet" href="css/GSB-homepage.css">
-    <link rel="stylesheet" href="css/profile.css">
-    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/navbar.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/GSB-homepage.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/profile.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/footer.css?v=<?php echo time(); ?>">
     
     <!-- Font Awesome for Professional Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
