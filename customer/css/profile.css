@@ -5,7 +5,7 @@
 /* ── Box sizing reset ── */
 *, *::before, *::after { box-sizing: border-box; }
 
-/* ── Lock horizontal scroll, only allow vertical ── */
+/* ── Lock horizontal scroll only, vertical scroll fully free ── */
 html {
     width: 100%;
     max-width: 100%;
@@ -16,11 +16,6 @@ html {
     background: #04103a; /* matches footer so overscroll gap is invisible */
 }
 
-/* html bg matches footer so overscroll/gaps are invisible */
-html {
-    background: #04103a;
-}
-
 body{
     background:#f4f7fc;
     padding-top: 100px;
@@ -29,9 +24,6 @@ body{
     max-width: 100%;
     overflow-x: hidden !important;
     overscroll-behavior-x: none;
-    overscroll-behavior-y: none;
-    touch-action: pan-y;
-    position: relative;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
