@@ -101,10 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } elseif (@getimagesize($up_tmp) === false) {
             die("<script>alert('Uploaded file is not a valid image.'); window.history.back();</script>");
         } else {
-            $target_dir  = "images/";
+            $target_dir   = __DIR__ . '/images/';
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0755, true);
+            }
             $new_filename = bin2hex(random_bytes(12)) . '.' . $up_ext;
-            if (move_uploaded_file($up_tmp, $target_dir . $new_filename)) {
-                $profile_picture = $target_dir . $new_filename;
+            $full_path    = $target_dir . $new_filename;
+            if (move_uploaded_file($up_tmp, $full_path)) {
+                $profile_picture = 'images/' . $new_filename;
+            } else {
+                // Upload failed — keep existing picture, don't crash
+                error_log("edit_profile: move_uploaded_file failed. target=$full_path");
             }
         }
     }
