@@ -58,8 +58,9 @@ foreach ($inquiries as $inquiry) {
     $schedule_stmt = $conn->prepare("
         SELECT ss.*, 
                t.id AS tech_id, t.technician_name, t.contact_number AS technician_contact, t.image AS tech_image,
-               COALESCE((SELECT AVG(tech_rating) FROM technician_ratings WHERE technician_id = t.id), 5.0) AS avg_rating,
-               COALESCE((SELECT AVG(tech_percentage) FROM technician_ratings WHERE technician_id = t.id), 100.0) AS avg_pct
+               (SELECT AVG(tech_rating) FROM technician_ratings WHERE technician_id = t.id) AS avg_rating,
+               (SELECT AVG(tech_percentage) FROM technician_ratings WHERE technician_id = t.id) AS avg_pct,
+               (SELECT COUNT(*) FROM technician_ratings WHERE technician_id = t.id) AS review_count
         FROM services_schedule ss
         LEFT JOIN inquiries i ON ss.inquiry_id = i.id
         LEFT JOIN technicians t ON t.id = COALESCE(ss.technician_id, i.technician_id, i.schedule_technician_id)
@@ -82,8 +83,9 @@ foreach ($inquiries as $inquiry) {
         if (!empty($inquiry['schedule_technician_id'])) {
             $t_stmt = $conn->prepare("
                 SELECT id AS tech_id, technician_name, contact_number AS technician_contact, image AS tech_image,
-                       COALESCE((SELECT AVG(tech_rating) FROM technician_ratings WHERE technician_id = technicians.id), 5.0) AS avg_rating,
-                       COALESCE((SELECT AVG(tech_percentage) FROM technician_ratings WHERE technician_id = technicians.id), 100.0) AS avg_pct
+                       (SELECT AVG(tech_rating) FROM technician_ratings WHERE technician_id = technicians.id) AS avg_rating,
+                       (SELECT AVG(tech_percentage) FROM technician_ratings WHERE technician_id = technicians.id) AS avg_pct,
+                       (SELECT COUNT(*) FROM technician_ratings WHERE technician_id = technicians.id) AS review_count
                 FROM technicians WHERE id = ?
             ");
             if ($t_stmt) {
@@ -120,8 +122,9 @@ $direct_services = [];
 $service_stmt =$conn->prepare("
     SELECT ss.*, 
            t.id AS tech_id, t.technician_name, t.contact_number AS technician_contact, t.image AS tech_image,
-           COALESCE((SELECT AVG(tech_rating) FROM technician_ratings WHERE technician_id = t.id), 5.0) AS avg_rating,
-           COALESCE((SELECT AVG(tech_percentage) FROM technician_ratings WHERE technician_id = t.id), 100.0) AS avg_pct
+           (SELECT AVG(tech_rating) FROM technician_ratings WHERE technician_id = t.id) AS avg_rating,
+           (SELECT AVG(tech_percentage) FROM technician_ratings WHERE technician_id = t.id) AS avg_pct,
+           (SELECT COUNT(*) FROM technician_ratings WHERE technician_id = t.id) AS review_count
     FROM services_schedule ss
     LEFT JOIN technicians t ON ss.technician_id = t.id
     WHERE (ss.inquiry_id IS NULL OR ss.inquiry_id = 0)
@@ -256,9 +259,13 @@ $total_direct_services = count($direct_services);
                                             
                                             <?php 
                                             $techName =$schedule['technician_name'] ?? '';
-                                            if (!empty($techName)):$t_id_str = sprintf('%03d', $schedule['tech_id'] ?? 0);$t_pct = round($schedule['avg_pct'] ?? 100);$t_rating = round($schedule['avg_rating'] ?? 5, 1);$t_img = !empty($schedule['tech_image']) ? '../images/technicians/' .$schedule['tech_image'] : ''; 
+                                            if (!empty($techName)):$t_id_str = sprintf('%03d', $schedule['tech_id'] ?? 0);
+                                            $t_reviews = (int)($schedule['review_count'] ?? 0);
+                                            $t_pct = $t_reviews > 0 ? round($schedule['avg_pct'] ?? 0) : 0;
+                                            $t_rating = $t_reviews > 0 ? round($schedule['avg_rating'] ?? 0, 1) : 0;
+                                            $t_img = !empty($schedule['tech_image']) ? '../images/technicians/' .$schedule['tech_image'] : ''; 
                                             ?>
-                                            <td class="clickable-tech" onclick="openProfileModal('<?php echo addslashes($techName); ?>', '<?php echo $t_id_str; ?>', '<?php echo$t_pct; ?>', '<?php echo $t_rating; ?>', '<?php echo addslashes($t_img); ?>')">
+                            <td class="clickable-tech" onclick="openProfileModal('<?php echo addslashes($techName); ?>', '<?php echo $t_id_str; ?>', '<?php echo$t_pct; ?>', '<?php echo $t_rating; ?>', '<?php echo addslashes($t_img); ?>', <?php echo $t_reviews; ?>)">
                                                 <strong>Technician</strong>
                                                 <span class="tech-link"><?php echo clean($techName); ?></span>
                                             </td>
@@ -353,9 +360,13 @@ $total_direct_services = count($direct_services);
                                         
                                         <?php 
                                         $techName =$service['technician_name'] ?? '';
-                                        if (!empty($techName)):$t_id_str = sprintf('%03d', $service['tech_id'] ?? 0);$t_pct = round($service['avg_pct'] ?? 100);$t_rating = round($service['avg_rating'] ?? 5, 1);$t_img = !empty($service['tech_image']) ? '../images/technicians/' .$service['tech_image'] : ''; 
+                                        if (!empty($techName)):$t_id_str = sprintf('%03d', $service['tech_id'] ?? 0);
+                                        $t_reviews = (int)($service['review_count'] ?? 0);
+                                        $t_pct = $t_reviews > 0 ? round($service['avg_pct'] ?? 0) : 0;
+                                        $t_rating = $t_reviews > 0 ? round($service['avg_rating'] ?? 0, 1) : 0;
+                                        $t_img = !empty($service['tech_image']) ? '../images/technicians/' .$service['tech_image'] : ''; 
                                         ?>
-                                        <td class="clickable-tech" onclick="openProfileModal('<?php echo addslashes($techName); ?>', '<?php echo $t_id_str; ?>', '<?php echo$t_pct; ?>', '<?php echo $t_rating; ?>', '<?php echo addslashes($t_img); ?>')">
+                                        <td class="clickable-tech" onclick="openProfileModal('<?php echo addslashes($techName); ?>', '<?php echo $t_id_str; ?>', '<?php echo$t_pct; ?>', '<?php echo $t_rating; ?>', '<?php echo addslashes($t_img); ?>', <?php echo $t_reviews; ?>)">
                                             <strong>Technician</strong>
                                             <span class="tech-link"><?php echo clean($techName); ?></span>
                                         </td>
@@ -435,27 +446,35 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-function openProfileModal(name, idNo, pct, rating, imagePath) {
+function openProfileModal(name, idNo, pct, rating, imagePath, reviews) {
     document.getElementById('pName').textContent = name;
-    document.getElementById('pPct').textContent = pct + '%';
-    
+
     const avatarContainer = document.getElementById('pAvatarContainer');
     if (imagePath && imagePath.trim() !== '') {
         avatarContainer.innerHTML = `<img src="${imagePath}" alt="${name}">`;
     } else {
         avatarContainer.innerHTML = `<i class="fa-solid fa-user-tie"></i>`;
     }
-    
-    let starHtml = '';
-    let fullStars = Math.floor(rating);
-    let hasHalf = (rating - fullStars) >= 0.5;
-    
-    for(let i=1; i<=5; i++) {
-        if(i <= fullStars) starHtml += '<i class="fa-solid fa-star"></i>';
-        else if(i === fullStars + 1 && hasHalf) starHtml += '<i class="fa-solid fa-star-half-stroke"></i>';
-        else starHtml += '<i class="fa-regular fa-star"></i>';
+
+    const hasRatings = reviews > 0;
+
+    if (!hasRatings) {
+        document.getElementById('pPct').textContent = '';
+        document.getElementById('pStars').innerHTML =
+            '<span style="color:#94a3b8; font-size:14px; font-style:italic;">No ratings yet</span>';
+    } else {
+        document.getElementById('pPct').textContent = pct + '%';
+        let starHtml = '';
+        let fullStars = Math.floor(rating);
+        let hasHalf = (rating - fullStars) >= 0.5;
+        for(let i=1; i<=5; i++) {
+            if(i <= fullStars) starHtml += '<i class="fa-solid fa-star"></i>';
+            else if(i === fullStars + 1 && hasHalf) starHtml += '<i class="fa-solid fa-star-half-stroke"></i>';
+            else starHtml += '<i class="fa-regular fa-star"></i>';
+        }
+        document.getElementById('pStars').innerHTML = starHtml;
     }
-    document.getElementById('pStars').innerHTML = starHtml;
+
     document.getElementById('profileModal').style.display = 'flex';
 }
 </script>

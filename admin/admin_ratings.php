@@ -171,8 +171,8 @@ if ($result) {
 // Fetch Technicians
 $techs = $conn->query("
     SELECT t.*, 
-           COALESCE(AVG(r.tech_rating), 5.0) as avg_rating, 
-           COALESCE(AVG(r.tech_percentage), 100.0) as avg_pct,
+           AVG(r.tech_rating) as avg_rating, 
+           AVG(r.tech_percentage) as avg_pct,
            COUNT(r.id) as review_count
     FROM technicians t
     LEFT JOIN technician_ratings r ON t.id = r.technician_id
@@ -295,17 +295,21 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
                     <div class="tech-grid">
                         <?php 
                         if($techs &&$techs->num_rows > 0) {
-                            while($t = $techs->fetch_assoc()){$rating = number_format($t['avg_rating'], 1);$reviews = $t['review_count'];$role = "Technician";
+                            while($t = $techs->fetch_assoc()){
+                                $reviews = (int)$t['review_count'];
+                                $rating  = $reviews > 0 ? number_format($t['avg_rating'], 1) : null;
+                                $pct     = $reviews > 0 ? round($t['avg_pct'], 1) : 0;
+                                $role = "Technician";
                                 
                                 $phone = isset($t['contact_number']) ? $t['contact_number'] : '';$maskedPhone = (strlen($phone) >= 11) ? substr($phone, 0, 2) . '****' . substr($phone, -2) :$phone;
-                                $idNo = sprintf('%03d', $t['id']);$pct = round($t['avg_pct'], 1);$displayImage = "";
+                                $idNo = sprintf('%03d', $t['id']);$displayImage = "";
                                 $dbImage = isset($t['image']) ? trim($t['image']) : "";
                                 
                                 if($dbImage !== "" && file_exists("../images/technicians/" . $dbImage)) {
                                     $displayImage = "../images/technicians/" . $dbImage;
                                 }
                         ?>
-                        <div class="tech-card" onclick="openProfileModal(<?php echo json_encode($t['technician_name']); ?>, <?php echo json_encode($maskedPhone); ?>, <?php echo json_encode($idNo); ?>, <?php echo json_encode($pct); ?>, <?php echo json_encode($rating); ?>, <?php echo json_encode($displayImage); ?>)">
+                        <div class="tech-card" onclick="openProfileModal(<?php echo json_encode($t['technician_name']); ?>, <?php echo json_encode($maskedPhone); ?>, <?php echo json_encode($idNo); ?>, <?php echo json_encode($pct); ?>, <?php echo json_encode($rating ?? 0); ?>, <?php echo json_encode($displayImage); ?>, <?php echo $reviews; ?>)">
                             <i class="fa-solid fa-ellipsis-vertical options-icon"></i>
                             
                             <div class="tech-avatar">
@@ -318,7 +322,13 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
                             
                             <h3 class="tech-name"><?php echo e($t['technician_name']); ?></h3>
                             <div class="tech-rating">
-                                <i class="fa-solid fa-star"></i> <?php echo $rating; ?> <span>(<?php echo$reviews; ?> reviews)</span>
+                                <?php if ($reviews > 0): ?>
+                                    <i class="fa-solid fa-star" style="color:#f59e0b;"></i>
+                                    <?php echo $rating; ?>
+                                    <span>(<?php echo $reviews; ?> review<?php echo $reviews !== 1 ? 's' : ''; ?>)</span>
+                                <?php else: ?>
+                                    <span class="no-ratings-yet">No ratings yet</span>
+                                <?php endif; ?>
                             </div>
                             <div class="tech-role"><?php echo $role; ?></div>
                             <div class="tech-status">
@@ -556,25 +566,34 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
 <?php include 'includes/global_modals.php'; ?>
 
 <script>
-function openProfileModal(name, phone, idNo, pct, rating, imagePath) {
+function openProfileModal(name, phone, idNo, pct, rating, imagePath, reviews) {
     document.getElementById('pName').textContent = name;
     document.getElementById('pPhone').textContent = phone;
-    document.getElementById('pPct').textContent = pct + '%';
+
     const avatarContainer = document.getElementById('pAvatarContainer');
     if (imagePath && imagePath.trim() !== '') {
         avatarContainer.innerHTML = `<img src="${imagePath}" alt="${name}">`;
     } else {
         avatarContainer.innerHTML = `<i class="fa-solid fa-user-tie"></i>`;
     }
-    let starHtml = '';
-    let fullStars = Math.floor(rating);
-    let hasHalf = (rating - fullStars) >= 0.5;
-    for(let i=1; i<=5; i++) {
-        if(i <= fullStars) starHtml += '<i class="fa-solid fa-star"></i>';
-        else if(i === fullStars + 1 && hasHalf) starHtml += '<i class="fa-solid fa-star-half-stroke"></i>';
-        else starHtml += '<i class="fa-regular fa-star"></i>';
+
+    const hasRatings = reviews > 0;
+    if (!hasRatings) {
+        document.getElementById('pPct').textContent = '';
+        document.getElementById('pStars').innerHTML =
+            '<span style="color:#94a3b8; font-size:14px; font-style:italic;">No ratings yet</span>';
+    } else {
+        document.getElementById('pPct').textContent = pct + '%';
+        let starHtml = '';
+        let fullStars = Math.floor(rating);
+        let hasHalf = (rating - fullStars) >= 0.5;
+        for(let i=1; i<=5; i++) {
+            if(i <= fullStars) starHtml += '<i class="fa-solid fa-star" style="color:#f59e0b;"></i>';
+            else if(i === fullStars + 1 && hasHalf) starHtml += '<i class="fa-solid fa-star-half-stroke" style="color:#f59e0b;"></i>';
+            else starHtml += '<i class="fa-regular fa-star" style="color:#d1d5db;"></i>';
+        }
+        document.getElementById('pStars').innerHTML = starHtml;
     }
-    document.getElementById('pStars').innerHTML = starHtml;
     document.getElementById('profileModal').style.display = 'flex';
 }
 function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
