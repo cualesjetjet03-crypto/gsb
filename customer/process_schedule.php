@@ -53,9 +53,19 @@ if (
     empty($email) ||
     empty($phone) ||
     empty($service_type) ||
-    empty($service_date) ||
-    empty($address)
+    empty($service_date)
 ) {
+    error_log("process_schedule.php: Missing required fields. name=$customer_name email=$email phone=$phone service=$service_type date=$service_date address=$address");
+    header("Location: book_service.php?error=failed");
+    exit();
+}
+
+// Address fallback — if full_address is empty, use POST street directly
+if (empty($address)) {
+    $address = trim($_POST['street'] ?? '');
+}
+if (empty($address)) {
+    error_log("process_schedule.php: Address is empty after fallback.");
     header("Location: book_service.php?error=failed");
     exit();
 }

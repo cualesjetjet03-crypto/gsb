@@ -268,7 +268,7 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                     <div class="form-grid" style="max-width: 800px; margin: 0 auto;">
                         <div class="form-group full">
                             <label>Street / Unit / House Number <span class="req">*</span></label>
-                            <input type="text" id="street" placeholder="House no., Street name, Subdivision" value="<?php echo clean($pre_street); ?>" required>
+                            <input type="text" id="street" name="street" placeholder="House no., Street name, Subdivision" value="<?php echo clean($pre_street); ?>" required>
                         </div>
                         <div class="form-group">
                             <label>Province / Region <span class="req">*</span></label>
@@ -587,11 +587,12 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                 const citySelect = document.getElementById('city');
                 const brgySelect = document.getElementById('barangay');
                 
-                const prov = provSelect.options[provSelect.selectedIndex]?.dataset.name || '';
-                const city = citySelect.options[citySelect.selectedIndex]?.dataset.name || '';
-                const brgy = brgySelect.options[brgySelect.selectedIndex]?.dataset.name || '';
+                const prov = provSelect?.options[provSelect.selectedIndex]?.dataset.name || provSelect?.options[provSelect.selectedIndex]?.text || '';
+                const city = citySelect?.options[citySelect.selectedIndex]?.dataset.name || citySelect?.options[citySelect.selectedIndex]?.text || '';
+                const brgy = brgySelect?.options[brgySelect.selectedIndex]?.dataset.name || brgySelect?.options[brgySelect.selectedIndex]?.text || '';
                 
-                const fullAddress = `${document.getElementById('street').value}, ${brgy}, ${city}, ${prov}`;
+                const street = document.getElementById('street')?.value || '';
+                const fullAddress = [street, brgy, city, prov].filter(Boolean).join(', ');
                 
                 document.getElementById('full_address').value = fullAddress;
                 document.getElementById('sum-address').innerText = fullAddress;
