@@ -33,16 +33,9 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_to_cart') {
                 }
             }
         } else {
-            // Session cart for guests
-            if (!isset($_SESSION['cart'])) {
-                $_SESSION['cart'] = [];
-            }
-            
-            if (isset($_SESSION['cart'][$product_id])) {
-                $already_in_cart = true;
-            } else {
-                $_SESSION['cart'][$product_id] = $quantity;
-            }
+            // Guest — require login to add to cart
+            echo json_encode(["success" => false, "requireLogin" => true, "message" => "Please log in to add items to your cart."]);
+            exit;
         }
 
         if ($already_in_cart) {
@@ -645,14 +638,16 @@ $catalog_result = $conn->query($catalog_query);
             // Send POST request to the current page
             fetch(window.location.href, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `action=add_to_cart&product_id=${currentProductId}&quantity=${qty}`
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.message); 
+                if (data.requireLogin) {
+                    window.location.href = 'login.php?redirect=' + encodeURIComponent(window.location.pathname);
+                } else {
+                    alert(data.message);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -661,16 +656,20 @@ $catalog_result = $conn->query($catalog_query);
         }
 
         function buyNowAction() {
-            if (currentProductStock <= 0) return; // Prevent action if out of stock
+            if (currentProductStock <= 0) return;
             
             const qty = document.getElementById('m-qty-input').value;
             if (!currentProductId) return;
 
+            // Check login first before buy now
+            <?php if (!isset($_SESSION['user_id'])): ?>
+                window.location.href = 'login.php?redirect=' + encodeURIComponent(window.location.pathname);
+                return;
+            <?php endif; ?>
+
             fetch(window.location.href, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `action=add_to_cart&product_id=${currentProductId}&quantity=${qty}`
             })
             .then(response => response.json())
