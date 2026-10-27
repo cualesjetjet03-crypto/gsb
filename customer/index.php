@@ -111,7 +111,7 @@ $catalog_result = $conn->query($catalog_query);
     <?php include 'navbar.php'; ?>
 
     <section class="hero-section" id="home">
-        <img class="hero-bg" src="../customer/landingpageBG.png" alt="AC Technician" onerror="this.src='./GSB homepage Image/services/AC Repair.png'">
+        <img class="hero-bg" src="landingpageBG.png" alt="AC Technician" onerror="this.src='./GSB homepage Image/services/AC Repair.png'">
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
