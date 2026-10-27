@@ -2,6 +2,11 @@
    PROFILE PAGE
 ========================================== */
 
+/* html bg matches footer so overscroll/gaps are invisible */
+html {
+    background: #04103a;
+}
+
 body{
     background:#f4f7fc;
     padding-top: 100px;
@@ -9,6 +14,7 @@ body{
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overscroll-behavior-y: none;
 }
 
 /* Main Container */
@@ -16,7 +22,7 @@ body{
     width:1200px;
     max-width:95%;
     margin:40px auto 0;
-    padding:20px;
+    padding: 20px 20px 0;
     flex: 1;
 }
 
@@ -80,7 +86,7 @@ body{
     align-items:center;
     gap:40px;
     box-shadow:0 8px 25px rgba(0,0,0,.08);
-    margin-bottom:30px;
+    margin-bottom: 0;
 }
 
 /* LEFT COLUMN: Identity */
@@ -306,13 +312,4 @@ body{
         margin-bottom: 0;
         padding-bottom: 0;
     }
-}
-
-/* ── Prevent white flash on mobile overscroll ── */
-html {
-    background-color: #04103a; /* matches footer dark background */
-}
-body {
-    background-color: #f4f7fc;
-    overscroll-behavior-y: none; /* disables rubber-band pull on supported browsers */
 }
