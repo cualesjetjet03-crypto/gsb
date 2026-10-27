@@ -718,7 +718,7 @@ foreach ($dailyBookings as $date => $total) {
             <!-- Branded Header -->
             <div class="terms-modal-header" style="padding: 20px 25px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin: 0; font-size: 18px;">GSB Terms of Use & Sale</h3>
-                <button type="button" onclick="if(document.getElementById('termsAcceptedInput').value==='1'){closeTermsModal();}" style="background: none; border: none; font-size: 26px; cursor: pointer; transition: 0.2s;" title="Accept terms to close">&times;</button>
+                <button type="button" onclick="closeTermsAndGoBack()" style="background: none; border: none; font-size: 26px; cursor: pointer; transition: 0.2s; color: #64748b; line-height: 1;" title="Close and go back">&times;</button>
             </div>
             
             <!-- Scrollable Content -->
@@ -1148,6 +1148,18 @@ foreach ($dailyBookings as $date => $total) {
             if (document.getElementById('termsAcceptedInput').value === "1") {
                 document.getElementById('termsModal').style.display = 'none';
                 document.body.style.overflow = 'auto';
+            }
+        }
+
+        // X button: close modal and go back to products.php (last visited page)
+        function closeTermsAndGoBack() {
+            document.getElementById('termsModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Go back to products.php, preserving any search/filter state via history
+            if (document.referrer && document.referrer.indexOf('products.php') !== -1) {
+                window.location.href = document.referrer;
+            } else {
+                window.location.href = 'products.php';
             }
         }
 
