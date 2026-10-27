@@ -425,18 +425,25 @@ $promo_result = $conn->query($promo_query);
         let autoTimer = null;
 
         /* ---- Visual constants ---- */
-        const GAP       = 260;   // horizontal spread from centre (px)
-        const FAR_GAP   = 440;
-        const SIDE_ROTX = 0;
-        const SIDE_ROTY = 30;    // Y-axis tilt for side cards (deg)
-        const SIDE_SCL  = 0.80;
-        const FAR_SCL   = 0.62;
-        const SIDE_TZ   = -110;
-        const FAR_TZ    = -240;
-        const SIDE_TY   = 30;
-        const FAR_TY    = 55;
+        function getCarouselConstants() {
+            const stageW = document.querySelector('.deals-stage')?.offsetWidth || 600;
+            const isMobile = stageW < 500;
+            const isSmall  = stageW < 360;
+            return {
+                GAP      : isMobile ? Math.round(stageW * 0.30) : 260,
+                FAR_GAP  : isMobile ? Math.round(stageW * 0.48) : 440,
+                SIDE_ROTY: isMobile ? 18 : 30,
+                SIDE_SCL : isMobile ? 0.70 : 0.80,
+                FAR_SCL  : isMobile ? 0.50 : 0.62,
+                SIDE_TZ  : isMobile ? -80  : -110,
+                FAR_TZ   : isMobile ? -180 : -240,
+                SIDE_TY  : isMobile ? 20   : 30,
+                FAR_TY   : isMobile ? 40   : 55,
+            };
+        }
 
         function place() {
+            const { GAP, FAR_GAP, SIDE_ROTY, SIDE_SCL, FAR_SCL, SIDE_TZ, FAR_TZ, SIDE_TY, FAR_TY } = getCarouselConstants();
             cards.forEach((card, i) => {
                 let d = i - current;
                 if (total > 3) {
@@ -499,6 +506,9 @@ $promo_result = $conn->query($promo_query);
 
         /* init */
         place();
+
+        /* recalculate card positions on resize/orientation change */
+        window.addEventListener('resize', () => { place(); });
         startAuto();
     })();
 
