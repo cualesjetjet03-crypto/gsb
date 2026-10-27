@@ -309,7 +309,7 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
                                     $displayImage = "../images/technicians/" . $dbImage;
                                 }
                         ?>
-                        <div class="tech-card" onclick="openProfileModal(<?php echo json_encode($t['technician_name']); ?>, <?php echo json_encode($maskedPhone); ?>, <?php echo json_encode($idNo); ?>, <?php echo json_encode($pct); ?>, <?php echo json_encode($rating ?? 0); ?>, <?php echo json_encode($displayImage); ?>, <?php echo $reviews; ?>)">
+                        <div class="tech-card" data-name='<?php echo e($t['technician_name']); ?>' data-phone='<?php echo e($maskedPhone); ?>' data-id='<?php echo e($idNo); ?>' data-pct='<?php echo e($pct); ?>' data-rating='<?php echo e($rating ?? 0); ?>' data-img='<?php echo e($displayImage); ?>' data-reviews='<?php echo $reviews; ?>' onclick="handleTechCardClick(event, this)">
                             <i class="fa-solid fa-ellipsis-vertical options-icon"></i>
                             
                             <div class="tech-avatar">
@@ -566,6 +566,20 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
 <?php include 'includes/global_modals.php'; ?>
 
 <script>
+function handleTechCardClick(event, card) {
+    // Don't open modal if a button inside the card was clicked
+    if (event.target.closest('.action-btn') || event.target.closest('.options-icon')) return;
+    openProfileModal(
+        card.dataset.name,
+        card.dataset.phone,
+        card.dataset.id,
+        parseFloat(card.dataset.pct),
+        parseFloat(card.dataset.rating),
+        card.dataset.img,
+        parseInt(card.dataset.reviews)
+    );
+}
+
 function openProfileModal(name, phone, idNo, pct, rating, imagePath, reviews) {
     document.getElementById('pName').textContent = name;
     document.getElementById('pPhone').textContent = phone;
