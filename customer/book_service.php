@@ -437,7 +437,8 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
         // Custom Modal Functions
         function showModal(title, message) {
             document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMessage').innerText = message;
+            // Support HTML in message (e.g. <strong>Fully Booked</strong>)
+            document.getElementById('modalMessage').innerHTML = message;
             document.getElementById('customAlertModal').style.display = 'flex';
         }
 
@@ -851,10 +852,17 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
 
                         var unavailableInfo = getUnavailableInfo(selectedDate);
                         if (unavailableInfo) {
-                            var msg = "This date is unavailable.\n";
-                            if (unavailableInfo.timeLabel) msg += "Details: " + unavailableInfo.timeLabel + "\n";
-                            if (unavailableInfo.notes) msg += "Notes: " + unavailableInfo.notes + "\n";
-                            showModal("Date Unavailable", msg);
+                            var isFullyBooked = (unavailableInfo.notes && unavailableInfo.notes.toLowerCase().indexOf('fully booked') !== -1)
+                                             || (unavailableInfo.timeLabel && unavailableInfo.timeLabel === 'Maximum daily limit reached (3/3)');
+                            if (isFullyBooked) {
+                                showModal("Fully Booked", "<strong>This date is fully booked.</strong><br>Please choose another available date.");
+                            } else {
+                                var msg = "This date is unavailable.";
+                                if (unavailableInfo.notes && unavailableInfo.notes.toLowerCase().indexOf('fully booked') === -1) {
+                                    msg += "\nNotes: " + unavailableInfo.notes;
+                                }
+                                showModal("Date Unavailable", msg);
+                            }
                             return false;
                         }
 
@@ -877,10 +885,19 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                                 showModal("Invalid Date", "Same-day booking is not allowed. Please select a date starting tomorrow.");
                             } else {
                                 var unavailableInfo = getUnavailableInfo(selectedDate);
-                                var msg = "This date is unavailable.\n";
-                                if (unavailableInfo && unavailableInfo.timeLabel) msg += "Details: " + unavailableInfo.timeLabel + "\n";
-                                if (unavailableInfo && unavailableInfo.notes) msg += "Notes: " + unavailableInfo.notes + "\n";
-                                showModal("Date Unavailable", msg);
+                                var isFullyBooked = unavailableInfo && (
+                                    (unavailableInfo.notes && unavailableInfo.notes.toLowerCase().indexOf('fully booked') !== -1)
+                                    || (unavailableInfo.timeLabel && unavailableInfo.timeLabel === 'Maximum daily limit reached (3/3)')
+                                );
+                                if (isFullyBooked) {
+                                    showModal("Fully Booked", "<strong>This date is fully booked.</strong><br>Please choose another available date.");
+                                } else {
+                                    var msg = "This date is unavailable.";
+                                    if (unavailableInfo && unavailableInfo.notes && unavailableInfo.notes.toLowerCase().indexOf('fully booked') === -1) {
+                                        msg += "\nNotes: " + unavailableInfo.notes;
+                                    }
+                                    showModal("Date Unavailable", msg);
+                                }
                             }
                             return false;
                         }
