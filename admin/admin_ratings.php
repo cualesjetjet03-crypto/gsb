@@ -309,7 +309,7 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
                                     $displayImage = "../images/technicians/" . $dbImage;
                                 }
                         ?>
-                        <div class="tech-card" data-name='<?php echo e($t['technician_name']); ?>' data-phone='<?php echo e($maskedPhone); ?>' data-id='<?php echo e($idNo); ?>' data-pct='<?php echo e($pct); ?>' data-rating='<?php echo e($rating ?? 0); ?>' data-img='<?php echo e($displayImage); ?>' data-reviews='<?php echo $reviews; ?>' onclick="handleTechCardClick(event, this)">
+                        <div class="tech-card" data-name='<?php echo e($t['technician_name']); ?>' data-phone='<?php echo e($maskedPhone); ?>' data-id='<?php echo e($idNo); ?>' data-pct='<?php echo e($pct); ?>' data-rating='<?php echo e($rating ?? 0); ?>' data-img='<?php echo e($displayImage); ?>' data-reviews='<?php echo $reviews; ?>'>
                             <i class="fa-solid fa-ellipsis-vertical options-icon"></i>
                             
                             <div class="tech-avatar">
@@ -336,8 +336,17 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
                             </div>
                             
                             <div class="tech-actions">
-                                <button type="button" class="action-btn edit" onclick="openEditModal(event, <?php echo (int)$t['id']; ?>, <?php echo json_encode($t['technician_name']); ?>, <?php echo json_encode($phone); ?>)"><i class="fa-solid fa-pen"></i></button>
-                                <button type="button" class="action-btn delete" onclick="openDeleteModal(event, <?php echo (int)$t['id']; ?>, <?php echo json_encode($t['technician_name']); ?>)"><i class="fa-regular fa-trash-can"></i></button>
+                                <button type="button" class="action-btn edit"
+                                    data-id="<?php echo (int)$t['id']; ?>"
+                                    data-name="<?php echo e($t['technician_name']); ?>"
+                                    data-phone="<?php echo e($phone); ?>">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button type="button" class="action-btn delete"
+                                    data-id="<?php echo (int)$t['id']; ?>"
+                                    data-name="<?php echo e($t['technician_name']); ?>">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
                             </div>
                         </div>
                         <?php } } ?>
@@ -566,19 +575,52 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
 <?php include 'includes/global_modals.php'; ?>
 
 <script>
-function handleTechCardClick(event, card) {
-    // Don't open modal if a button inside the card was clicked
-    if (event.target.closest('.action-btn') || event.target.closest('.options-icon')) return;
-    openProfileModal(
-        card.dataset.name,
-        card.dataset.phone,
-        card.dataset.id,
-        parseFloat(card.dataset.pct),
-        parseFloat(card.dataset.rating),
-        card.dataset.img,
-        parseInt(card.dataset.reviews)
-    );
-}
+// Event delegation — single listener handles all card clicks, edit, and delete
+document.addEventListener('click', function(e) {
+    // Edit button
+    const editBtn = e.target.closest('.action-btn.edit');
+    if (editBtn) {
+        e.stopPropagation();
+        const card = editBtn.closest('.tech-card');
+        const id   = editBtn.getAttribute('data-id');
+        const name = editBtn.getAttribute('data-name');
+        const phone = editBtn.getAttribute('data-phone');
+        document.getElementById('edit_tech_id').value  = id;
+        document.getElementById('edit_tech_name').value = name;
+        document.getElementById('edit_tech_phone').value = phone;
+        document.getElementById('editModal').style.display = 'flex';
+        return;
+    }
+
+    // Delete button
+    const delBtn = e.target.closest('.action-btn.delete');
+    if (delBtn) {
+        e.stopPropagation();
+        const id   = delBtn.getAttribute('data-id');
+        const name = delBtn.getAttribute('data-name');
+        document.getElementById('delete_tech_id').value = id;
+        document.getElementById('delete_tech_name').textContent = name;
+        document.getElementById('deleteModal').style.display = 'flex';
+        return;
+    }
+
+    // Options icon — ignore
+    if (e.target.closest('.options-icon')) return;
+
+    // Tech card body click → open profile modal
+    const card = e.target.closest('.tech-card');
+    if (card) {
+        openProfileModal(
+            card.dataset.name,
+            card.dataset.phone,
+            card.dataset.id,
+            parseFloat(card.dataset.pct),
+            parseFloat(card.dataset.rating),
+            card.dataset.img,
+            parseInt(card.dataset.reviews)
+        );
+    }
+});
 
 function openProfileModal(name, phone, idNo, pct, rating, imagePath, reviews) {
     document.getElementById('pName').textContent = name;
