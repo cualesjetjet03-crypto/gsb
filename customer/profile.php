@@ -90,7 +90,13 @@ if (!$user) {
                         echo "N/A";
                     }
                 ?></p>
-                <p><i class="fa-solid fa-location-dot"></i> <?php echo clean($user['address'] ?? 'N/A'); ?></p>
+                <p><i class="fa-solid fa-location-dot"></i> <?php
+                    $addr = trim($user['address'] ?? 'N/A');
+                    // Clean up any extra spaces around commas
+                    $addr = preg_replace('/\s*,\s*/', ', ', $addr);
+                    $addr = $addr ?: 'N/A';
+                    echo clean($addr);
+                ?></p>
                 <p><i class="fa-solid fa-clock"></i> Member Since: <?php 
                     if (!empty($user['created_at'])) {
                         echo date("F Y", strtotime($user['created_at']));

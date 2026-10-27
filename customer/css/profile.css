@@ -120,9 +120,9 @@ body{
     border-radius: 14px;
     padding: 35px 50px;
     display: flex;
-    justify-content: flex-end; /* Pushes the wrapper block to the right */
+    justify-content: flex-end;
     align-items: center;
-    min-height: 280px; 
+    min-height: unset;
 }
 
 /* Wraps the text so it stays aligned on the right side */
@@ -280,7 +280,8 @@ body{
         width: 100%;
         box-sizing: border-box;
         padding: 30px 20px;
-        justify-content: center; /* Centers details wrapper on mobile */
+        justify-content: center;
+        min-height: unset;
     }
     
     .details-wrapper {
@@ -293,5 +294,11 @@ body{
         text-align: center;
         box-sizing: border-box;
         margin: 0 0 10px 0;
+    }
+
+    /* Remove extra bottom space before footer */
+    .profile-container {
+        margin-bottom: 0;
+        padding-bottom: 0;
     }
 }
