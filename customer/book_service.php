@@ -56,10 +56,30 @@ if ($addr_stmt) {
     $addr_stmt->close();
 }
 
-// Fallback: if no saved address, use the users.address string as street
-if (empty($pre_street)) {
-    $pre_street = $address;
+// Fallback: if no saved address in user_addresses, try to parse users.address string
+// Format is typically: "street,barangay, city,province"
+if (empty($pre_street) && !empty($address)) {
+    $parts = array_map('trim', explode(',', $address));
+    // parts[0] = street, parts[1] = barangay, parts[2] = city, parts[3] = province
+    $pre_street        = $parts[0] ?? "";
+    $pre_barangay_name = $parts[1] ?? "";
+    $pre_city_name     = $parts[2] ?? "";
+    $pre_province_name = $parts[3] ?? "";
 }
+
+// Map province name to select option value for auto-selection
+$province_map = [
+    'metro manila'    => 'NCR',
+    'ncr'             => 'NCR',
+    'metro manila (ncr)' => 'NCR',
+    'batangas'        => '0410',
+    'cavite'          => '0421',
+    'laguna'          => '0434',
+    'quezon'          => '0456',
+    'rizal'           => '0458',
+];
+$pre_province_key = strtolower(trim($pre_province_name));
+$pre_province_value = $province_map[$pre_province_key] ?? '';
 
 function clean($value) {
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
@@ -273,13 +293,13 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                         <div class="form-group">
                             <label>Province / Region <span class="req">*</span></label>
                             <select id="province" required>
-                                <option value="" disabled <?php echo empty($pre_province_name) ? 'selected' : ''; ?>>Select Province/Region</option>
-                                <option value="NCR" data-name="Metro Manila (NCR)" <?php echo ($pre_province_name === 'Metro Manila (NCR)' || $pre_province_name === 'NCR') ? 'selected' : ''; ?>>Metro Manila (NCR)</option>
-                                <option value="0410" data-name="Batangas" <?php echo ($pre_province_name === 'Batangas') ? 'selected' : ''; ?>>Batangas</option>
-                                <option value="0421" data-name="Cavite" <?php echo ($pre_province_name === 'Cavite') ? 'selected' : ''; ?>>Cavite</option>
-                                <option value="0434" data-name="Laguna" <?php echo ($pre_province_name === 'Laguna') ? 'selected' : ''; ?>>Laguna</option>
-                                <option value="0456" data-name="Quezon" <?php echo ($pre_province_name === 'Quezon') ? 'selected' : ''; ?>>Quezon</option>
-                                <option value="0458" data-name="Rizal" <?php echo ($pre_province_name === 'Rizal') ? 'selected' : ''; ?>>Rizal</option>
+                                <option value="" disabled <?php echo empty($pre_province_value) ? 'selected' : ''; ?>>Select Province/Region</option>
+                                <option value="NCR" data-name="Metro Manila (NCR)" <?php echo ($pre_province_value === 'NCR') ? 'selected' : ''; ?>>Metro Manila (NCR)</option>
+                                <option value="0410" data-name="Batangas" <?php echo ($pre_province_value === '0410') ? 'selected' : ''; ?>>Batangas</option>
+                                <option value="0421" data-name="Cavite" <?php echo ($pre_province_value === '0421') ? 'selected' : ''; ?>>Cavite</option>
+                                <option value="0434" data-name="Laguna" <?php echo ($pre_province_value === '0434') ? 'selected' : ''; ?>>Laguna</option>
+                                <option value="0456" data-name="Quezon" <?php echo ($pre_province_value === '0456') ? 'selected' : ''; ?>>Quezon</option>
+                                <option value="0458" data-name="Rizal" <?php echo ($pre_province_value === '0458') ? 'selected' : ''; ?>>Rizal</option>
                             </select>
                         </div>
                         <div class="form-group">
