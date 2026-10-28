@@ -1,6 +1,13 @@
 ﻿<?php
 session_start();
-include 'db_connect.php'; 
+include 'db_connect.php';
+
+// ── Auto-expire promos on every customer page load ──
+date_default_timezone_set('Asia/Manila');
+$_now = date('Y-m-d H:i:s');
+$_exp = $conn->prepare("UPDATE products SET is_promo=0, discount_percent=0, promo_end_date=NULL WHERE is_promo=1 AND promo_end_date IS NOT NULL AND promo_end_date <= ?");
+if ($_exp) { $_exp->bind_param("s", $_now); $_exp->execute(); $_exp->close(); }
+unset($_now, $_exp);
 
 // Fetch active promo products for the top carousel
 $promo_query = "SELECT * FROM products WHERE is_promo = 1 AND discount_percent > 0 AND promo_end_date >= NOW() AND is_archived = 0";

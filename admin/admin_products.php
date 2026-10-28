@@ -8,6 +8,28 @@ if(!isset($_SESSION['admin'])){
 
 include "includes/db_connect.php";
 
+// ══════════════════════════════════════════════════════════════
+// AUTO-EXPIRE PROMOS — runs on every page load
+// If promo_end_date has passed, reset is_promo=0, discount_percent=0
+// ══════════════════════════════════════════════════════════════
+date_default_timezone_set('Asia/Manila');
+$now_manila = date('Y-m-d H:i:s');
+
+$expire_stmt = $conn->prepare("
+    UPDATE products
+    SET is_promo = 0,
+        discount_percent = 0,
+        promo_end_date = NULL
+    WHERE is_promo = 1
+      AND promo_end_date IS NOT NULL
+      AND promo_end_date <= ?
+");
+if ($expire_stmt) {
+    $expire_stmt->bind_param("s", $now_manila);
+    $expire_stmt->execute();
+    $expire_stmt->close();
+}
+
 function e($value){
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
@@ -335,7 +357,12 @@ $pending_count = $pending_count_result ? (int)$pending_count_result->fetch_assoc
                             </td>
                             <td>
                                 <strong><?php echo e($row['IndoorUnitModel'] ?: $row['SeriesName']); ?></strong>
-                                <?php if(isset($row['is_promo']) && $row['is_promo'] == 1): ?>
+                                <?php
+                                    $is_active_promo = isset($row['is_promo']) && $row['is_promo'] == 1
+                                        && !empty($row['promo_end_date'])
+                                        && strtotime($row['promo_end_date']) > time();
+                                ?>
+                                <?php if($is_active_promo): ?>
                                     <span style="background: #d31b27; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">PROMO (<?php echo (int)($row['discount_percent'] ?? 0); ?>% OFF)</span>
                                 <?php endif; ?>
                                 <br><small><?php echo e($row['SeriesName']); ?></small>
