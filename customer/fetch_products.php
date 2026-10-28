@@ -76,11 +76,15 @@ if (!empty($_GET['is_non_inverter'])) {
     $conditions[] = "is_non_inverter IN (" . implode(",", $safe_types) . ")";
 }
 
-// BRAND FILTER
+// BRAND FILTER — case-insensitive
 if (!empty($_GET['brand'])) {
     $brands = is_array($_GET['brand']) ? $_GET['brand'] : [$_GET['brand']];
-    $brands = array_map(fn($b) => "'" . $conn->real_escape_string($b) . "'", $brands);
-    $conditions[] = "brand IN (" . implode(",", $brands) . ")";
+    $brand_conditions = [];
+    foreach ($brands as $b) {
+        $safe_b = $conn->real_escape_string(trim($b));
+        $brand_conditions[] = "LOWER(brand) = LOWER('$safe_b')";
+    }
+    $conditions[] = "(" . implode(" OR ", $brand_conditions) . ")";
 }
 
 // MIDEA TYPE FILTER
@@ -100,11 +104,12 @@ if (!empty($_GET['midea_type'])) {
     }
 }
 
-// HP FILTER
+// HP FILTER — use ROUND to normalize decimal precision (e.g., 1.0 == 1.00)
 if (!empty($_GET['hp'])) {
-    $hp = is_array($_GET['hp']) ? $_GET['hp'] : [$_GET['hp']];
-    $hp = array_map(fn($h) => "'" . $conn->real_escape_string($h) . "'", $hp);
-    $conditions[] = "CapacityHP IN (" . implode(",", $hp) . ")";
+    $hp_vals = is_array($_GET['hp']) ? $_GET['hp'] : [$_GET['hp']];
+    $hp_floats = array_unique(array_map(fn($h) => (float)$h, $hp_vals));
+    $hp_list = implode(",", $hp_floats);
+    $conditions[] = "ROUND(CapacityHP, 1) IN ($hp_list)";
 }
 
 // STOCK STATUS FILTER
