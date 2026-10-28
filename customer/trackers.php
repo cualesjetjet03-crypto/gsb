@@ -245,47 +245,53 @@ $total_direct_services = count($direct_services);
                                 ?>
                             </div>
 
-                            <?php if ($schedule): ?>
-                                <div class="tracker-service-info">
-                                    <h4>Service Details</h4>
-                                    <table class="service-details-table">
-                                        <tr>
-                                            <td><strong>Service Type</strong><span><?php echo clean($schedule['service_type'] ?? 'Not provided'); ?></span></td>
-                                            <td><strong>Scheduled Date</strong><span><?php echo (!empty($schedule['service_date'])) ? date("F d, Y", strtotime($schedule['service_date'])) : "Not scheduled"; ?></span></td>
-                                            <td><strong>Scheduled Time</strong><span><?php echo (!empty($schedule['service_time'])) ? date("h:i A", strtotime($schedule['service_time'])) : "Not scheduled"; ?></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Location</strong><span><?php echo clean($schedule['location'] ?? 'Not provided'); ?></span></td>
-                                            
-                                            <?php 
-                                            $techName =$schedule['technician_name'] ?? '';
-                                            if (!empty($techName)):$t_id_str = sprintf('%03d', $schedule['tech_id'] ?? 0);
-                                            $t_reviews = (int)($schedule['review_count'] ?? 0);
-                                            $t_pct = $t_reviews > 0 ? round($schedule['avg_pct'] ?? 0) : 0;
-                                            $t_rating = $t_reviews > 0 ? round($schedule['avg_rating'] ?? 0, 1) : 0;
-                                            $t_img = !empty($schedule['tech_image']) ? '../images/technicians/' .$schedule['tech_image'] : ''; 
-                                            ?>
-                            <td class="clickable-tech" onclick="openProfileModal('<?php echo addslashes($techName); ?>', '<?php echo $t_id_str; ?>', '<?php echo$t_pct; ?>', '<?php echo $t_rating; ?>', '<?php echo addslashes($t_img); ?>', <?php echo $t_reviews; ?>)">
-                                                <strong>Technician</strong>
-                                                <span class="tech-link"><?php echo clean($techName); ?></span>
-                                            </td>
-                                            <?php else: ?>
-                                            <td><strong>Technician</strong><span>Not yet assigned</span></td>
-                                            <?php endif; ?>
-                                            
-                                            <td><strong>Technician Contact</strong><span><?php echo clean($schedule['technician_contact'] ?? '—'); ?></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Schedule Status</strong><span><?php echo clean($schedule['status'] ?? 'Pending'); ?></span></td>
-                                            <td colspan="2"></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            <?php else: ?>
-                                <div class="tracker-no-schedule">
-                                    <strong>Service schedule:</strong> Not scheduled yet. Your appointment details will appear here once the admin schedules your service.
-                                </div>
-                            <?php endif; ?>
+                            <?php
+                            // Show details using schedule if available, otherwise fall back to inquiry data
+                            $detail_service_type = $schedule['service_type'] ?? 'Product Order';
+                            $detail_date         = $schedule['service_date'] ?? $inquiry['delivery_date'] ?? null;
+                            $detail_time         = $schedule['service_time'] ?? null;
+                            $detail_location     = $schedule['location'] ?? $inquiry['address'] ?? null;
+                            $detail_status       = $schedule['status'] ?? $inquiry['status'] ?? 'Pending';
+                            $detail_tech_name    = $schedule['technician_name'] ?? null;
+                            $detail_tech_contact = $schedule['technician_contact'] ?? null;
+                            $detail_tech_id      = $schedule['tech_id'] ?? null;
+                            $detail_tech_image   = $schedule['tech_image'] ?? null;
+                            $detail_review_count = (int)($schedule['review_count'] ?? 0);
+                            $detail_avg_pct      = $detail_review_count > 0 ? round($schedule['avg_pct'] ?? 0) : 0;
+                            $detail_avg_rating   = $detail_review_count > 0 ? round($schedule['avg_rating'] ?? 0, 1) : 0;
+                            ?>
+                            <div class="tracker-service-info">
+                                <h4>Order Details</h4>
+                                <table class="service-details-table">
+                                    <tr>
+                                        <td><strong>Product</strong><span><?php echo clean($inquiry['product_name'] ?? 'N/A'); ?></span></td>
+                                        <td><strong>Preferred Date</strong><span><?php echo !empty($detail_date) ? date("F d, Y", strtotime($detail_date)) : "Not scheduled"; ?></span></td>
+                                        <td><strong>Scheduled Time</strong><span><?php echo !empty($detail_time) ? date("h:i A", strtotime($detail_time)) : "Not scheduled"; ?></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Delivery Address</strong><span><?php echo clean($detail_location ?? 'Not provided'); ?></span></td>
+
+                                        <?php if (!empty($detail_tech_name)):
+                                            $t_id_str  = sprintf('%03d', $detail_tech_id ?? 0);
+                                            $t_img_url = !empty($detail_tech_image) ? '../images/technicians/' . $detail_tech_image : '';
+                                        ?>
+                                        <td class="clickable-tech" onclick="openProfileModal('<?php echo addslashes($detail_tech_name); ?>', '<?php echo $t_id_str; ?>', '<?php echo $detail_avg_pct; ?>', '<?php echo $detail_avg_rating; ?>', '<?php echo addslashes($t_img_url); ?>', <?php echo $detail_review_count; ?>)">
+                                            <strong>Technician</strong>
+                                            <span class="tech-link"><?php echo clean($detail_tech_name); ?></span>
+                                        </td>
+                                        <?php else: ?>
+                                        <td><strong>Technician</strong><span>Not yet assigned</span></td>
+                                        <?php endif; ?>
+
+                                        <td><strong>Technician Contact</strong><span><?php echo clean($detail_tech_contact ?? '—'); ?></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Free Installation</strong><span><?php echo clean($inquiry['free_installation'] ?? 'No'); ?></span></td>
+                                        <td><strong>Order Status</strong><span><?php echo clean($detail_status); ?></span></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
