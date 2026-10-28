@@ -1333,9 +1333,9 @@ foreach ($dailyBookings as $date => $total) {
     ═══════════════════════════════════════════════════════ -->
     <div id="addressPickerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99999;align-items:center;justify-content:center;">
         <div style="background:#fff;border-radius:16px;padding:28px 24px;width:min(520px,94vw);max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
-            <button type="button" onclick="closeAddressPicker()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:#94a3b8;cursor:pointer;">✕</button>
+            <button type="button" onclick="closeAddressPicker()" style="position:absolute;top:14px;right:16px;background:#f1f5f9;border:none;font-size:16px;color:#64748b;cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
 
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;padding-right:40px;">
                 <h3 style="margin:0;font-size:18px;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px;">
                     <i class="fa-solid fa-location-dot" style="color:#1d4ed8;"></i> Saved Addresses
                 </h3>
