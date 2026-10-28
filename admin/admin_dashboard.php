@@ -21,10 +21,14 @@ function countQuery($conn, $sql){
     return (int)($row['total'] ?? 0);
 }
 
+// ── Use Asia/Manila timezone to get accurate "today" ──────────────────────────
+date_default_timezone_set('Asia/Manila');
 $today = date("Y-m-d");
 
 // ==========================================
 // CORRECTED QUERIES (Separating Installations & Services)
+// Status filters match availability_schedule.php exactly:
+// NOT IN ('Completed', 'Sold', 'Cancelled', 'Declined', 'Rejected', 'Deleted')
 // ==========================================
 $total_inquiries = countQuery($conn, "SELECT COUNT(*) AS total FROM inquiries");
 $recent_inquiries = countQuery($conn, "SELECT COUNT(*) AS total FROM inquiries WHERE date_submitted >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
@@ -33,16 +37,16 @@ $pending_count = countQuery($conn, "SELECT COUNT(*) AS total FROM inquiries WHER
 // OUT OF STOCK QUERY
 $out_of_stock = countQuery($conn, "SELECT COUNT(*) AS total FROM products WHERE stock_quantity <= 0 OR stock_status = 'Out of Stock'");
 
-// ADDED: (inquiry_id IS NULL OR inquiry_id = 0) to separate pure services from inquiry installations
-$today_services = countQuery($conn, "SELECT COUNT(*) AS total FROM services_schedule WHERE service_date='$today' AND (inquiry_id IS NULL OR inquiry_id = 0) AND status NOT IN ('Cancelled', 'Deleted', 'Declined')");
-$today_installations = countQuery($conn, "SELECT COUNT(*) AS total FROM inquiries WHERE delivery_date='$today' AND status NOT IN ('Cancelled', 'Deleted', 'Declined')");
+// Match availability_schedule.php status filter exactly
+$exclude_statuses = "('Completed', 'Sold', 'Cancelled', 'Declined', 'Rejected', 'Deleted')";
 
-$inquiries = $conn->query("SELECT * FROM inquiries ORDER BY date_submitted DESC LIMIT 5");
-$products = $conn->query("SELECT * FROM products ORDER BY id DESC LIMIT 5");
+$today_services      = countQuery($conn, "SELECT COUNT(*) AS total FROM services_schedule WHERE service_date='$today' AND (inquiry_id IS NULL OR inquiry_id = 0) AND status NOT IN $exclude_statuses");
+$today_installations = countQuery($conn, "SELECT COUNT(*) AS total FROM inquiries WHERE DATE(delivery_date)='$today' AND status NOT IN $exclude_statuses");
 
-// ADDED: (inquiry_id IS NULL OR inquiry_id = 0)
-$services = $conn->query("SELECT * FROM services_schedule WHERE service_date='$today' AND (inquiry_id IS NULL OR inquiry_id = 0) AND status NOT IN ('Cancelled', 'Deleted', 'Declined') ORDER BY service_time ASC LIMIT 5");
-$installations = $conn->query("SELECT * FROM inquiries WHERE delivery_date='$today' AND status NOT IN ('Cancelled', 'Deleted', 'Declined') ORDER BY id DESC LIMIT 5");
+$inquiries     = $conn->query("SELECT * FROM inquiries ORDER BY date_submitted DESC LIMIT 5");
+$products      = $conn->query("SELECT * FROM products ORDER BY id DESC LIMIT 5");
+$services      = $conn->query("SELECT * FROM services_schedule WHERE service_date='$today' AND (inquiry_id IS NULL OR inquiry_id = 0) AND status NOT IN $exclude_statuses ORDER BY service_time ASC LIMIT 5");
+$installations = $conn->query("SELECT * FROM inquiries WHERE DATE(delivery_date)='$today' AND status NOT IN $exclude_statuses ORDER BY id DESC LIMIT 5");
 
 // Status chart calculations
 $status_counts = [
