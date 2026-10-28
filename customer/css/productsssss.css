@@ -572,13 +572,17 @@ body {
    PRODUCT GRID
 ========================================================= */
 .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
     width: 100%;
 }
 
 .card {
+    flex: 0 1 calc(20% - 20px);
+    min-width: 220px;
+    max-width: 250px;
     width: 100%;
     min-width: 0;
     min-height: 460px;
@@ -1250,13 +1254,14 @@ body {
 
 /* ── Large desktop (≤1450px) ── */
 @media (max-width: 1450px) {
-    .product-grid      { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .product-grid      { gap: 16px; }
+    .card              { flex: 0 1 calc(25% - 16px); min-width: 200px; max-width: 280px; }
     .deals-section     { margin-left: 16px; margin-right: 16px; }
 }
 
 /* ── Standard desktop / large tablet (≤1150px) ── */
 @media (max-width: 1150px) {
-    .product-grid      { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .card              { flex: 0 1 calc(33.333% - 16px); min-width: 180px; max-width: 320px; }
 }
 
 /* ── Tablet landscape (≤960px) ── */
@@ -1272,7 +1277,8 @@ body {
     .deals-header h2 { font-size: 22px; letter-spacing: 1.5px; }
 
     /* Product grid */
-    .product-grid   { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .product-grid   { gap: 16px; }
+    .card           { flex: 0 1 calc(50% - 16px); min-width: 0; max-width: none; }
     .catalog-container { padding: 0 12px; }
 
     /* Modal — single column */
@@ -1392,7 +1398,8 @@ body {
     .deals-dot      { width: 7px; height: 7px; }
 
     /* Product grid */
-    .product-grid   { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .product-grid   { gap: 12px; }
+    .card           { flex: 0 1 calc(50% - 12px); min-width: 0; max-width: none; }
     .catalog-container { padding: 0 8px; }
 
     /* Cards */
@@ -1426,7 +1433,8 @@ body {
 /* ── Small phone portrait (≤420px) ── */
 @media (max-width: 420px) {
     /* Single column grid on very small screens */
-    .product-grid   { grid-template-columns: 1fr; gap: 12px; }
+    .product-grid   { gap: 12px; }
+    .card           { flex: 0 1 100%; min-width: 0; max-width: none; }
 
     /* Full-width layout fix */
     .catalog-container {
