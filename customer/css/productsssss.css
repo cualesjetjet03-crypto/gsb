@@ -1162,8 +1162,22 @@ body {
 .qty-control button { width: 28px; height: 28px; border: none; background: #2563eb; color: #fff; font-size: 18px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
 .qty-control button:hover { background: #1d4ed8; }
 .qty-control span { min-width: 30px; text-align: center; font-weight: 600; font-size: 14px; }
-.remove-btn { background: transparent; border: none; font-size: 18px; cursor: pointer; color: #dc2626; }
-.remove-btn:hover { color: #991b1b; }
+.remove-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #dc2626;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+.remove-btn:hover { background: #fee2e2; color: #991b1b; }
 
 .checkout-bar { position: sticky; bottom: 0; background: white; border-top: 1px solid #ddd; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
 #cart-total { font-size: 18px; font-weight: 800; color: #111827; }

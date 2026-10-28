@@ -953,7 +953,9 @@ $promo_result = $conn->query($promo_query);
                             </div>
                             <p class="subtotal" style="color: #64748b; font-size: 12px; margin-top: 4px;">Subtotal: ₱${subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                         </div>
-                        <button class="remove-btn" onclick="removeItem(${item.cart_id})">🗑</button>
+                        <button class="remove-btn" onclick="removeItem(${item.cart_id})" title="Remove item">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
                     </div>`;
             });
             
