@@ -315,8 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="form-group full-width" style="margin-bottom: 22px;">
                     <label>Current Password <span class="optional-text">(Required to set a new password)</span></label>
                     <div class="password-wrapper">
-                        <!-- Changed autocomplete to new-password to stop forceful inserts -->
-                        <input type="password" name="current_password" id="current_password" placeholder="••••••••" autocomplete="new-password">
+                        <input type="password" name="current_password" id="current_password" placeholder="" autocomplete="new-password">
                         <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('current_password', this)" title="Show Password">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -324,19 +323,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="password-row">
-                    <div class="form-group">
+                    <div class="form-group" style="display:flex;flex-direction:column;">
                         <label>New Password <span class="optional-text">(leave blank to keep current)</span></label>
-                        <div class="password-wrapper">
-                            <input type="password" name="new_password" id="new_password" placeholder="••••••••" autocomplete="new-password">
+                        <div class="password-wrapper" style="margin-top:auto;">
+                            <input type="password" name="new_password" id="new_password" placeholder="" autocomplete="new-password">
                             <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('new_password', this)" title="Show Password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:flex;flex-direction:column;">
                         <label>Confirm New Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" name="confirm_password" id="confirm_password" placeholder="••••••••" autocomplete="new-password">
+                        <div class="password-wrapper" style="margin-top:auto;">
+                            <input type="password" name="confirm_password" id="confirm_password" placeholder="" autocomplete="new-password">
+                            <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('confirm_password', this)" title="Show Password">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
