@@ -444,9 +444,6 @@ $pending_count = $pending_count_result ? (int)$pending_count_result->fetch_assoc
             <input type="number" name="new_stock_quantity" id="newStockQuantity"
                    min="1" placeholder="Enter quantity (e.g. 10)"
                    style="width:100%; padding:10px 12px; border:2px solid #16a34a; border-radius:8px; font-size:14px; font-family:inherit; outline:none;">
-            <small style="color:#64748b; display:block; margin-top:5px;">
-                Product will be set to <strong>Available</strong> if qty &gt; 3, or <strong>Limited Stock</strong> if qty ≤ 3.
-            </small>
         </div>
 
         <form method="POST" action="admin_products.php" id="archiveConfirmForm">
