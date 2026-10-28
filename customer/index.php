@@ -256,55 +256,60 @@ $catalog_result = $conn->query($catalog_query);
                     if ($is_promo == 1 && $discount_pct > 0 && (!empty($prod['promo_end_date']) && strtotime($prod['promo_end_date']) >= time())) {$final_price = $base_price - ($base_price * ($discount_pct / 100));$is_active_promo = true;
                     }
                 ?>
-                <div class="promo-card catalog-item" style="display: none;" 
-                     data-id="<?php echo $prod['id']; ?>"
-                     data-brand="<?php echo htmlspecialchars($prod['brand'] ?? 'Other'); ?>"
-                     data-series="<?php echo htmlspecialchars($prod['SeriesName']); ?>"
-                     data-model="<?php echo htmlspecialchars($prod['IndoorUnitModel'] ?:$prod['SeriesName']); ?>"
-                     data-hp="<?php echo htmlspecialchars($prod['CapacityHP']); ?>"
-                     data-type="<?php echo ($prod['is_non_inverter'] == 1) ? 'Non-Inverter' : 'Inverter'; ?>"
-                     data-cooling="<?php echo htmlspecialchars($prod['cooling_capacity'] ?? 'Not yet provided'); ?>"
-                     data-warranty="<?php echo htmlspecialchars($prod['warranty'] ?? 'Not yet provided'); ?>"
-                     data-status="<?php echo htmlspecialchars($prod['stock_status'] ?? 'Available'); ?>"
-                     data-stock="<?php echo htmlspecialchars($prod['stock_quantity'] ?? 0); ?>" 
-                     data-baseprice="<?php echo $base_price; ?>"
-                     data-finalprice="<?php echo $final_price; ?>"
-                     data-isactivepromo="<?php echo $is_active_promo ? '1' : '0'; ?>"
-                     data-features="<?php echo htmlspecialchars($prod['features'] ?? ''); ?>"
-                     data-durability="<?php echo htmlspecialchars($prod['durability'] ?? ''); ?>"
-                     data-description="<?php echo htmlspecialchars($prod['description'] ?? ''); ?>"
-                     data-img="<?php echo $img_src; ?>"
-                     onclick="openProductModal(this)">
-                    
-                    <?php if ($is_active_promo): ?>
-                        <div class="discount-ribbon">
-                            <?php echo $discount_pct; ?>%<br><small>OFF</small>
-                        </div>
-                    <?php endif; ?>
+                <div class="catalog-card-wrap catalog-item" style="display:none;"
+                     data-brand="<?php echo htmlspecialchars($prod['brand'] ?? 'Other'); ?>">
+                    <a href="products.php?search=<?php echo urlencode($prod['IndoorUnitModel'] ?: $prod['SeriesName']); ?>"
+                       class="catalog-card"
+                       style="display:flex;flex-direction:column;background:#fff;border:1px solid #dbe2ea;border-radius:12px;padding:14px;min-height:400px;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition:all 0.25s ease;position:relative;overflow:hidden;">
 
-                    <span class="promo-brand <?php echo $brand_class; ?>"><?php echo $brand; ?></span>
-                    
-                    <div class="promo-img-wrapper">
-                        <img src="<?php echo $img_src; ?>" alt="<?php echo htmlspecialchars($prod['IndoorUnitModel']); ?>" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23cbd5e1\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Crect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'%3E%3C/rect%3E%3Ccircle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'%3E%3C/circle%3E%3Cpolyline points=\'21 15 16 10 5 21\'%3E%3C/polyline%3E%3C/svg%3E'">
-                    </div>
-                    
-                    <div class="promo-info promo-info-spaced">
-                        <h3><?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?></h3>
-                        <p class="promo-model-code"><?php echo htmlspecialchars($prod['IndoorUnitModel'] ?: ''); ?></p>
-                    </div>
-                    
-                    <div class="promo-card-bottom">
-                        <div class="promo-pricing">
-                            <?php if ($is_active_promo): ?>
-                                <span class="old-price">₱<?php echo number_format($base_price, 2); ?></span>
-                            <?php endif; ?>
-                            <span class="new-price">₱<?php echo number_format($final_price, 2); ?></span>
+                        <?php if ($is_active_promo): ?>
+                            <div class="discount-ribbon"><?php echo $discount_pct; ?>%<br><small>OFF</small></div>
+                        <?php endif; ?>
+
+                        <div style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;margin:8px 0 12px;overflow:hidden;border-radius:8px;">
+                            <img src="<?php echo $img_src; ?>"
+                                 alt="<?php echo htmlspecialchars($prod['IndoorUnitModel']); ?>"
+                                 style="width:100%;height:100%;object-fit:contain;"
+                                 onerror="this.onerror=null;this.src='images/no-image.png'">
                         </div>
-                        
-                        <div class="cart-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
+
+                        <div style="display:flex;flex-direction:column;flex:1;">
+                            <span style="display:inline-block;background:#e0e7ff;color:#0020C2;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:6px;align-self:flex-start;font-family:'Poppins',sans-serif;">
+                                <?php echo $brand; ?>
+                            </span>
+                            <span style="color:#0020C2;font-size:14px;font-weight:700;margin:0 0 4px;line-height:1.35;font-family:'Poppins',sans-serif;">
+                                <?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?>
+                            </span>
+                            <span style="color:#475569;font-size:12px;font-weight:500;margin:0 0 8px;font-family:'Poppins',sans-serif;">
+                                <?php echo htmlspecialchars($prod['IndoorUnitModel'] ?: ''); ?>
+                            </span>
+
+                            <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;">
+                                <div style="display:flex;flex-direction:column;">
+                                    <?php if ($is_active_promo): ?>
+                                        <span style="font-size:12px;color:#999;text-decoration:line-through;">₱<?php echo number_format($base_price, 2); ?></span>
+                                    <?php endif; ?>
+                                    <span style="font-size:20px;font-weight:800;color:#111827;font-family:'Poppins',sans-serif;">₱<?php echo number_format($final_price, 2); ?></span>
+                                </div>
+                                <?php
+                                    $st = $prod['stock_status'] ?? 'Available';
+                                    $sc = strtolower(str_replace(' ', '-', $st));
+                                    $sbg = ['available'=>'#dcfce7','limited-stock'=>'#fef08a','out-of-stock'=>'#fee2e2'];
+                                    $sco = ['available'=>'#166534','limited-stock'=>'#854d0e','out-of-stock'=>'#991b1b'];
+                                    $bg = $sbg[$sc] ?? '#dcfce7';
+                                    $co = $sco[$sc] ?? '#166534';
+                                ?>
+                                <span style="display:inline-block;align-self:flex-start;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:<?php echo $bg; ?>;color:<?php echo $co; ?>;font-family:'Poppins',sans-serif;">
+                                    <?php echo htmlspecialchars($st); ?>
+                                </span>
+                                <div style="width:100%;margin-top:4px;">
+                                    <span style="display:block;width:100%;padding:11px 12px;background:#001b94;color:white;border:none;border-radius:8px;font-weight:700;font-size:13px;font-family:'Poppins',sans-serif;text-align:center;letter-spacing:0.3px;">
+                                        View Details
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <?php endwhile; ?>
             <?php else: ?>
