@@ -815,17 +815,29 @@ td.fc-day-top {
    PORTRAIT MOBILE — Full 7-day grid fits screen width
    ───────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .schedule-page-container { padding: 8px; }
 
-    /* Fix 1 & 2: Remove scrollable wrapper, force full width */
+    /* Fix 0: Remove all container margins/padding so calendar goes edge-to-edge */
+    .schedule-page-container {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .panel.calendar-panel {
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
     .panel.calendar-panel > div[style] {
         overflow-x: visible !important;
         width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     #calendar {
         min-width: unset !important;
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
     }
 
     /* Fix 1: Force 7 columns to share screen width equally */
@@ -838,48 +850,46 @@ td.fc-day-top {
         min-width: unset !important;
     }
 
-    /* Fix 3: Micro padding in cells */
-    .fc th,
-    .fc td,
+    /* Fix 3: Slightly taller cells */
     td.fc-day,
-    td.fc-day-top,
-    th.fc-day-header {
+    td.fc-day-top {
+        min-height: 80px !important;
         padding: 2px !important;
         overflow: hidden !important;
     }
+    .fc th {
+        padding: 3px 1px !important;
+        overflow: hidden !important;
+    }
 
-    /* Fix 4: Shrink date numbers */
+    /* Fix 2b: Slightly larger date numbers */
     .fc-day-number {
-        font-size: 11px !important;
-        padding: 1px 2px !important;
+        font-size: 13px !important;
+        padding: 2px 3px !important;
         float: none !important;
         display: block !important;
         text-align: right !important;
     }
     .fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
-        font-size: 11px !important;
+        font-size: 13px !important;
     }
 
-    /* Fix 4: Abbreviate day headers — shrink text */
+    /* Fix 4: Abbreviated day headers */
     th.fc-day-header {
-        font-size: 9px !important;
+        font-size: 10px !important;
         font-weight: 700 !important;
         letter-spacing: 0 !important;
-        padding: 3px 1px !important;
+        padding: 4px 1px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
     }
-    /* Hide full day name text, show only first letter via CSS */
-    th.fc-day-header span {
-        display: none !important;
-    }
+    th.fc-day-header span { display: none !important; }
     th.fc-day-header::after {
         font-size: 10px !important;
         font-weight: 700 !important;
         display: block !important;
         text-align: center !important;
     }
-    /* Sun Mon Tue Wed Thu Fri Sat → S M T W T F S */
     th.fc-sun::after  { content: 'Su'; }
     th.fc-mon::after  { content: 'Mo'; }
     th.fc-tue::after  { content: 'Tu'; }
@@ -888,18 +898,18 @@ td.fc-day-top {
     th.fc-fri::after  { content: 'Fr'; }
     th.fc-sat::after  { content: 'Sa'; }
 
-    /* Fix 5: Ultra-compact event badges */
+    /* Fix 2a: Slightly larger event pills */
     .fc-event,
     .fc-day-grid-event {
-        font-size: 9px !important;
-        padding: 1px 2px !important;
+        font-size: 10px !important;
+        padding: 2px 3px !important;
         margin: 1px 1px !important;
         width: calc(100% - 2px) !important;
         box-sizing: border-box !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        line-height: 1.2 !important;
+        line-height: 1.3 !important;
         border-radius: 3px !important;
         transform: none !important;
         box-shadow: none !important;
@@ -907,35 +917,34 @@ td.fc-day-top {
     .fc-event .fc-content,
     .fc-event .fc-title,
     .fc-event .fc-time {
-        font-size: 9px !important;
+        font-size: 10px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
     }
 
-    /* Capacity badge — compact */
+    /* Capacity badge */
     .day-capacity-badge {
         font-size: 8px !important;
         padding: 1px 3px !important;
         gap: 2px !important;
     }
 
-    /* Cap row height */
+    /* Cap row height with slightly more room */
     .fc-row.fc-week {
-        max-height: 100px !important;
+        max-height: 120px !important;
         overflow-y: auto !important;
     }
 
-    /* Toolbar buttons compact */
+    /* Toolbar compact */
     .fc-toolbar {
         flex-wrap: wrap !important;
         gap: 4px !important;
+        padding: 8px !important;
     }
     .fc-button {
         font-size: 11px !important;
         padding: 4px 8px !important;
     }
-    .fc-toolbar h2 {
-        font-size: 13px !important;
-    }
+    .fc-toolbar h2 { font-size: 13px !important; }
 }
