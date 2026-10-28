@@ -1226,7 +1226,7 @@ html, body {
         padding: 0 !important;
     }
 
-    /* ══ 2. BOTTOM NAVIGATION BAR ══ */
+    /* ══ 2. BOTTOM NAVIGATION BAR — horizontally scrollable ══ */
     .admin-bottom-nav {
         display: flex !important;
         position: fixed !important;
@@ -1237,9 +1237,19 @@ html, body {
         background: #0f1d32 !important;
         z-index: 1000 !important;
         border-top: 1px solid rgba(255,255,255,0.1) !important;
-        justify-content: space-around !important;
         align-items: center !important;
         padding: 0 4px !important;
+        /* Make it swipeable horizontally */
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+        scrollbar-width: none !important; /* Firefox */
+    }
+    /* Hide scrollbar — Chrome/Safari/Oppo */
+    .admin-bottom-nav::-webkit-scrollbar {
+        display: none !important;
     }
 }
 
@@ -1254,9 +1264,11 @@ html, body {
     font-size: 10px;
     font-weight: 600;
     position: relative;
-    flex: 1;
-    padding: 6px 0;
+    flex: 0 0 auto;       /* don't shrink — allow scroll instead */
+    min-width: 60px;      /* each item takes at least 60px */
+    padding: 6px 8px;
     transition: color 0.2s;
+    white-space: nowrap;
 }
 .admin-bottom-nav a i { font-size: 18px; }
 .admin-bottom-nav a.active,

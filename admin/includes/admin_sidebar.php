@@ -179,11 +179,19 @@ if ($services_count_result) {
         <?php endif; ?>
     </a>
     <a href="services_schedule.php" class="<?php echo ($current_page === 'services_schedule.php') ? 'active' : ''; ?>">
-        <i class="fa-regular fa-calendar-days"></i>
-        <span>Services</span>
+        <i class="fa-solid fa-wrench"></i>
+        <span>Service</span>
         <?php if ($sidebar_pending_services_count > 0): ?>
             <span class="bnav-badge"><?php echo min($sidebar_pending_services_count, 99); ?></span>
         <?php endif; ?>
+    </a>
+    <a href="availability_schedule.php" class="<?php echo ($current_page === 'availability_schedule.php') ? 'active' : ''; ?>">
+        <i class="fa-regular fa-calendar-days"></i>
+        <span>Availability</span>
+    </a>
+    <a href="admin_history.php" class="<?php echo ($current_page === 'admin_history.php') ? 'active' : ''; ?>">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>History</span>
     </a>
     <a href="admin_ratings.php" class="<?php echo ($current_page === 'admin_ratings.php') ? 'active' : ''; ?>">
         <i class="fa-solid fa-star"></i>
