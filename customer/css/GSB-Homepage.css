@@ -825,14 +825,14 @@ html, body {
 }
 
 .p-modal-pricing .new-price {
-    font-size: 28px;
-    font-weight: 800;
-    color: #111;
-    transition: color 0.3s;
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    color: #111 !important;
+    font-family: 'Poppins', sans-serif !important;
 }
 
 .p-modal-pricing .new-price.is-promo {
-    color: #d31b27;
+    color: #d31b27 !important;
 }
 
 .p-specs-grid {
@@ -1192,7 +1192,7 @@ html, body {
     .see-more-btn { padding: 10px 30px; }
     .catalog-filters { gap: 10px; }
     .filter-btn { font-size: 14px; padding: 6px 12px; }
-    .p-specs-grid { grid-template-columns: 1fr; }
+    .p-specs-grid { grid-template-columns: 1fr 1fr !important; }
     
     .footer-container {
         grid-template-columns: 1fr;
