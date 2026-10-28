@@ -1290,3 +1290,18 @@ html, body {
     justify-content: center;
     padding: 0 3px;
 }
+
+/* ── Bottom nav: landscape even distribution ── */
+@media (max-width: 992px) and (orientation: landscape),
+       (max-width: 992px) {
+    .admin-bottom-nav {
+        /* When items fit in width, distribute evenly */
+        justify-content: space-between;
+    }
+    .admin-bottom-nav a {
+        flex: 1 0 auto;   /* grow to fill space, but allow scroll when too many */
+        min-width: 56px;
+        max-width: 80px;  /* cap so items don't get too wide in landscape */
+        text-align: center;
+    }
+}

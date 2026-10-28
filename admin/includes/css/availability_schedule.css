@@ -768,9 +768,9 @@ td.fc-day-top {
 }
 
 /* Responsive Adjustments */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .schedule-page-container {
-        padding: 16px;
+        padding: 12px;
     }
     .schedule-top-bar {
         flex-direction: column;
@@ -782,5 +782,67 @@ td.fc-day-top {
     .legend-tip {
         margin-left: 0;
         width: 100%;
+    }
+
+    /* ── Fix 1: Wrap calendar in scrollable container ── */
+    #calendar {
+        width: 100%;
+        min-width: 500px; /* forces horizontal scroll on narrow phones */
+    }
+    .fc-view-container,
+    .fc-view {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    /* Scrollable calendar wrapper added by JS or wrap via CSS */
+    .fc {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    /* ── Compact event pills on mobile ── */
+    .fc-event {
+        font-size: 10px !important;
+        padding: 2px 4px !important;
+        margin: 1px 2px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        line-height: 1.2 !important;
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    .fc-event .fc-content {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .fc-event .fc-title,
+    .fc-event .fc-time {
+        font-size: 10px !important;
+        white-space: nowrap !important;
+    }
+
+    /* ── Cap cell height so days with many events don't stretch ── */
+    .fc-day-grid-event { margin: 1px 2px !important; }
+    td.fc-day,
+    td.fc-day-top { min-height: unset !important; }
+    .fc-row.fc-week {
+        max-height: 120px !important;
+        overflow-y: auto !important;
+    }
+    .fc-day-grid .fc-row {
+        max-height: 120px !important;
+        overflow-y: auto !important;
+    }
+
+    /* Compact day numbers */
+    .fc-day-number { font-size: 11px !important; }
+    .fc-day-top { padding: 2px 4px !important; }
+}
+
+@media (max-width: 768px) {
+    .schedule-page-container {
+        padding: 10px;
     }
 }

@@ -395,7 +395,10 @@ if ($inquiries &&$inquiries->num_rows > 0) {
                 <!-- Calendar View Section -->
                 <section id="calendarView" class="view-section active-section">
                     <div class="panel calendar-panel">
-                        <div id="calendar"></div>
+                        <!-- Scrollable wrapper for mobile -->
+                        <div style="width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch;">
+                            <div id="calendar" style="min-width:500px;"></div>
+                        </div>
                     </div>
                 </section>
 
