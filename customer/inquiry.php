@@ -613,7 +613,15 @@ foreach ($dailyBookings as $date => $total) {
                                 <div style="display:flex;align-items:center;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:12.5px;color:#1d4ed8;font-weight:600;">
                                     <i class="fa-solid fa-check-circle"></i>
                                     Address pre-filled from your default saved address.
-                                    <a href="edit_profile.php" style="margin-left:auto;color:#1d4ed8;font-weight:700;">Change →</a>
+                                    <button type="button" onclick="openAddressPicker()" style="margin-left:auto;color:#1d4ed8;font-weight:700;background:none;border:none;cursor:pointer;font-size:12.5px;padding:0;font-family:inherit;">Change →</button>
+                                </div>
+                            </div>
+                            <?php else: ?>
+                            <div class="form-group full" style="margin-bottom:8px;">
+                                <div style="display:flex;align-items:center;gap:8px;background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;font-size:12.5px;color:#92400e;font-weight:600;">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    No saved address found.
+                                    <button type="button" onclick="openAddressPicker()" style="margin-left:auto;color:#1d4ed8;font-weight:700;background:none;border:none;cursor:pointer;font-size:12.5px;padding:0;font-family:inherit;">Manage Addresses →</button>
                                 </div>
                             </div>
                             <?php endif; ?>
@@ -1318,6 +1326,133 @@ foreach ($dailyBookings as $date => $total) {
             document.getElementById('orderConfirmationModal').style.display = 'none';
             document.getElementById('inquiryForm').submit();
         });
+    </script>
+
+    <!-- ══════════════════════════════════════════════════════
+         ADDRESS PICKER MODAL
+    ═══════════════════════════════════════════════════════ -->
+    <div id="addressPickerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99999;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:16px;padding:28px 24px;width:min(520px,94vw);max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <button type="button" onclick="closeAddressPicker()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;color:#94a3b8;cursor:pointer;">✕</button>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <h3 style="margin:0;font-size:18px;font-weight:700;color:#0f172a;display:flex;align-items:center;gap:8px;">
+                    <i class="fa-solid fa-location-dot" style="color:#1d4ed8;"></i> Saved Addresses
+                </h3>
+                <button type="button" onclick="closeAddressPicker();window.location.href='edit_profile.php';" style="background:#1d4ed8;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
+                    + Manage
+                </button>
+            </div>
+            <p style="margin:0 0 16px;font-size:13px;color:#64748b;">Select an address to use for this order.</p>
+
+            <div id="addressPickerList" style="display:flex;flex-direction:column;gap:10px;">
+                <p style="color:#94a3b8;text-align:center;font-size:13px;">Loading addresses...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Province code map — matches inquiry.php select values
+    const _provinceMap = {
+        'Metro Manila (NCR)': 'NCR',
+        'Batangas': '0410',
+        'Cavite':   '0421',
+        'Laguna':   '0434',
+        'Quezon':   '0456',
+        'Rizal':    '0458',
+    };
+
+    function openAddressPicker() {
+        document.getElementById('addressPickerModal').style.display = 'flex';
+        // Load addresses via AJAX
+        fetch('manage_addresses.php?action=list')
+            .then(r => r.json())
+            .then(data => {
+                const list = document.getElementById('addressPickerList');
+                if (!data.ok || !data.addresses || data.addresses.length === 0) {
+                    list.innerHTML = '<p style="color:#94a3b8;text-align:center;font-size:13px;">No saved addresses. <a href="edit_profile.php" style="color:#1d4ed8;">Add one in Edit Profile</a>.</p>';
+                    return;
+                }
+                list.innerHTML = data.addresses.map(a => `
+                    <div onclick="selectAddress(${JSON.stringify(a).replace(/"/g,'&quot;')})"
+                         style="cursor:pointer;border:2px solid ${a.is_default ? '#1d4ed8' : '#e2e8f0'};
+                                border-radius:12px;padding:14px 16px;
+                                background:${a.is_default ? '#eff6ff' : '#fff'};
+                                transition:all 0.15s;position:relative;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                            <strong style="font-size:14px;color:#0f172a;">${a.label || 'Home'}</strong>
+                            ${a.is_default ? '<span style="background:#1d4ed8;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:3px;"><i class="fa-solid fa-check"></i> Default</span>' : ''}
+                        </div>
+                        <p style="margin:0;font-size:13px;color:#475569;line-height:1.5;">${a.address}</p>
+                    </div>
+                `).join('');
+            })
+            .catch(() => {
+                document.getElementById('addressPickerList').innerHTML = '<p style="color:#ef4444;font-size:13px;">Failed to load addresses.</p>';
+            });
+    }
+
+    function closeAddressPicker() {
+        document.getElementById('addressPickerModal').style.display = 'none';
+    }
+
+    function selectAddress(addr) {
+        // Fill street
+        document.getElementById('streetAddress').value = addr.street_address || '';
+
+        // Set province
+        const provSel = document.getElementById('province');
+        const provCode = _provinceMap[addr.province] || '';
+        for (let i = 0; i < provSel.options.length; i++) {
+            if (provSel.options[i].value === provCode) {
+                provSel.selectedIndex = i;
+                break;
+            }
+        }
+
+        // Trigger cascade to load cities then barangays
+        if (provCode) {
+            const cityTarget  = addr.city;
+            const brgyTarget  = addr.barangay;
+
+            provSel.dispatchEvent(new Event('change'));
+
+            const citySelect = document.getElementById('city');
+            const brgySelect = document.getElementById('barangay');
+
+            const waitCity = setInterval(() => {
+                if (!citySelect.disabled && citySelect.options.length > 1) {
+                    clearInterval(waitCity);
+                    for (let i = 0; i < citySelect.options.length; i++) {
+                        if (citySelect.options[i].text === cityTarget) {
+                            citySelect.selectedIndex = i;
+                            citySelect.dispatchEvent(new Event('change'));
+                            break;
+                        }
+                    }
+                    const waitBrgy = setInterval(() => {
+                        if (!brgySelect.disabled && brgySelect.options.length > 1) {
+                            clearInterval(waitBrgy);
+                            for (let i = 0; i < brgySelect.options.length; i++) {
+                                if (brgySelect.options[i].text === brgyTarget ||
+                                    brgySelect.options[i].dataset.name === brgyTarget) {
+                                    brgySelect.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }, 200);
+                }
+            }, 200);
+        }
+
+        closeAddressPicker();
+    }
+
+    // Close picker on backdrop click
+    document.getElementById('addressPickerModal').addEventListener('click', function(e) {
+        if (e.target === this) closeAddressPicker();
+    });
     </script>
 </body>
 </html>
