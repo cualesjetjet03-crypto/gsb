@@ -30,6 +30,17 @@ if ($expire_stmt) {
     $expire_stmt->close();
 }
 
+// ══════════════════════════════════════════════════════════════
+// AUTO-ARCHIVE OUT-OF-STOCK PRODUCTS — runs on every page load
+// If stock_quantity <= 0 OR stock_status = 'Out of Stock', archive it
+// ══════════════════════════════════════════════════════════════
+$conn->query("
+    UPDATE products
+    SET is_archived = 1
+    WHERE is_archived = 0
+      AND (stock_quantity <= 0 OR stock_status = 'Out of Stock')
+");
+
 function e($value){
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
