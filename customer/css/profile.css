@@ -3,10 +3,18 @@
    PROFILE PAGE
 ========================================== */
 
-/* Ensure Poppins applies to all elements including headings */
+/* Ensure Poppins applies to all elements including headings
+   but NEVER override Font Awesome icon font */
 *, *::before, *::after {
-    font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
+}
+
+/* Apply Poppins everywhere EXCEPT Font Awesome icon elements */
+body,
+h1, h2, h3, h4, h5, h6,
+p, span, div, a, label, input, select, textarea,
+button, table, th, td, li, ul, ol {
+    font-family: 'Poppins', sans-serif;
 }
 
 /* ── Lock horizontal scroll only, vertical scroll fully free ── */
