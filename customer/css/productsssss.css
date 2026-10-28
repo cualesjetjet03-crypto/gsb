@@ -595,6 +595,27 @@ body {
     position: relative;
 }
 
+/* ── Discount ribbon badge ── */
+.discount-ribbon {
+    position: absolute;
+    top: -5px;
+    left: 15px;
+    background-color: #d31b27;
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 1.1;
+    text-align: center;
+    padding: 10px 8px;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+    z-index: 5;
+    min-width: 44px;
+}
+.discount-ribbon small {
+    font-size: 10px;
+    display: block;
+}
+
 .card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 22px rgba(0,0,0,0.15);
