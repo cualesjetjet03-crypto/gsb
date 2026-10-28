@@ -130,8 +130,23 @@ $total_notifications = $topbar_pending_inquiries + $topbar_pending_services;
 
         if (toggleBtn && sidebar) {
             toggleBtn.addEventListener('click', function () {
-                sidebar.classList.toggle('collapsed');
-                if (mainContent) mainContent.classList.toggle('sidebar-collapsed');
+                if (window.innerWidth <= 992) {
+                    // Mobile: use drawer mode
+                    var overlay = document.getElementById('sidebarOverlay');
+                    if (sidebar.classList.contains('mobile-open')) {
+                        sidebar.classList.remove('mobile-open');
+                        if (overlay) overlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    } else {
+                        sidebar.classList.add('mobile-open');
+                        if (overlay) overlay.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                } else {
+                    // Desktop: collapse sidebar
+                    sidebar.classList.toggle('collapsed');
+                    if (mainContent) mainContent.classList.toggle('sidebar-collapsed');
+                }
             });
         }
 
