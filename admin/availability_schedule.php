@@ -397,7 +397,7 @@ if ($inquiries &&$inquiries->num_rows > 0) {
                     <div class="panel calendar-panel">
                         <!-- Scrollable wrapper for mobile -->
                         <div style="width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch;">
-                            <div id="calendar" style="min-width:500px;"></div>
+                            <div id="calendar"></div>
                         </div>
                     </div>
                 </section>
