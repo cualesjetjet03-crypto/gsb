@@ -188,3 +188,26 @@
     margin-left: 76px;
     width: calc(100% - 76px);
 }
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE FIXES ≤ 992px
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 992px) {
+
+    /* Fix 1: Notification dropdown — keep it on screen */
+    #gsb-custom-topbar .notification-dropdown .dropdown-menu,
+    #gsb-custom-topbar #notificationMenu {
+        right: auto !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: min(280px, 90vw) !important;
+        max-width: 90vw !important;
+    }
+
+    /* Profile dropdown — stay right-aligned but never clip */
+    #gsb-custom-topbar #profileMenu {
+        right: 0 !important;
+        left: auto !important;
+        width: min(220px, 90vw) !important;
+    }
+}

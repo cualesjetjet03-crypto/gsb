@@ -834,3 +834,28 @@
 .feedback-item:hover { background: #f8fafc; }
 .pending-item  { border-left: 3px solid #f59e0b; }
 .approved-item { border-left: 3px solid #10b981; }
+
+/* ═══════════════════════════════════════════════════════
+   FIX 2: Bottom nav padding so last rating's buttons
+   are not covered by the sticky bottom nav bar
+   ═══════════════════════════════════════════════════════ */
+@media (max-width: 992px) {
+    /* Add bottom padding to the feedback list so bottom nav
+       doesn't cover the last item's Approve/Hide/Delete buttons */
+    .feedback-list {
+        padding-bottom: 80px !important;
+    }
+    .feedback-panel {
+        padding-bottom: 0 !important;
+    }
+
+    /* Also ensure the whole right column has room */
+    .right-column {
+        padding-bottom: 80px !important;
+    }
+
+    /* dashboard-container bottom padding for all admin pages */
+    .dashboard-container {
+        padding-bottom: 80px !important;
+    }
+}
