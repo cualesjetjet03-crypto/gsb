@@ -161,47 +161,6 @@ if ($services_count_result) {
 <!-- Mobile: overlay backdrop -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- Mobile: Bottom Navigation Bar -->
-<nav class="admin-bottom-nav">
-    <a href="admin_dashboard.php" class="<?php echo ($current_page === 'admin_dashboard.php') ? 'active' : ''; ?>">
-        <i class="fa-solid fa-table-cells-large"></i>
-        <span>Home</span>
-    </a>
-    <a href="admin_products.php" class="<?php echo ($current_page === 'admin_products.php') ? 'active' : ''; ?>">
-        <i class="fa-solid fa-box-open"></i>
-        <span>Products</span>
-    </a>
-    <a href="admin_inquiries.php" class="<?php echo ($current_page === 'admin_inquiries.php') ? 'active' : ''; ?>">
-        <i class="fa-regular fa-message"></i>
-        <span>Orders</span>
-        <?php if ($sidebar_pending_inquiries_count > 0): ?>
-            <span class="bnav-badge"><?php echo min($sidebar_pending_inquiries_count, 99); ?></span>
-        <?php endif; ?>
-    </a>
-    <a href="services_schedule.php" class="<?php echo ($current_page === 'services_schedule.php') ? 'active' : ''; ?>">
-        <i class="fa-solid fa-wrench"></i>
-        <span>Service</span>
-        <?php if ($sidebar_pending_services_count > 0): ?>
-            <span class="bnav-badge"><?php echo min($sidebar_pending_services_count, 99); ?></span>
-        <?php endif; ?>
-    </a>
-    <a href="availability_schedule.php" class="<?php echo ($current_page === 'availability_schedule.php') ? 'active' : ''; ?>">
-        <i class="fa-regular fa-calendar-days"></i>
-        <span>Availability</span>
-    </a>
-    <a href="admin_history.php" class="<?php echo ($current_page === 'admin_history.php') ? 'active' : ''; ?>">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-        <span>History</span>
-    </a>
-    <a href="admin_ratings.php" class="<?php echo ($current_page === 'admin_ratings.php') ? 'active' : ''; ?>">
-        <i class="fa-solid fa-star"></i>
-        <span>Ratings</span>
-    </a>
-    <a href="admin_users.php" class="<?php echo ($current_page === 'admin_users.php') ? 'active' : ''; ?>">
-        <i class="fa-solid fa-users"></i>
-        <span>Users</span>
-    </a>
-</nav>
 
 <script>
 (function() {
