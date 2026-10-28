@@ -836,26 +836,14 @@
 .approved-item { border-left: 3px solid #10b981; }
 
 /* ═══════════════════════════════════════════════════════
-   FIX 2: Bottom nav padding so last rating's buttons
-   are not covered by the sticky bottom nav bar
+   FIX 2: Content padding so last rating's buttons
+   are not cut off on mobile
    ═══════════════════════════════════════════════════════ */
 @media (max-width: 992px) {
-    /* Add bottom padding to the feedback list so bottom nav
-       doesn't cover the last item's Approve/Hide/Delete buttons */
     .feedback-list {
-        padding-bottom: 80px !important;
+        padding-bottom: 20px !important;
     }
-    .feedback-panel {
-        padding-bottom: 0 !important;
-    }
-
-    /* Also ensure the whole right column has room */
-    .right-column {
-        padding-bottom: 80px !important;
-    }
-
-    /* dashboard-container bottom padding for all admin pages */
     .dashboard-container {
-        padding-bottom: 80px !important;
+        padding-bottom: 20px !important;
     }
 }

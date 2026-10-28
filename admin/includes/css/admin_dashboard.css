@@ -1052,9 +1052,9 @@ html, body {
 }
 .sidebar-overlay.active { display: block; }
 
-/* ── Bottom navigation bar (hidden on desktop) ── */
+/* ── Bottom navigation bar (disabled — using sidebar drawer instead) ── */
 .admin-bottom-nav {
-    display: none;
+    display: none !important;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -1098,7 +1098,6 @@ html, body {
         width: 100% !important;
         max-width: 100vw !important;
         overflow-x: hidden !important;
-        padding-bottom: 70px !important;
     }
 
     /* ══ 5. PREVENT BODY STRETCH ══ */
