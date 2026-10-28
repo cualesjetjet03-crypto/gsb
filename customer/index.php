@@ -476,24 +476,34 @@ $catalog_result = $conn->query($catalog_query);
             
             if (totalPages <= 1) return;
 
+            // « Prev button
             const prevBtn = document.createElement('button');
-            prevBtn.className = 'page-btn';
-            prevBtn.innerHTML = '&#10094;'; 
+            prevBtn.className = 'page-btn prev-next';
+            prevBtn.innerHTML = '&laquo; Prev';
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => { currentPage--; updateCatalog(); document.getElementById('catalog').scrollIntoView({behavior: "smooth"}); };
             paginationContainer.appendChild(prevBtn);
 
+            // Page number buttons with ellipsis
             for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.innerText = i;
-                btn.onclick = () => { currentPage = i; updateCatalog(); document.getElementById('catalog').scrollIntoView({behavior: "smooth"}); };
-                paginationContainer.appendChild(btn);
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    const btn = document.createElement('button');
+                    btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                    btn.innerText = i;
+                    btn.onclick = () => { currentPage = i; updateCatalog(); document.getElementById('catalog').scrollIntoView({behavior: "smooth"}); };
+                    paginationContainer.appendChild(btn);
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-dots';
+                    dots.innerText = '...';
+                    paginationContainer.appendChild(dots);
+                }
             }
 
+            // Next » button
             const nextBtn = document.createElement('button');
-            nextBtn.className = 'page-btn';
-            nextBtn.innerHTML = '&#10095;'; 
+            nextBtn.className = 'page-btn prev-next';
+            nextBtn.innerHTML = 'Next &raquo;';
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => { currentPage++; updateCatalog(); document.getElementById('catalog').scrollIntoView({behavior: "smooth"}); };
             paginationContainer.appendChild(nextBtn);
