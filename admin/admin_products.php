@@ -65,10 +65,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['archive_action'])) {
                 exit();
             }
         } elseif ($action === 'unarchive') {
-            $stmt = $conn->prepare("UPDATE products SET is_archived = 0 WHERE id = ?");
-            $stmt->bind_param("i", $product_id);
+            // ── Rule: must have stock > 0 to restore ──────────────────────
+            $new_qty = isset($_POST['new_stock_quantity']) ? (int)$_POST['new_stock_quantity'] : 0;
+
+            if ($new_qty <= 0) {
+                header("Location: admin_products.php?view=archived&error=" . urlencode("Cannot restore product: Please enter a stock quantity greater than 0."));
+                exit();
+            }
+
+            // Determine stock_status based on new quantity
+            $new_status = $new_qty <= 3 ? 'Limited Stock' : 'Available';
+
+            $stmt = $conn->prepare("UPDATE products SET is_archived = 0, stock_quantity = ?, stock_status = ? WHERE id = ?");
+            $stmt->bind_param("isi", $new_qty, $new_status, $product_id);
             if ($stmt->execute()) {
-                header("Location: admin_products.php?view=archived&success=" . urlencode("Product restored to Active Products successfully!"));
+                header("Location: admin_products.php?view=active&success=" . urlencode("Product restored successfully with {$new_qty} units in stock!"));
                 exit();
             }
         }
@@ -423,12 +434,28 @@ $pending_count = $pending_count_result ? (int)$pending_count_result->fetch_assoc
         </div>
         <h2>Please Confirm</h2>
         <p id="archiveConfirmMessage">Are you sure you want to archive this product? It will be hidden from customers.</p>
-        <form method="POST" action="admin_products.php">
+
+        <!-- Stock quantity field — only shown when restoring -->
+        <div id="restoreStockField" style="display:none; margin: 14px 0;">
+            <label style="display:block; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:6px;">
+                <i class="fa-solid fa-boxes-stacked" style="color:#16a34a; margin-right:5px;"></i>
+                New Stock Quantity <span style="color:#dc2626;">*</span>
+            </label>
+            <input type="number" name="new_stock_quantity" id="newStockQuantity"
+                   min="1" placeholder="Enter quantity (e.g. 10)"
+                   style="width:100%; padding:10px 12px; border:2px solid #16a34a; border-radius:8px; font-size:14px; font-family:inherit; outline:none;">
+            <small style="color:#64748b; display:block; margin-top:5px;">
+                Product will be set to <strong>Available</strong> if qty &gt; 3, or <strong>Limited Stock</strong> if qty ≤ 3.
+            </small>
+        </div>
+
+        <form method="POST" action="admin_products.php" id="archiveConfirmForm">
             <input type="hidden" name="archive_action" id="archiveFormAction" value="archive">
             <input type="hidden" name="product_id" id="archiveProductId" value="">
+            <input type="hidden" name="new_stock_quantity" id="newStockQuantityHidden" value="">
             <div class="confirm-modal-actions">
                 <button type="button" class="confirm-cancel-btn" onclick="closeArchiveConfirmModal()">Cancel</button>
-                <button type="submit" class="confirm-proceed-btn" id="archiveConfirmSubmitBtn">Yes, Proceed</button>
+                <button type="submit" class="confirm-proceed-btn" id="archiveConfirmSubmitBtn" onclick="return validateRestore()">Yes, Proceed</button>
             </div>
         </form>
     </div>
@@ -964,7 +991,29 @@ function closeProductModal(){
 // ==========================================
 // ARCHIVE & RESTORE MODAL LOGIC
 // ==========================================
+function validateRestore() {
+    const action = document.getElementById('archiveFormAction').value;
+    if (action === 'unarchive') {
+        const qty = parseInt(document.getElementById('newStockQuantity').value);
+        if (!qty || qty <= 0) {
+            document.getElementById('newStockQuantity').style.border = '2px solid #dc2626';
+            document.getElementById('newStockQuantity').focus();
+            alert('Please enter a stock quantity greater than 0 to restore this product.');
+            return false;
+        }
+        // Copy to hidden field so form submits it
+        document.getElementById('newStockQuantityHidden').value = qty;
+    }
+    return true;
+}
+
 function openArchiveModal(productId, isAvailable) {
+    document.getElementById('archiveFormAction').value = 'archive';
+    document.getElementById('archiveProductId').value = productId;
+    document.getElementById('archiveConfirmMessage').textContent = "Are you sure you want to archive this product? It will be hidden from customers.";
+
+    // Hide stock field for archive action
+    document.getElementById('restoreStockField').style.display = 'none';
     let msg = "";
     if (isAvailable) {
         msg = "WARNING: This product is still marked as AVAILABLE! Are you sure you want to archive it and hide it from the catalog?";
@@ -989,14 +1038,19 @@ function openArchiveModal(productId, isAvailable) {
 function openRestoreModal(productId) {
     document.getElementById('archiveFormAction').value = 'unarchive';
     document.getElementById('archiveProductId').value = productId;
-    document.getElementById('archiveConfirmMessage').textContent = "Are you sure you want to restore this product? It will become visible to customers again.";
+    document.getElementById('newStockQuantity').value = '';
+    document.getElementById('newStockQuantityHidden').value = '';
+    document.getElementById('archiveConfirmMessage').textContent = "To restore this product, you must enter a new stock quantity. The product will become visible to customers once restored.";
+
+    // Show the stock quantity input
+    document.getElementById('restoreStockField').style.display = 'block';
 
     const iconWrap = document.getElementById('archiveConfirmIcon');
     const submitBtn = document.getElementById('archiveConfirmSubmitBtn');
     iconWrap.classList.add('restore-icon');
     iconWrap.innerHTML = '<i class="fa-solid fa-trash-arrow-up"></i>';
     submitBtn.classList.add('restore-btn');
-    submitBtn.textContent = 'Yes, Restore';
+    submitBtn.textContent = 'Restore Product';
 
     document.getElementById('archiveConfirmModal').classList.add('show');
 }
