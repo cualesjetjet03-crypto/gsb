@@ -142,11 +142,7 @@ if (!function_exists('nav_link')) {
             <?php echo nav_link('index.php', 'Home', $current_page); ?>
             <?php echo nav_link('about.php', 'About Us', $current_page); ?>
             <?php echo nav_link('services.php', 'Services', $current_page); ?>
-            
-            <!-- ONLY SHOW PRODUCTS IF LOGGED IN -->
-            <?php if($is_logged_in): ?>
-                <?php echo nav_link('products.php', 'Products', $current_page); ?>
-            <?php endif; ?>
+            <?php echo nav_link('products.php', 'Products', $current_page); ?>
 
             <!-- USER PROFILE & AUTH BUTTONS -->
             <div class="menu-container">
