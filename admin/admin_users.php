@@ -47,6 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     exit();
 }
 
+// ── GET-based delete (from inline confirm link) ──────────────────────────────
+if (isset($_GET['delete_user_id'])) {
+    $del_id = (int)$_GET['delete_user_id'];
+    if ($del_id > 0) {
+        $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
+        if ($stmt) {
+            $stmt->bind_param("i", $del_id);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+    header("Location: admin_users.php");
+    exit();
+}
+
 function e($value){ return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }
 
 // Fetch KPI Metrics
@@ -188,14 +203,12 @@ $users_result = $conn->query("SELECT * FROM users ORDER BY created_at DESC");
                                 <td><?php echo date("M d, Y", strtotime($u['created_at'])); ?></td>
                                 <td>
                                     <div class="table-actions">
-                                        <button type="button" class="action-btn edit"
-                                            onclick="openEditModal(<?php echo (int)$u['id']; ?>, <?php echo json_encode($u['fullname']); ?>, <?php echo json_encode($u['username']); ?>, <?php echo json_encode($u['email']); ?>, <?php echo json_encode($u['phone']); ?>, <?php echo json_encode($u['address']); ?>)">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
-                                        <button type="button" class="action-btn delete"
-                                            onclick="openDeleteModal(<?php echo (int)$u['id']; ?>, <?php echo json_encode($u['fullname']); ?>)">
+                                        <a href="admin_users.php?delete_user_id=<?php echo (int)$u['id']; ?>"
+                                           class="action-btn delete"
+                                           onclick="return confirm('Are you sure you want to permanently delete <?php echo addslashes(e($u['fullname'])); ?>? This cannot be undone.');"
+                                           title="Delete customer">
                                             <i class="fa-regular fa-trash-can"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
