@@ -103,7 +103,7 @@ $pending_count = $pending_count_result ? (int)$pending_count_result->fetch_assoc
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Products - GSB Admin</title>
 <link rel="stylesheet" href="includes/css/admin_dashboard.css">
 <link rel="icon" type="image/png" href="assets/favicon.png">

@@ -1029,15 +1029,18 @@ td small {
 }
 
 /* ==========================================================================
-   MOBILE-FIRST ADMIN RESPONSIVE — ≤ 768px
-   Requirements:
-   1. Hide sidebar, hamburger opens as drawer overlay
-   2. Bottom nav bar with icons + badges
-   3. Compact topbar
-   4. 2-column KPI grid
-   5. Inline action buttons
-   6. Full-width content, minimal padding
+   MOBILE-FIRST ADMIN RESPONSIVE — ≤ 992px (covers all smartphones)
    ========================================================================== */
+
+/* ── Body & wrapper: prevent horizontal overflow ── */
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+.admin-wrapper, .admin-layout {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
 
 /* ── Mobile overlay backdrop for sidebar drawer ── */
 .sidebar-overlay {
@@ -1049,48 +1052,57 @@ td small {
 }
 .sidebar-overlay.active { display: block; }
 
-/* ── Bottom navigation bar ── */
+/* ── Bottom navigation bar (hidden on desktop) ── */
 .admin-bottom-nav {
-    display: none; /* hidden on desktop */
+    display: none;
 }
 
-@media (max-width: 768px) {
+/* ─────────────────────────────────────────────────────────────────────────
+   MOBILE BREAKPOINT — 992px catches ALL modern smartphones including Oppo,
+   Samsung, Xiaomi etc. which report viewport widths up to ~900px CSS pixels
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 992px) {
 
-    /* ══ 1. HIDE SIDEBAR COMPLETELY, SHOW AS DRAWER ══ */
+    /* ══ 1. FORCE-HIDE SIDEBAR ══ */
     .sidebar {
+        display: none !important; /* hard hide — overrides all previous rules */
+    }
+    /* Sidebar drawer: shown only when mobile-open class added by JS */
+    .sidebar.mobile-open {
+        display: flex !important;
         position: fixed !important;
         top: 0 !important;
-        left: -300px !important; /* hidden off-screen — override 820px rule */
-        width: 260px !important;
+        left: 0 !important;
+        width: 270px !important;
         height: 100vh !important;
         z-index: 1200 !important;
-        transition: left 0.3s ease !important;
         overflow-y: auto !important;
         padding: 20px 14px 100px !important;
+        flex-direction: column !important;
     }
-    .sidebar.mobile-open {
-        left: 0 !important; /* slide in when hamburger tapped */
-    }
-    /* Show all sidebar text again (820px rule hides it) */
-    .brand-box h2,
-    .brand-box p,
-    .side-nav a span:not(.nav-badge),
-    .logout-link span {
+    /* Show all text inside open drawer */
+    .sidebar.mobile-open .brand-box h2,
+    .sidebar.mobile-open .brand-box p,
+    .sidebar.mobile-open .side-nav a span:not(.nav-badge) {
         font-size: inherit !important;
         display: inline !important;
     }
-    .side-nav a i,
-    .logout-link i {
-        font-size: 16px !important;
+    .sidebar.mobile-open .side-nav a {
+        font-size: 14px !important;
     }
 
-    /* ══ MAIN CONTENT: full width, no left margin ══ */
+    /* ══ MAIN CONTENT: full width ══ */
     .main-content,
     .main-content.sidebar-collapsed {
         margin-left: 0 !important;
         width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
         padding-bottom: 70px !important;
     }
+
+    /* ══ 5. PREVENT BODY STRETCH ══ */
+    body { overflow-x: hidden !important; }
 
     /* ══ 3. COMPACT TOPBAR ══ */
     #gsb-custom-topbar {
@@ -1099,21 +1111,23 @@ td small {
         max-height: 56px !important;
         padding: 0 14px !important;
     }
-    #gsb-custom-topbar .topbar-left i { font-size: 1.2rem; }
-    #gsb-custom-topbar .profile-info { display: flex !important; } /* keep "Admin" label */
+    #gsb-custom-topbar .profile-info { display: flex !important; }
     #gsb-custom-topbar .profile-name { font-size: 13px !important; }
-    #gsb-custom-topbar .dropdown-icon { font-size: 0.7rem; }
     #gsb-custom-topbar .topbar-right { gap: 12px !important; }
-    #gsb-custom-topbar .avatar-icon { width: 30px !important; height: 30px !important; font-size: 1rem !important; }
+    #gsb-custom-topbar .avatar-icon {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 1rem !important;
+    }
 
     /* ══ PAGE HEADER ══ */
     .page-header {
-        padding: 16px 14px 10px !important;
+        padding: 14px 14px 10px !important;
     }
-    .page-header h1 { font-size: 18px; }
-    .page-header p  { font-size: 13px; }
+    .page-header h1 { font-size: 18px !important; }
+    .page-header p  { font-size: 13px !important; }
 
-    /* ══ 4. 2-COLUMN KPI GRID ══ */
+    /* ══ 4. KPI GRID — 2 columns ══ */
     .summary-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 10px !important;
@@ -1122,17 +1136,17 @@ td small {
     .summary-card {
         padding: 14px 12px !important;
         min-height: unset !important;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
     }
-    .summary-card p  { font-size: 12px !important; margin-bottom: 4px !important; }
+    .summary-card p  { font-size: 12px !important; margin-bottom: 3px !important; }
     .summary-card h2 { font-size: 22px !important; margin-bottom: 2px !important; }
     .summary-card small { font-size: 10px !important; }
     .summary-icon {
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 18px !important;
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 17px !important;
         border-radius: 10px !important;
     }
 
@@ -1141,35 +1155,41 @@ td small {
         grid-template-columns: 1fr !important;
         padding: 0 14px 30px !important;
     }
-    .schedule-panel { grid-row: unset; }
+    .schedule-panel { grid-row: unset !important; }
 
-    /* ══ TABLES ══ */
-    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    table { font-size: 12px; }
-    th, td { padding: 8px 10px !important; white-space: nowrap; }
+    /* ══ 4. TABLE OVERFLOW FIX ══ */
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        display: block !important;
+    }
+    /* Also wrap bare tables that aren't in .table-responsive */
+    .panel table,
+    .product-panel table {
+        min-width: 600px; /* allow horizontal scroll inside */
+    }
+    table { font-size: 12px !important; }
+    th, td { padding: 8px 10px !important; white-space: nowrap !important; }
 
     /* ══ 5. INLINE ACTION BUTTONS ══ */
     .panel-header {
-        flex-wrap: wrap;
-        gap: 8px;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
         padding: 12px 14px !important;
     }
-    .panel-header h2 { font-size: 15px; }
+    .panel-header h2 { font-size: 15px !important; }
     .product-tools {
         flex-direction: row !important;
-        flex-wrap: wrap;
+        flex-wrap: wrap !important;
         gap: 8px !important;
     }
     .product-tools button,
     .product-tools a,
-    .product-tools .outline-btn,
-    .product-tools .primary-btn {
+    .outline-btn,
+    .primary-btn {
         padding: 8px 12px !important;
         font-size: 12px !important;
-        flex: 1;
-        min-width: 0;
-        text-align: center;
-        justify-content: center;
     }
 
     /* ══ 6. FULL-WIDTH CONTENT ══ */
@@ -1178,22 +1198,28 @@ td small {
         margin-left: 14px !important;
         margin-right: 14px !important;
     }
-    .row-header {
-        flex-direction: row !important;
-        flex-wrap: wrap;
-        gap: 8px;
+    .summary-grid,
+    .dashboard-grid,
+    .page-header {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
     }
     .form-grid {
         grid-template-columns: 1fr !important;
-        gap: 12px;
+        gap: 12px !important;
+    }
+    .row-header {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
     }
 
     /* Modals full screen on mobile */
     .modal-card {
         width: 100% !important;
         max-width: 100% !important;
-        border-radius: 16px 16px 0 0;
-        margin-top: auto;
+        border-radius: 16px 16px 0 0 !important;
+        margin-top: auto !important;
     }
     .modal {
         align-items: flex-end !important;
@@ -1202,53 +1228,53 @@ td small {
 
     /* ══ 2. BOTTOM NAVIGATION BAR ══ */
     .admin-bottom-nav {
-        display: flex;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 62px;
-        background: #0f1d32;
-        z-index: 1000;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        justify-content: space-around;
-        align-items: center;
-        padding: 0 4px;
+        display: flex !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 62px !important;
+        background: #0f1d32 !important;
+        z-index: 1000 !important;
+        border-top: 1px solid rgba(255,255,255,0.1) !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 0 4px !important;
     }
-    .admin-bottom-nav a {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3px;
-        color: rgba(255,255,255,0.55);
-        text-decoration: none;
-        font-size: 10px;
-        font-weight: 600;
-        position: relative;
-        flex: 1;
-        padding: 6px 0;
-        transition: color 0.2s;
-    }
-    .admin-bottom-nav a i { font-size: 18px; }
-    .admin-bottom-nav a.active,
-    .admin-bottom-nav a:hover { color: #ffffff; }
-    .admin-bottom-nav a.active i { color: #3b82f6; }
+}
 
-    /* Badge on bottom nav icon */
-    .admin-bottom-nav .bnav-badge {
-        position: absolute;
-        top: 2px;
-        right: calc(50% - 18px);
-        background: #ef4444;
-        color: #fff;
-        font-size: 9px;
-        font-weight: 700;
-        min-width: 16px;
-        height: 16px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 3px;
-    }
+/* ── Bottom nav link styles (always defined, display controlled by media query) ── */
+.admin-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 600;
+    position: relative;
+    flex: 1;
+    padding: 6px 0;
+    transition: color 0.2s;
+}
+.admin-bottom-nav a i { font-size: 18px; }
+.admin-bottom-nav a.active,
+.admin-bottom-nav a:hover { color: #fff; }
+.admin-bottom-nav a.active i { color: #3b82f6; }
+.admin-bottom-nav .bnav-badge {
+    position: absolute;
+    top: 2px;
+    right: calc(50% - 18px);
+    background: #ef4444;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
 }

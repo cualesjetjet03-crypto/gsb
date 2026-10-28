@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once 'includes/db_connect.php';
 require_once __DIR__ . '/../includes/auth_helpers.php';
@@ -9,7 +9,7 @@ require_admin_session('admin_login.php');
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Account Settings</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <!-- Font Awesome for icons -->

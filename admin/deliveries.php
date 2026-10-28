@@ -13,7 +13,7 @@ $result = $conn->query("SELECT * FROM deliveries ORDER BY delivery_date DESC");
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Deliveries — GSB Admin</title>
     <link rel="stylesheet" href="includes/css/admin_dashboard.css">
     <link rel="icon" type="image/png" href="assets/favicon.png">
