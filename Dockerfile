@@ -18,6 +18,7 @@ RUN echo "output_buffering = On" >> /usr/local/etc/php/php.ini-production \
     && echo "upload_max_filesize = 10M" >> /usr/local/etc/php/php.ini-production \
     && echo "post_max_size = 12M" >> /usr/local/etc/php/php.ini-production \
     && echo "memory_limit = 256M" >> /usr/local/etc/php/php.ini-production \
+    && echo "date.timezone = Asia/Manila" >> /usr/local/etc/php/php.ini-production \
     && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
 # Set working directory
