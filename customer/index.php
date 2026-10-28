@@ -272,30 +272,27 @@ $catalog_result = $conn->query($catalog_query);
                         </div>
                     <?php endif; ?>
 
-                    <div class="product-image-wrapper">
-                        <img src="<?php echo $img_src; ?>" alt="<?php echo htmlspecialchars($prod['IndoorUnitModel']); ?>" onerror="this.onerror=null;this.src='images/no-image.png'">
+                    <span class="promo-brand <?php echo $brand_class; ?>"><?php echo $brand; ?></span>
+                    
+                    <div class="promo-img-wrapper">
+                        <img src="<?php echo $img_src; ?>" alt="<?php echo htmlspecialchars($prod['IndoorUnitModel']); ?>" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23cbd5e1\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Crect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'%3E%3C/rect%3E%3Ccircle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'%3E%3C/circle%3E%3Cpolyline points=\'21 15 16 10 5 21\'%3E%3C/polyline%3E%3C/svg%3E'">
                     </div>
-
-                    <div class="card-content">
-                        <span class="card-brand-badge"><?php echo $brand; ?></span>
-                        <h3 class="card-title"><?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?></h3>
-                        <p class="card-model"><?php echo htmlspecialchars($prod['IndoorUnitModel'] ?: ''); ?></p>
-
-                        <div class="card-bottom">
-                            <div class="price-section">
-                                <?php if ($is_active_promo): ?>
-                                    <span class="old-price">₱<?php echo number_format($base_price, 2); ?></span>
-                                <?php endif; ?>
-                                <p class="price">₱<?php echo number_format($final_price, 2); ?></p>
-                            </div>
-                            <?php
-                                $status_text  = $prod['stock_status'] ?? 'Available';
-                                $status_class = strtolower(str_replace(' ', '-', $status_text));
-                            ?>
-                            <span class="stock-badge <?php echo $status_class; ?>"><?php echo htmlspecialchars($status_text); ?></span>
-                            <div class="action-row" onclick="event.stopPropagation();">
-                                <button class="view-details-btn" type="button" onclick="openProductModal(this.closest('.promo-card'));">View Details</button>
-                            </div>
+                    
+                    <div class="promo-info promo-info-spaced">
+                        <h3><?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?></h3>
+                        <p class="promo-model-code"><?php echo htmlspecialchars($prod['IndoorUnitModel'] ?: ''); ?></p>
+                    </div>
+                    
+                    <div class="promo-card-bottom">
+                        <div class="promo-pricing">
+                            <?php if ($is_active_promo): ?>
+                                <span class="old-price">₱<?php echo number_format($base_price, 2); ?></span>
+                            <?php endif; ?>
+                            <span class="new-price">₱<?php echo number_format($final_price, 2); ?></span>
+                        </div>
+                        
+                        <div class="cart-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
                         </div>
                     </div>
                 </div>
