@@ -524,6 +524,27 @@ textarea {
     transform: translateY(-1px);
 }
 
+/* Accept & Continue button — green when enabled */
+#modalAcceptBtn.btn-enabled {
+    background-color: #16a34a !important;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25) !important;
+}
+#modalAcceptBtn.btn-enabled:hover {
+    background-color: #15803d !important;
+    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35) !important;
+}
+
+/* Place order button — GSB navy blue when enabled */
+#placeOrderBtn.btn-enabled {
+    background-color: #0f1f78 !important;
+    box-shadow: 0 4px 12px rgba(15, 31, 120, 0.25) !important;
+}
+#placeOrderBtn.btn-enabled:hover {
+    background-color: #001699 !important;
+    box-shadow: 0 6px 16px rgba(15, 31, 120, 0.35) !important;
+}
+}
+
 /* Modal Specific Styles */
 .terms-modal-header {
     background-color: var(--primary);
