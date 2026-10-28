@@ -735,6 +735,13 @@ $promo_result = $conn->query($promo_query);
         
         let pagedData = productsData.slice(startIndex, endIndex);
 
+        // Trim to nearest multiple of 5 so last row is always complete
+        const COLS = 5;
+        const remainder = pagedData.length % COLS;
+        if (remainder !== 0) {
+            pagedData = pagedData.slice(0, pagedData.length - remainder);
+        }
+
         let html = `<div class="product-grid">`;
 
         pagedData.forEach(product => {
