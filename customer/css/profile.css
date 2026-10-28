@@ -3,8 +3,11 @@
    PROFILE PAGE
 ========================================== */
 
-/* ── Box sizing reset ── */
-*, *::before, *::after { box-sizing: border-box; }
+/* Ensure Poppins applies to all elements including headings */
+*, *::before, *::after {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
 
 /* ── Lock horizontal scroll only, vertical scroll fully free ── */
 html {

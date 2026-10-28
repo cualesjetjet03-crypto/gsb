@@ -3,6 +3,11 @@
    TRACKERS PAGE CSS (Orders & Services)
 ========================================== */
 
+*, *::before, *::after {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
 /* Main Container Styles */
 .order-tracker { background: #fff; border-radius: 18px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(0,0,0,.08); }
 .service-trackers-wrapper { width: 100%; }
