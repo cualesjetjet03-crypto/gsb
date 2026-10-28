@@ -256,60 +256,74 @@ $catalog_result = $conn->query($catalog_query);
                     if ($is_promo == 1 && $discount_pct > 0 && (!empty($prod['promo_end_date']) && strtotime($prod['promo_end_date']) >= time())) {$final_price = $base_price - ($base_price * ($discount_pct / 100));$is_active_promo = true;
                     }
                 ?>
-                <div class="catalog-card-wrap catalog-item" style="display:none;"
-                     data-brand="<?php echo htmlspecialchars($prod['brand'] ?? 'Other'); ?>">
-                    <a href="products.php?search=<?php echo urlencode($prod['IndoorUnitModel'] ?: $prod['SeriesName']); ?>"
-                       class="catalog-card"
-                       style="display:flex;flex-direction:column;background:#fff;border:1px solid #dbe2ea;border-radius:12px;padding:14px;min-height:400px;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition:all 0.25s ease;position:relative;overflow:hidden;">
+                <div class="catalog-card-wrap catalog-item promo-card"
+                     style="display:none;flex-direction:column;background:#fff;border:1px solid #dbe2ea;border-radius:12px;padding:14px;height:420px;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition:all 0.25s ease;position:relative;overflow:hidden;cursor:pointer;"
+                     data-brand="<?php echo htmlspecialchars($prod['brand'] ?? 'Other'); ?>"
+                     data-id="<?php echo (int)$prod['id']; ?>"
+                     data-series="<?php echo htmlspecialchars($prod['SeriesName'] ?? ''); ?>"
+                     data-model="<?php echo htmlspecialchars($prod['IndoorUnitModel'] ?? ''); ?>"
+                     data-hp="<?php echo htmlspecialchars($prod['CapacityHP'] ?? ''); ?>"
+                     data-type="<?php echo ($prod['is_non_inverter'] == 1) ? 'Non-Inverter' : 'Inverter'; ?>"
+                     data-cooling="<?php echo htmlspecialchars($prod['cooling_capacity'] ?? 'Not yet provided'); ?>"
+                     data-warranty="<?php echo htmlspecialchars($prod['warranty'] ?? 'Not yet provided'); ?>"
+                     data-status="<?php echo htmlspecialchars($prod['stock_status'] ?? 'Available'); ?>"
+                     data-stock="<?php echo (int)($prod['stock_quantity'] ?? 0); ?>"
+                     data-baseprice="<?php echo $base_price; ?>"
+                     data-finalprice="<?php echo $final_price; ?>"
+                     data-isactivepromo="<?php echo $is_active_promo ? '1' : '0'; ?>"
+                     data-features="<?php echo htmlspecialchars($prod['features'] ?? ''); ?>"
+                     data-durability="<?php echo htmlspecialchars($prod['durability'] ?? ''); ?>"
+                     data-description="<?php echo htmlspecialchars($prod['description'] ?? ''); ?>"
+                     data-img="<?php echo $img_src; ?>"
+                     onclick="openProductModal(this)">
 
-                        <?php if ($is_active_promo): ?>
-                            <div class="discount-ribbon"><?php echo $discount_pct; ?>%<br><small>OFF</small></div>
-                        <?php endif; ?>
+                    <?php if ($is_active_promo): ?>
+                        <div class="discount-ribbon"><?php echo $discount_pct; ?>%<br><small>OFF</small></div>
+                    <?php endif; ?>
 
-                        <div style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;margin:8px 0 12px;overflow:hidden;border-radius:8px;">
-                            <img src="<?php echo $img_src; ?>"
-                                 alt="<?php echo htmlspecialchars($prod['IndoorUnitModel']); ?>"
-                                 style="width:100%;height:100%;object-fit:contain;"
-                                 onerror="this.onerror=null;this.src='images/no-image.png'">
-                        </div>
+                    <div style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;margin:8px 0 12px;overflow:hidden;border-radius:8px;flex-shrink:0;">
+                        <img src="<?php echo $img_src; ?>"
+                             alt="<?php echo htmlspecialchars($prod['IndoorUnitModel']); ?>"
+                             style="width:100%;height:100%;object-fit:contain;"
+                             onerror="this.onerror=null;this.src='images/no-image.png'">
+                    </div>
 
-                        <div style="display:flex;flex-direction:column;flex:1;">
-                            <span style="display:inline-block;background:#e0e7ff;color:#0020C2;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:6px;align-self:flex-start;font-family:'Poppins',sans-serif;">
-                                <?php echo $brand; ?>
+                    <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+                        <span style="display:inline-block;background:#e0e7ff;color:#0020C2;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px;align-self:flex-start;font-family:'Poppins',sans-serif;">
+                            <?php echo $brand; ?>
+                        </span>
+                        <span style="color:#0020C2;font-size:14px;font-weight:700;margin:0 0 4px;line-height:1.35;font-family:'Poppins',sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                            <?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?>
+                        </span>
+                        <span style="color:#475569;font-size:12px;font-weight:500;margin:0 0 8px;font-family:'Poppins',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            <?php echo htmlspecialchars($prod['IndoorUnitModel'] ?: ''); ?>
+                        </span>
+
+                        <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;">
+                            <div style="display:flex;flex-direction:column;">
+                                <?php if ($is_active_promo): ?>
+                                    <span style="font-size:12px;color:#999;text-decoration:line-through;">₱<?php echo number_format($base_price, 2); ?></span>
+                                <?php endif; ?>
+                                <span style="font-size:20px;font-weight:800;color:#111827;font-family:'Poppins',sans-serif;">₱<?php echo number_format($final_price, 2); ?></span>
+                            </div>
+                            <?php
+                                $st = $prod['stock_status'] ?? 'Available';
+                                $sc = strtolower(str_replace(' ', '-', $st));
+                                $sbg = ['available'=>'#dcfce7','limited-stock'=>'#fef08a','out-of-stock'=>'#fee2e2'];
+                                $sco = ['available'=>'#166534','limited-stock'=>'#854d0e','out-of-stock'=>'#991b1b'];
+                                $bg = $sbg[$sc] ?? '#dcfce7';
+                                $co = $sco[$sc] ?? '#166534';
+                            ?>
+                            <span style="display:inline-block;align-self:flex-start;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:<?php echo $bg; ?>;color:<?php echo $co; ?>;font-family:'Poppins',sans-serif;">
+                                <?php echo htmlspecialchars($st); ?>
                             </span>
-                            <span style="color:#0020C2;font-size:14px;font-weight:700;margin:0 0 4px;line-height:1.35;font-family:'Poppins',sans-serif;">
-                                <?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?>
-                            </span>
-                            <span style="color:#475569;font-size:12px;font-weight:500;margin:0 0 8px;font-family:'Poppins',sans-serif;">
-                                <?php echo htmlspecialchars($prod['IndoorUnitModel'] ?: ''); ?>
-                            </span>
-
-                            <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;">
-                                <div style="display:flex;flex-direction:column;">
-                                    <?php if ($is_active_promo): ?>
-                                        <span style="font-size:12px;color:#999;text-decoration:line-through;">₱<?php echo number_format($base_price, 2); ?></span>
-                                    <?php endif; ?>
-                                    <span style="font-size:20px;font-weight:800;color:#111827;font-family:'Poppins',sans-serif;">₱<?php echo number_format($final_price, 2); ?></span>
-                                </div>
-                                <?php
-                                    $st = $prod['stock_status'] ?? 'Available';
-                                    $sc = strtolower(str_replace(' ', '-', $st));
-                                    $sbg = ['available'=>'#dcfce7','limited-stock'=>'#fef08a','out-of-stock'=>'#fee2e2'];
-                                    $sco = ['available'=>'#166534','limited-stock'=>'#854d0e','out-of-stock'=>'#991b1b'];
-                                    $bg = $sbg[$sc] ?? '#dcfce7';
-                                    $co = $sco[$sc] ?? '#166534';
-                                ?>
-                                <span style="display:inline-block;align-self:flex-start;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:<?php echo $bg; ?>;color:<?php echo $co; ?>;font-family:'Poppins',sans-serif;">
-                                    <?php echo htmlspecialchars($st); ?>
+                            <div style="width:100%;margin-top:4px;" onclick="event.stopPropagation();openProductModal(this.closest('[data-id]'));">
+                                <span style="display:block;width:100%;padding:11px 12px;background:#001b94;color:white;border:none;border-radius:8px;font-weight:700;font-size:13px;font-family:'Poppins',sans-serif;text-align:center;letter-spacing:0.3px;">
+                                    View Details
                                 </span>
-                                <div style="width:100%;margin-top:4px;">
-                                    <span style="display:block;width:100%;padding:11px 12px;background:#001b94;color:white;border:none;border-radius:8px;font-weight:700;font-size:13px;font-family:'Poppins',sans-serif;text-align:center;letter-spacing:0.3px;">
-                                        View Details
-                                    </span>
-                                </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <?php endwhile; ?>
             <?php else: ?>
