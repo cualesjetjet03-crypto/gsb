@@ -1056,20 +1056,32 @@ td small {
 
 @media (max-width: 768px) {
 
-    /* ══ 1. HIDE SIDEBAR, SHOW AS DRAWER ══ */
+    /* ══ 1. HIDE SIDEBAR COMPLETELY, SHOW AS DRAWER ══ */
     .sidebar {
-        position: fixed;
-        top: 0;
-        left: -285px; /* hidden off-screen */
-        width: 280px;
-        height: 100vh;
-        z-index: 1200;
-        transition: left 0.3s ease;
-        overflow-y: auto;
-        padding: 20px 14px 100px; /* bottom pad for bottom nav */
+        position: fixed !important;
+        top: 0 !important;
+        left: -300px !important; /* hidden off-screen — override 820px rule */
+        width: 260px !important;
+        height: 100vh !important;
+        z-index: 1200 !important;
+        transition: left 0.3s ease !important;
+        overflow-y: auto !important;
+        padding: 20px 14px 100px !important;
     }
     .sidebar.mobile-open {
-        left: 0; /* slide in */
+        left: 0 !important; /* slide in when hamburger tapped */
+    }
+    /* Show all sidebar text again (820px rule hides it) */
+    .brand-box h2,
+    .brand-box p,
+    .side-nav a span:not(.nav-badge),
+    .logout-link span {
+        font-size: inherit !important;
+        display: inline !important;
+    }
+    .side-nav a i,
+    .logout-link i {
+        font-size: 16px !important;
     }
 
     /* ══ MAIN CONTENT: full width, no left margin ══ */
@@ -1077,7 +1089,7 @@ td small {
     .main-content.sidebar-collapsed {
         margin-left: 0 !important;
         width: 100% !important;
-        padding-bottom: 70px; /* space for bottom nav */
+        padding-bottom: 70px !important;
     }
 
     /* ══ 3. COMPACT TOPBAR ══ */
@@ -1085,24 +1097,14 @@ td small {
         height: 56px !important;
         min-height: 56px !important;
         max-height: 56px !important;
-        padding: 0 12px !important;
+        padding: 0 14px !important;
     }
-    #gsb-custom-topbar .topbar-left i { font-size: 1.1rem; }
-    #gsb-custom-topbar .profile-info { display: none; } /* hide "Admin" text label */
-    #gsb-custom-topbar .dropdown-icon { display: none; }
-    #gsb-custom-topbar .topbar-right { gap: 14px; }
-
-    /* Add brand name to topbar center on mobile */
-    #gsb-custom-topbar::after {
-        content: 'GSB Admin';
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 15px;
-        font-weight: 700;
-        color: #1e293b;
-        pointer-events: none;
-    }
+    #gsb-custom-topbar .topbar-left i { font-size: 1.2rem; }
+    #gsb-custom-topbar .profile-info { display: flex !important; } /* keep "Admin" label */
+    #gsb-custom-topbar .profile-name { font-size: 13px !important; }
+    #gsb-custom-topbar .dropdown-icon { font-size: 0.7rem; }
+    #gsb-custom-topbar .topbar-right { gap: 12px !important; }
+    #gsb-custom-topbar .avatar-icon { width: 30px !important; height: 30px !important; font-size: 1rem !important; }
 
     /* ══ PAGE HEADER ══ */
     .page-header {
