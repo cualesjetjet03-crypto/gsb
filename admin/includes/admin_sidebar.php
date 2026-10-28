@@ -48,7 +48,7 @@ if ($services_count_result) {
 
 ?>
 
-<aside class="sidebar">
+<aside class="sidebar" id="adminSidebar">
 
     <!-- =====================================================
          BRAND
@@ -157,3 +157,76 @@ if ($services_count_result) {
 
     </nav>
 </aside>
+
+<!-- Mobile: overlay backdrop -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Mobile: Bottom Navigation Bar -->
+<nav class="admin-bottom-nav">
+    <a href="admin_dashboard.php" class="<?php echo ($current_page === 'admin_dashboard.php') ? 'active' : ''; ?>">
+        <i class="fa-solid fa-table-cells-large"></i>
+        <span>Home</span>
+    </a>
+    <a href="admin_products.php" class="<?php echo ($current_page === 'admin_products.php') ? 'active' : ''; ?>">
+        <i class="fa-solid fa-box-open"></i>
+        <span>Products</span>
+    </a>
+    <a href="admin_inquiries.php" class="<?php echo ($current_page === 'admin_inquiries.php') ? 'active' : ''; ?>">
+        <i class="fa-regular fa-message"></i>
+        <span>Orders</span>
+        <?php if ($sidebar_pending_inquiries_count > 0): ?>
+            <span class="bnav-badge"><?php echo min($sidebar_pending_inquiries_count, 99); ?></span>
+        <?php endif; ?>
+    </a>
+    <a href="services_schedule.php" class="<?php echo ($current_page === 'services_schedule.php') ? 'active' : ''; ?>">
+        <i class="fa-regular fa-calendar-days"></i>
+        <span>Services</span>
+        <?php if ($sidebar_pending_services_count > 0): ?>
+            <span class="bnav-badge"><?php echo min($sidebar_pending_services_count, 99); ?></span>
+        <?php endif; ?>
+    </a>
+    <a href="admin_ratings.php" class="<?php echo ($current_page === 'admin_ratings.php') ? 'active' : ''; ?>">
+        <i class="fa-solid fa-star"></i>
+        <span>Ratings</span>
+    </a>
+    <a href="admin_users.php" class="<?php echo ($current_page === 'admin_users.php') ? 'active' : ''; ?>">
+        <i class="fa-solid fa-users"></i>
+        <span>Users</span>
+    </a>
+</nav>
+
+<script>
+(function() {
+    var sidebar  = document.getElementById('adminSidebar');
+    var overlay  = document.getElementById('sidebarOverlay');
+    var toggleBtn = document.getElementById('toggleSidebarBtn');
+
+    function openSidebar() {
+        if (sidebar)  sidebar.classList.add('mobile-open');
+        if (overlay)  overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        if (sidebar)  sidebar.classList.remove('mobile-open');
+        if (overlay)  overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            if (sidebar && sidebar.classList.contains('mobile-open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+    }
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSidebar();
+    });
+})();
+</script>
