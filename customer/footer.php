@@ -29,6 +29,7 @@
                 <li><a href="book_service.php?service=installation">Installation</a></li>
                 <li><a href="book_service.php?service=repair">Repair</a></li>
                 <li><a href="book_service.php?service=cleaning">Cleaning</a></li>
+                <li><a href="book_service.php?service=checkup">Check-up</a></li>
             </ul>
         </div>
         
@@ -56,7 +57,7 @@
                 <li><i class="fa-solid fa-envelope" style="font-size:16px;"></i> Gmail: officialgsbairconservice@gmail.com</li>
             </ul>
             
-            <p class="connect-hours">Store's Open at 8am - 5pm</p>
+            <p class="connect-hours">Store's Open at 8am - 6pm</p>
             
             <!-- CHANGED INITIAL TEXT TO "See more" -->
             <a href="javascript:void(0);" class="btn-see-less" id="toggleContactBtn" onclick="toggleConnectList()">See more</a>
