@@ -109,7 +109,7 @@ if ($services_count_result) {
             href="services_schedule.php"
             class="<?php echo ($current_page === 'services_schedule.php') ? 'active' : ''; ?>"
         >
-            <i class="fa-regular fa-calendar-days"></i>
+            <i class="fa-solid fa-wrench"></i>
             <span>Service Requests</span>
 
             <?php if ($sidebar_pending_services_count > 0): ?>
