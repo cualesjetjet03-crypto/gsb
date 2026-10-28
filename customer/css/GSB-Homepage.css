@@ -424,6 +424,149 @@ html, body {
 }
 
 /* =========================================================
+   CATALOG CARD STYLES — matches products.php .card design
+   for consistent look across index.php and products.php
+========================================================= */
+
+/* Card container */
+.catalog-grid .promo-card {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 420px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #dbe2ea;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+.catalog-grid .promo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+}
+
+/* Image box */
+.catalog-grid .product-image-wrapper {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0 12px;
+    background: transparent;
+    overflow: hidden;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.catalog-grid .product-image-wrapper img {
+    width: 100%; height: 100%; object-fit: contain;
+}
+
+/* Content wrapper */
+.catalog-grid .card-content { display: flex; flex-direction: column; flex: 1; }
+
+/* Brand badge pill */
+.card-brand-badge {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #0020C2;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    align-self: flex-start;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Product title */
+.card-title {
+    color: #0020C2;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    line-height: 1.35;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Model code */
+.card-model {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0 0 8px;
+    line-height: 1.4;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Bottom section */
+.catalog-grid .card-bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.catalog-grid .price-section { display: flex; flex-direction: column; }
+
+/* Price */
+.catalog-grid .price {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    font-family: 'Poppins', sans-serif !important;
+}
+.catalog-grid .old-price {
+    font-size: 12px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+/* Stock badge */
+.catalog-grid .stock-badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+}
+.catalog-grid .stock-badge.available     { background: #dcfce7; color: #166534; }
+.catalog-grid .stock-badge.limited-stock { background: #fef08a; color: #854d0e; }
+.catalog-grid .stock-badge.out-of-stock  { background: #fee2e2; color: #991b1b; }
+
+/* View Details button */
+.catalog-grid .action-row { display: flex; width: 100%; margin-top: 4px; }
+.catalog-grid .view-details-btn {
+    width: 100%;
+    padding: 11px 12px;
+    background: #001b94;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.2s;
+    letter-spacing: 0.3px;
+}
+.catalog-grid .view-details-btn:hover { background: #00126b; }
+
+/* Pagination active */
+.pagination-container .page-btn.active {
+    background: #001b94 !important;
+    color: #fff !important;
+    border-color: #001b94 !important;
+}
+
+/* =========================================================
    CATALOG SECTION (Filter Tabs & 4-Column Grid)
 ========================================================= */
 .catalog-section {
