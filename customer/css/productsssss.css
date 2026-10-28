@@ -573,7 +573,7 @@ body {
 ========================================================= */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px; 
     width: 100%;
 }
@@ -1250,13 +1250,13 @@ body {
 
 /* ── Large desktop (≤1450px) ── */
 @media (max-width: 1450px) {
-    .product-grid      { grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .product-grid      { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
     .deals-section     { margin-left: 16px; margin-right: 16px; }
 }
 
 /* ── Standard desktop / large tablet (≤1150px) ── */
 @media (max-width: 1150px) {
-    .product-grid      { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .product-grid      { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 }
 
 /* ── Tablet landscape (≤960px) ── */
