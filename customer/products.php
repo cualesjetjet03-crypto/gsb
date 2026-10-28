@@ -7,8 +7,8 @@ date_default_timezone_set('Asia/Manila');
 $_now = date('Y-m-d H:i:s');
 $_exp = $conn->prepare("UPDATE products SET is_promo=0, discount_percent=0, promo_end_date=NULL WHERE is_promo=1 AND promo_end_date IS NOT NULL AND promo_end_date <= ?");
 if ($_exp) { $_exp->bind_param("s", $_now); $_exp->execute(); $_exp->close(); }
-// ── Auto-archive out-of-stock products ──
-$conn->query("UPDATE products SET is_archived=1 WHERE is_archived=0 AND (stock_quantity <= 0 OR stock_status='Out of Stock')");
+// ── Auto-archive out-of-stock products (only when explicitly marked Out of Stock) ──
+$conn->query("UPDATE products SET is_archived=1 WHERE is_archived=0 AND stock_status='Out of Stock' AND stock_quantity <= 0");
 unset($_now, $_exp);
 
 // Fetch active promo products for the top carousel
