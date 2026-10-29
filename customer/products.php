@@ -215,7 +215,7 @@ $promo_result = $conn->query($promo_query);
                 <div id="daikin-extra" style="display:none;">
                     <hr>
                     <p class="filter-title">DAIKIN SERIES</p>
-                    <label><input type="checkbox" value="Cooling King Series Premium" class="filter-daikin"> Cooling King Series</label>
+                    <label><input type="checkbox" value="Cooling King Series" class="filter-daikin"> Cooling King Series</label>
                     <label><input type="checkbox" value="D-Smart Series" class="filter-daikin"> D-Smart Series</label>
                     <label><input type="checkbox" value="D-Smart Queen Series" class="filter-daikin"> D-Smart Queen Series</label>
                     <label><input type="checkbox" value="D-Smart King Series" class="filter-daikin"> D-Smart King Series</label>
@@ -735,11 +735,10 @@ $promo_result = $conn->query($promo_query);
         
         let pagedData = productsData.slice(startIndex, endIndex);
 
-        // Trim to nearest multiple of 5 so last row is always complete
-        const COLS = 5;
-        const remainder = pagedData.length % COLS;
-        if (remainder !== 0) {
-            pagedData = pagedData.slice(0, pagedData.length - remainder);
+        // No trim — show all products on page; CSS flexbox centering handles orphan last row
+        if (pagedData.length === 0) {
+            container.innerHTML = `<div class="no-products" style="text-align:center; padding: 50px;"><h3>No Products Found</h3><p>Try changing your filters or search term.</p></div>`;
+            return;
         }
 
         let html = `<div class="product-grid">`;
