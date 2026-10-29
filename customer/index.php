@@ -479,8 +479,8 @@ $catalog_result = $conn->query($catalog_query);
 
         function updateCatalog() {
             const filteredItems = catalogItems.filter(item => {
-                const brand = item.getAttribute('data-brand');
-                return currentFilter === 'all' || brand === currentFilter;
+                const brand = (item.getAttribute('data-brand') || '').trim();
+                return currentFilter === 'all' || brand.toLowerCase() === currentFilter.toLowerCase();
             });
 
             const totalPages = Math.ceil(filteredItems.length / itemsPerPage) || 1;
