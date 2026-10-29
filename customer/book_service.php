@@ -348,6 +348,7 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                             <div class="calendar-legend-item"><div class="calendar-legend-dot legend-available"></div> Available</div>
                             <div class="calendar-legend-item"><div class="calendar-legend-dot legend-booked"></div> Fully Booked</div>
                             <div class="calendar-legend-item"><div class="calendar-legend-dot legend-today"></div> Today</div>
+                            <div class="calendar-legend-item"><div class="calendar-legend-dot legend-buffer"></div> Prep Interval</div>
                             <div class="calendar-legend-item"><div class="calendar-legend-dot legend-past"></div> Past Date</div>
                         </div>
                     </div>
