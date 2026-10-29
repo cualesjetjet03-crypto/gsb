@@ -535,6 +535,32 @@ $catalog_result = $conn->query($catalog_query);
 
         updateCatalog();
 
+        // ── Auto-reopen product modal after redirect-back from login/register ──
+        (function() {
+            const _p = new URLSearchParams(window.location.search);
+            const _openId = _p.get('open_product');
+            const _savedQty = parseInt(_p.get('qty')) || 1;
+            if (!_openId) return;
+
+            // Cards start display:none — make target visible first so openProductModal can read dataset
+            const _card = document.querySelector(`.catalog-item[data-id="${_openId}"]`);
+            if (_card) {
+                // Temporarily show so openProductModal(card) can access dataset
+                const _wasDisplay = _card.style.display;
+                _card.style.display = 'flex';
+                openProductModal(_card);
+                // Restore quantity
+                if (_savedQty > 1) {
+                    const _qi = document.getElementById('m-qty-input');
+                    if (_qi) _qi.value = Math.min(_savedQty, currentProductStock || _savedQty);
+                }
+                // Don't hide it again — it's now shown in the modal, updateCatalog handles grid display
+            }
+            // Clean URL and sessionStorage
+            history.replaceState(null, '', window.location.pathname);
+            sessionStorage.removeItem('gsb_return_state');
+        })();
+
         // Helper function to render text as a clean bulleted list using CSS classes instead of inline styles
         function formatAsList(value, fallback = "Not yet provided") {
             if (!value) return `<p class="modal-list-fallback">${fallback}</p>`;
@@ -669,7 +695,7 @@ $catalog_result = $conn->query($catalog_query);
         }
 
         function addToCartAction() {
-            if (currentProductStock <= 0) return; // Prevent action if out of stock
+            if (currentProductStock <= 0) return;
             
             const qty = document.getElementById('m-qty-input').value;
             if (!currentProductId) return;
@@ -683,7 +709,10 @@ $catalog_result = $conn->query($catalog_query);
             .then(response => response.json())
             .then(data => {
                 if (data.requireLogin) {
-                    window.location.href = 'login.php?redirect=' + encodeURIComponent(window.location.pathname);
+                    // Save state and redirect to login with product redirect
+                    let returnUrl = 'index.php?open_product=' + currentProductId + '&qty=' + qty;
+                    sessionStorage.setItem('gsb_return_state', JSON.stringify({ url: returnUrl, productId: currentProductId, quantity: parseInt(qty) }));
+                    window.location.href = 'login.php?redirect=' + encodeURIComponent(returnUrl);
                 } else {
                     alert(data.message);
                 }
@@ -702,7 +731,9 @@ $catalog_result = $conn->query($catalog_query);
 
             // Check login first before buy now
             <?php if (!isset($_SESSION['user_id'])): ?>
-                window.location.href = 'login.php?redirect=' + encodeURIComponent(window.location.pathname);
+                let returnUrl = 'index.php?open_product=' + currentProductId + '&qty=' + qty;
+                sessionStorage.setItem('gsb_return_state', JSON.stringify({ url: returnUrl, productId: currentProductId, quantity: parseInt(qty) }));
+                window.location.href = 'login.php?redirect=' + encodeURIComponent(returnUrl);
                 return;
             <?php endif; ?>
 
