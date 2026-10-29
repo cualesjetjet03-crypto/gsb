@@ -375,6 +375,7 @@ html, body {
     padding: 10px 8px;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
     z-index: 5;
+    min-width: 44px;
 }
 
 .discount-ribbon small {
@@ -432,8 +433,8 @@ html, body {
 .catalog-grid .promo-card {
     display: flex !important;
     flex-direction: column !important;
-    height: 420px !important;   /* fixed height — every card identical */
-    min-height: unset !important;
+    height: auto !important;       /* was 420px — let content dictate height */
+    min-height: 420px !important;  /* keeps uniform row height on equal-content cards */
     padding: 14px;
     border-radius: 12px;
     border: 1px solid #dbe2ea;
@@ -442,7 +443,7 @@ html, body {
     cursor: pointer;
     transition: all 0.25s ease;
     position: relative;
-    overflow: hidden;
+    overflow: visible;  /* was hidden — stop clipping badge/title at the card edge */
 }
 .catalog-grid .promo-card:hover {
     transform: translateY(-4px);
@@ -483,6 +484,7 @@ html, body {
     margin-bottom: 6px;
     align-self: flex-start;
     font-family: 'Poppins', sans-serif;
+    flex-shrink: 0; /* never let the badge get compressed */
 }
 
 /* Product title — clamp to 2 lines so long titles don't expand the card */
@@ -498,6 +500,8 @@ html, body {
     -webkit-box-orient: vertical;
     overflow: hidden;
     min-height: calc(1.35em * 2); /* reserve space for 2 lines always */
+    flex-shrink: 0; /* never compress the title vertically */
+    padding-bottom: 0; /* prevent descenders being cut by padding */
 }
 
 /* Model code — clamp to 1 line */

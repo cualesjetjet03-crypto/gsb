@@ -257,7 +257,7 @@ $catalog_result = $conn->query($catalog_query);
                     }
                 ?>
                 <div class="catalog-card-wrap catalog-item promo-card"
-                     style="display:none;flex-direction:column;background:#fff;border:1px solid #dbe2ea;border-radius:12px;padding:14px;height:420px;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition:all 0.25s ease;position:relative;overflow:hidden;cursor:pointer;"
+                     style="display:none;flex-direction:column;background:#fff;border:1px solid #dbe2ea;border-radius:12px;padding:14px;min-height:420px;box-shadow:0 4px 12px rgba(0,0,0,0.08);transition:all 0.25s ease;position:relative;overflow:visible;cursor:pointer;"
                      data-brand="<?php echo htmlspecialchars($prod['brand'] ?? 'Other'); ?>"
                      data-id="<?php echo (int)$prod['id']; ?>"
                      data-series="<?php echo htmlspecialchars($prod['SeriesName'] ?? ''); ?>"
@@ -288,11 +288,11 @@ $catalog_result = $conn->query($catalog_query);
                              onerror="this.onerror=null;this.src='images/no-image.png'">
                     </div>
 
-                    <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
-                        <span style="display:inline-block;background:#e0e7ff;color:#0020C2;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px;align-self:flex-start;font-family:'Poppins',sans-serif;">
+                    <div style="display:flex;flex-direction:column;flex:1;overflow:visible;min-height:0;">
+                        <span style="display:inline-block;background:#e0e7ff;color:#0020C2;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px;align-self:flex-start;font-family:'Poppins',sans-serif;flex-shrink:0;">
                             <?php echo $brand; ?>
                         </span>
-                        <span style="color:#0020C2;font-size:14px;font-weight:700;margin:0 0 4px;line-height:1.35;font-family:'Poppins',sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                        <span style="color:#0020C2;font-size:14px;font-weight:700;margin:0 0 4px;line-height:1.35;font-family:'Poppins',sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:calc(1.35em * 2);flex-shrink:0;">
                             <?php echo htmlspecialchars($prod['SeriesName'] ?: ($prod['IndoorUnitModel'] ?: 'Product')); ?>
                         </span>
                         <span style="color:#475569;font-size:12px;font-weight:500;margin:0 0 8px;font-family:'Poppins',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">

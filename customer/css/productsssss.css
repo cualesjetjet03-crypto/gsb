@@ -595,7 +595,7 @@ body {
     flex-direction: column;
     transition: all 0.25s ease;
     cursor: pointer;
-    overflow: hidden;
+    overflow: visible;  /* was hidden — stop clipping title/badge when promo adds extra price row */
     position: relative;
 }
 
@@ -651,6 +651,7 @@ body {
     text-transform: uppercase;
     margin-bottom: 6px;
     align-self: flex-start;
+    flex-shrink: 0; /* never compress the badge */
 }
 
 /* 2. Product name — bold, same navy as modal h2 */
@@ -660,6 +661,8 @@ body {
     font-weight: 700;
     margin: 0 0 4px;
     line-height: 1.35;
+    flex-shrink: 0; /* never let the title get vertically squished */
+    padding-bottom: 0;
 }
 
 /* 3. Model code — muted subtitle, same style as modal h3 */
