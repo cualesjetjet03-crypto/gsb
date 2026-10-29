@@ -496,14 +496,18 @@ $services = [
 
                 <?php
                 // If logged in → go directly to book_service with service pre-selected
-                // If guest → go to login with redirect back
-                $book_url = $is_logged_in
-                    ? 'book_service.php?service=' . urlencode($svc['key'])
-                    : 'login.php?redirect=' . urlencode('book_service.php?service=' . $svc['key']);
-                ?>
-                <a href="<?= htmlspecialchars($book_url) ?>" class="svc-book-btn">
-                    <?= $is_logged_in ? 'Book Now →' : 'Login to Book →' ?>
+                // If guest → open auth modal (JS handles it)
+                if ($is_logged_in): ?>
+                <a href="book_service.php?service=<?= urlencode($svc['key']) ?>" class="svc-book-btn">
+                    Book Now →
                 </a>
+                <?php else: ?>
+                <button class="svc-book-btn svc-book-guest"
+                        data-service="<?= htmlspecialchars($svc['key']) ?>"
+                        onclick="openSvcAuthModal(this)">
+                    Login to Book →
+                </button>
+                <?php endif; ?>
             </div>
         </div>
         <?php endforeach; ?>
@@ -513,7 +517,7 @@ $services = [
     <?php if (!$is_logged_in): ?>
     <div class="guest-notice">
         <strong>Want to book a service?</strong>
-        <a href="login.php">Sign in</a> or <a href="register.php">create a free account</a> to schedule a visit from our technicians.
+        <a href="login.php?redirect=<?= urlencode('book_service.php') ?>">Sign in</a> or <a href="register.php?redirect=<?= urlencode('book_service.php') ?>">create a free account</a> to schedule a visit from our technicians.
     </div>
     <?php endif; ?>
 
@@ -521,10 +525,27 @@ $services = [
 
 <?php include 'footer.php'; ?>
 
+<!-- AUTHENTICATION REQUIRED MODAL -->
+<?php if (!$is_logged_in): ?>
+<div id="svcAuthModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:99999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:16px; padding:40px 32px; max-width:420px; width:90%; text-align:center; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+        <span onclick="closeSvcAuthModal()" style="position:absolute; top:14px; right:20px; font-size:22px; cursor:pointer; color:#94a3b8; line-height:1;">×</span>
+        <h3 style="color:#0020C2; font-size:22px; font-weight:800; margin:0 0 12px;">Authentication Required</h3>
+        <p style="color:#475569; font-size:15px; margin:0 0 28px;">Please log in or register to continue with your request.</p>
+        <div style="display:flex; gap:12px; justify-content:center;">
+            <button id="svcAuthLoginBtn" style="flex:1; padding:14px 0; background:#0020C2; color:#fff; border:none; border-radius:8px; font-weight:700; font-size:15px; cursor:pointer;">Log In</button>
+            <button id="svcAuthRegisterBtn" style="flex:1; padding:14px 0; background:#f1f5f9; color:#111827; border:1px solid #e2e8f0; border-radius:8px; font-weight:700; font-size:15px; cursor:pointer;">Register</button>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <script>
 // Click a panel to lock it open (shows bullet details + Book button)
 document.querySelectorAll('.svc-panel').forEach(function(panel) {
-    panel.addEventListener('click', function() {
+    panel.addEventListener('click', function(e) {
+        // Don't toggle if clicking the book button itself
+        if (e.target.closest('.svc-book-btn')) return;
         var isOpen = this.classList.contains('open');
         // Close all
         document.querySelectorAll('.svc-panel').forEach(function(p) {
@@ -534,6 +555,24 @@ document.querySelectorAll('.svc-panel').forEach(function(panel) {
         if (!isOpen) this.classList.add('open');
     });
 });
+
+<?php if (!$is_logged_in): ?>
+function openSvcAuthModal(btn) {
+    var service = btn.getAttribute('data-service');
+    var redirectUrl = 'book_service.php?service=' + encodeURIComponent(service);
+    var encoded = encodeURIComponent(redirectUrl);
+    document.getElementById('svcAuthLoginBtn').onclick    = function() { window.location.href = 'login.php?redirect='    + encoded; };
+    document.getElementById('svcAuthRegisterBtn').onclick = function() { window.location.href = 'register.php?redirect=' + encoded; };
+    document.getElementById('svcAuthModal').style.display = 'flex';
+}
+function closeSvcAuthModal() {
+    document.getElementById('svcAuthModal').style.display = 'none';
+}
+// Close on backdrop click
+document.getElementById('svcAuthModal').addEventListener('click', function(e) {
+    if (e.target === this) closeSvcAuthModal();
+});
+<?php endif; ?>
 </script>
 
 </body>
