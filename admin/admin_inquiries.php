@@ -999,11 +999,12 @@ if ($availability && $availability->num_rows > 0) {
                                                 <option value="Pending" <?php if ($current_status === "Pending") echo "selected"; ?>>Pending</option>
                                                 <option value="Approved" <?php if ($current_status === "Approved") echo "selected"; ?>>Approved</option>
                                                 <option value="Out for Delivery" <?php if ($current_status === "Out for Delivery") echo "selected"; ?>>Out for Delivery</option>
-                                                <option value="Sold" <?php if ($current_status === "Sold") echo "selected"; ?>>Sold</option>
                                                 
                                                 <?php if (isset($row['free_installation']) && $row['free_installation'] === 'Yes'): ?>
                                                     <option value="Installation" <?php if ($current_status === "Installation") echo "selected"; ?>>Installation</option>
                                                 <?php endif; ?>
+                                                
+                                                <option value="Sold" <?php if ($current_status === "Sold") echo "selected"; ?>>Sold</option>
 
                                                 <option value="Cancelled" <?php if ($current_status === "Cancelled") echo "selected"; ?>>Cancelled</option>
                                             </select>
