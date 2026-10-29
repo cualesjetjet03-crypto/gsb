@@ -340,6 +340,12 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                     
                     <div id="calendar-container" style="max-width: 700px; margin: 0 auto; background: #fff; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
                         <div id="calendar"></div>
+                        <div class="calendar-legend">
+                            <div class="calendar-legend-item"><div class="calendar-legend-dot legend-available"></div> Available</div>
+                            <div class="calendar-legend-item"><div class="calendar-legend-dot legend-booked"></div> Fully Booked</div>
+                            <div class="calendar-legend-item"><div class="calendar-legend-dot legend-today"></div> Today</div>
+                            <div class="calendar-legend-item"><div class="calendar-legend-dot legend-past"></div> Past Date</div>
+                        </div>
                     </div>
                 </div>
 
@@ -830,19 +836,24 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
 
                         if (dateString < todayString) {
                             cell.addClass('fc-past-day');
+                            $('.fc-day-top[data-date="' + dateString + '"]').addClass('fc-disabled-day-text');
                         } else if (dateString < minAllowedDate) {
                             if (dateString !== todayString) {
                                 cell.addClass('fc-buffer-day');
                             }
                             cell.attr('title', 'Please select a date at least 1 day from today.');
+                            $('.fc-day-top[data-date="' + dateString + '"]').addClass('fc-disabled-day-text');
                         } else {
                             var unavailableInfo = getUnavailableInfo(dateString);
                             if (unavailableInfo) {
                                 cell.addClass('fc-unavailable-day');
+                                $('.fc-day-top[data-date="' + dateString + '"]').addClass('fc-disabled-day-text');
                                 var tooltip = 'Unavailable';
                                 if (unavailableInfo.timeLabel) tooltip += '\nDetails: ' + unavailableInfo.timeLabel;
                                 if (unavailableInfo.notes) tooltip += '\nNotes: ' + unavailableInfo.notes;
                                 cell.attr('title', tooltip);
+                            } else {
+                                cell.addClass('fc-available-day');
                             }
                         }
                     },

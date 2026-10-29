@@ -720,7 +720,7 @@ textarea {
     cursor: not-allowed !important; 
 }
 
-/* Make past days and buffer days greyed out (grayscale) */
+/* Make past days and buffer days greyed out */
 .fc td.fc-past-day,
 .fc td.fc-buffer-day { 
     background-color: #f1f5f9 !important; 
@@ -728,10 +728,20 @@ textarea {
     cursor: not-allowed !important; 
 }
 
+/* Available days — light green */
+.fc td.fc-available-day { background-color: #dcfce7 !important; }
+.fc td.fc-available-day .fc-day-number { color: #15803d !important; }
+
 /* Red background for fully booked/unavailable days */
 .fc td.fc-unavailable-day { 
-    background-color: var(--danger-bg) !important; 
+    background-color: #fee2e2 !important; 
     cursor: not-allowed !important; 
+}
+
+/* Hover on selectable days — green tint */
+.fc td:not(.fc-past-day):not(.fc-buffer-day):not(.fc-unavailable-day):not(.fc-today):hover {
+    background-color: #bbf7d0 !important;
+    cursor: pointer;
 }
 
 /* Grayscale out the text numbers for all unselectable days */
@@ -740,6 +750,35 @@ textarea {
     opacity: 0.7;
     cursor: not-allowed !important;
 }
+
+/* ── Calendar Legend ── */
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    justify-content: center;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-top: 1px solid #f1f5f9;
+}
+.calendar-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+}
+.calendar-legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.legend-available   { background: #dcfce7; border: 1px solid #86efac; }
+.legend-booked      { background: #fee2e2; border: 1px solid #fca5a5; }
+.legend-today       { background: #fef9c3; border: 1px solid #fde047; }
+.legend-past        { background: #f1f5f9; border: 1px solid #cbd5e1; }
 
 /* =========================================================
    TOOLTIP / INFO BOX

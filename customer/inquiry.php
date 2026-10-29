@@ -780,6 +780,12 @@ foreach ($dailyBookings as $date => $total) {
         <div class="modal-content">
             <span class="close-btn" id="closeModalBtn">&times;</span>
             <div id="calendar"></div>
+            <div class="calendar-legend">
+                <div class="calendar-legend-item"><div class="calendar-legend-dot legend-available"></div> Available</div>
+                <div class="calendar-legend-item"><div class="calendar-legend-dot legend-booked"></div> Fully Booked</div>
+                <div class="calendar-legend-item"><div class="calendar-legend-dot legend-today"></div> Today</div>
+                <div class="calendar-legend-item"><div class="calendar-legend-dot legend-past"></div> Past Date</div>
+            </div>
         </div>
     </div>
 
@@ -1095,6 +1101,8 @@ foreach ($dailyBookings as $date => $total) {
                             var tooltip = 'Unavailable';
                             if (unavailableInfo.timeLabel) tooltip += '\nDetails: ' + unavailableInfo.timeLabel;
                             cell.attr('title', tooltip);
+                        } else {
+                            cell.addClass('fc-available-day');
                         }
                     }
                 },
