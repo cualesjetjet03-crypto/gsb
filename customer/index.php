@@ -436,6 +436,19 @@ $catalog_result = $conn->query($catalog_query);
         </div>
     </div>
 
+    <!-- AUTHENTICATION REQUIRED MODAL (shared, used for guest cart/buy actions) -->
+    <div class="auth-modal" id="indexAuthModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:99999; align-items:center; justify-content:center;">
+        <div class="auth-modal-content" style="background:#fff; border-radius:16px; padding:40px 32px; max-width:420px; width:90%; text-align:center; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <span onclick="closeIndexAuthModal()" style="position:absolute; top:14px; right:20px; font-size:22px; cursor:pointer; color:#94a3b8; line-height:1;">×</span>
+            <h3 style="color:#0020C2; font-size:22px; font-weight:800; margin:0 0 12px;">Authentication Required</h3>
+            <p style="color:#475569; font-size:15px; margin:0 0 28px;">Please log in or register to continue with your request.</p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button id="indexAuthLoginBtn" class="auth-login-btn" style="flex:1; padding:14px 0; background:#0020C2; color:#fff; border:none; border-radius:8px; font-weight:700; font-size:15px; cursor:pointer;">Log In</button>
+                <button id="indexAuthRegisterBtn" class="auth-register-btn" style="flex:1; padding:14px 0; background:#f1f5f9; color:#111827; border:1px solid #e2e8f0; border-radius:8px; font-weight:700; font-size:15px; cursor:pointer;">Register</button>
+            </div>
+        </div>
+    </div>
+
     <!-- LOGIC SCRIPTS -->
     <script>
         const cdElement = document.getElementById('promo-countdown');
@@ -696,11 +709,16 @@ $catalog_result = $conn->query($catalog_query);
 
         function addToCartAction() {
             if (currentProductStock <= 0) return;
-            
             const qty = document.getElementById('m-qty-input').value;
             if (!currentProductId) return;
 
-            // Send POST request to the current page
+            <?php if (!isset($_SESSION['user_id'])): ?>
+                // Guest — show auth modal first, save product state
+                openIndexAuthModal(currentProductId, qty);
+                return;
+            <?php endif; ?>
+
+            // Logged-in path
             fetch(window.location.href, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -709,33 +727,56 @@ $catalog_result = $conn->query($catalog_query);
             .then(response => response.json())
             .then(data => {
                 if (data.requireLogin) {
-                    // Save state and redirect to login with product redirect
-                    let returnUrl = 'index.php?open_product=' + currentProductId + '&qty=' + qty;
-                    sessionStorage.setItem('gsb_return_state', JSON.stringify({ url: returnUrl, productId: currentProductId, quantity: parseInt(qty) }));
-                    window.location.href = 'login.php?redirect=' + encodeURIComponent(returnUrl);
+                    openIndexAuthModal(currentProductId, qty);
                 } else {
                     alert(data.message);
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Something went wrong.");
-            });
+            .catch(error => { console.error('Error:', error); alert("Something went wrong."); });
         }
 
         function buyNowAction() {
             if (currentProductStock <= 0) return;
-            
             const qty = document.getElementById('m-qty-input').value;
             if (!currentProductId) return;
 
-            // Check login first before buy now
             <?php if (!isset($_SESSION['user_id'])): ?>
-                let returnUrl = 'index.php?open_product=' + currentProductId + '&qty=' + qty;
-                sessionStorage.setItem('gsb_return_state', JSON.stringify({ url: returnUrl, productId: currentProductId, quantity: parseInt(qty) }));
-                window.location.href = 'login.php?redirect=' + encodeURIComponent(returnUrl);
+                // Guest — show auth modal first
+                openIndexAuthModal(currentProductId, qty);
                 return;
             <?php endif; ?>
+
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `action=add_to_cart&product_id=${currentProductId}&quantity=${qty}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = `inquiry.php?product_id=${currentProductId}&qty=${qty}`;
+            })
+            .catch(error => {
+                window.location.href = `inquiry.php?product_id=${currentProductId}&qty=${qty}`;
+            });
+        }
+
+        /* ── Auth modal helpers for index.php ── */
+        function openIndexAuthModal(productId, qty) {
+            qty = qty || 1;
+            let returnUrl = 'index.php?open_product=' + productId + '&qty=' + qty;
+            sessionStorage.setItem('gsb_return_state', JSON.stringify({ url: returnUrl, productId: productId, quantity: parseInt(qty) }));
+            let encoded = encodeURIComponent(returnUrl);
+            document.getElementById('indexAuthLoginBtn').onclick    = () => { window.location.href = 'login.php?redirect='    + encoded; };
+            document.getElementById('indexAuthRegisterBtn').onclick = () => { window.location.href = 'register.php?redirect=' + encoded; };
+            document.getElementById('indexAuthModal').style.display = 'flex';
+        }
+        function closeIndexAuthModal() {
+            document.getElementById('indexAuthModal').style.display = 'none';
+        }
+        // Close on backdrop click
+        document.getElementById('indexAuthModal').addEventListener('click', function(e) {
+            if (e.target === this) closeIndexAuthModal();
+        });
 
             fetch(window.location.href, {
                 method: 'POST',

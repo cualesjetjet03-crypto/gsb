@@ -2,32 +2,37 @@
 session_start();
 include "db_connect.php";
 
-if (!isset($_SESSION['user_id'])) {
-    // Preserve the service they wanted so login can redirect back
-    $redirect = 'book_service.php';
-    if (!empty($_GET['service'])) {
-        $redirect .= '?service=' . urlencode($_GET['service']);
+// For guests: let the page load so we can show the auth modal,
+// but track what they wanted so login redirects back here.
+$guest_mode = !isset($_SESSION['user_id']);
+$guest_redirect = 'book_service.php';
+if (!empty($_GET['service'])) {
+    $guest_redirect .= '?service=' . urlencode($_GET['service']);
+}
+
+if ($guest_mode) {
+    // Don't hard-redirect — fall through to render the page.
+    // JS will show the auth modal on DOMContentLoaded.
+    $user_id = 0;
+    $user = [];
+} else {
+    $user_id = intval($_SESSION['user_id']);
+    $user = null;
+
+    $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $user_result = $stmt->get_result();
+
+    if ($user_result && $user_result->num_rows > 0) {
+        $user = $user_result->fetch_assoc();
     }
-    header("Location: login.php?redirect=" . urlencode($redirect));
-    exit();
-}
-
-$user_id = intval($_SESSION['user_id']);
-$user = null;
-
-$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$user_result = $stmt->get_result();
-
-if ($user_result && $user_result->num_rows > 0) {
-    $user = $user_result->fetch_assoc();
-}
+} // end else (logged-in)
 
 $fullname = $user['fullname'] ?? "";
-$email = $user['email'] ?? "";
-$phone = $user['phone'] ?? "";
-$address = $user['address'] ?? "";
+$email    = $user['email']    ?? "";
+$phone    = $user['phone']    ?? "";
+$address  = $user['address']  ?? "";
 
 $name_parts = explode(" ", trim($fullname), 2);
 $first_name = $name_parts[0] ?? "";
@@ -43,7 +48,7 @@ $pre_barangay = "";
 $pre_barangay_name = "";
 
 $addr_stmt = $conn->prepare("SELECT * FROM user_addresses WHERE user_id = ? AND is_default = 1 LIMIT 1");
-if ($addr_stmt) {
+if ($addr_stmt && $user_id > 0) {
     $addr_stmt->bind_param("i", $user_id);
     $addr_stmt->execute();
     $addr_result = $addr_stmt->get_result();
@@ -914,5 +919,22 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
             });
         }
     </script>
+
+    <?php if ($guest_mode): ?>
+    <!-- AUTHENTICATION REQUIRED MODAL — shown immediately for guests -->
+    <div id="bookAuthModal" style="display:flex; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:99999; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:16px; padding:40px 32px; max-width:420px; width:90%; text-align:center; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <h3 style="color:#0020C2; font-size:22px; font-weight:800; margin:0 0 12px;">Authentication Required</h3>
+            <p style="color:#475569; font-size:15px; margin:0 0 28px;">Please log in or register to continue with your request.</p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <a href="login.php?redirect=<?= urlencode($guest_redirect) ?>" style="flex:1; padding:14px 0; background:#0020C2; color:#fff; border:none; border-radius:8px; font-weight:700; font-size:15px; cursor:pointer; text-decoration:none; display:block; text-align:center;">Log In</a>
+                <a href="register.php?redirect=<?= urlencode($guest_redirect) ?>" style="flex:1; padding:14px 0; background:#f1f5f9; color:#111827; border:1px solid #e2e8f0; border-radius:8px; font-weight:700; font-size:15px; cursor:pointer; text-decoration:none; display:block; text-align:center;">Register</a>
+            </div>
+            <p style="margin-top:18px; font-size:13px; color:#94a3b8;">
+                <a href="index.php" style="color:#0020C2; text-decoration:none;">← Back to Home</a>
+            </p>
+        </div>
+    </div>
+    <?php endif; ?>
 </body>
 </html>
