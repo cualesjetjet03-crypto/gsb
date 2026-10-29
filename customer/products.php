@@ -560,6 +560,34 @@ $promo_result = $conn->query($promo_query);
 
         loadProducts();
         if (USER_ID) updateCartCount();
+
+        // ── Auto-reopen product modal after redirect-back from login/register ──
+        const _urlP = new URLSearchParams(window.location.search);
+        const _openId = _urlP.get('open_product');
+        const _savedQty = parseInt(_urlP.get('qty')) || 1;
+
+        if (_openId) {
+            // Wait for loadProducts() fetch to populate productsData, then open modal
+            const _tryOpen = (attempts) => {
+                let _prod = productsData.find(p => p.id == _openId);
+                if (_prod) {
+                    openProductModal(parseInt(_openId));
+                    // Restore quantity if > 1
+                    if (_savedQty > 1) {
+                        let _qtyInput = document.getElementById('modalQuantityInput');
+                        if (_qtyInput) _qtyInput.value = Math.min(_savedQty, parseInt(_qtyInput.max) || _savedQty);
+                    }
+                    // Clean URL so a refresh doesn't re-open the modal
+                    const _cleanUrl = window.location.pathname + (window.location.search.replace(/[?&]open_product=\d+/, '').replace(/[?&]qty=\d+/, '').replace(/^&/, '?') || '');
+                    history.replaceState(null, '', _cleanUrl);
+                    // Clear sessionStorage entry
+                    sessionStorage.removeItem('gsb_return_state');
+                } else if (attempts < 20) {
+                    setTimeout(() => _tryOpen(attempts + 1), 150);
+                }
+            };
+            setTimeout(() => _tryOpen(0), 300);
+        }
     };
 
     /* FILTER SIDEBAR TOGGLE */
@@ -823,7 +851,33 @@ $promo_result = $conn->query($promo_query);
     }
 
     /* CART LOGIC */
-    function openAuthModal() { closeProductModal(); document.getElementById("authModal").classList.add("show"); }
+    function openAuthModal() {
+        closeProductModal();
+        // Build redirect URL pointing back to this product
+        let productId = selectedProduct ? selectedProduct.id : null;
+        let qty = selectedProduct ? (parseInt(document.getElementById("modalQuantityInput")?.value) || 1) : 1;
+        let returnUrl = 'products.php' + (productId ? '?open_product=' + productId + '&qty=' + qty : '');
+
+        // Save state in sessionStorage so we can restore it after login
+        if (productId) {
+            sessionStorage.setItem('gsb_return_state', JSON.stringify({
+                url: returnUrl,
+                productId: productId,
+                quantity: qty
+            }));
+        }
+
+        // Update auth modal button hrefs to carry the redirect param
+        let encoded = encodeURIComponent(returnUrl);
+        document.querySelector('#authModal .auth-login-btn').onclick = function() {
+            window.location.href = 'login.php?redirect=' + encoded;
+        };
+        document.querySelector('#authModal .auth-register-btn').onclick = function() {
+            window.location.href = 'register.php?redirect=' + encoded;
+        };
+
+        document.getElementById("authModal").classList.add("show");
+    }
     function closeAuthModal() { document.getElementById("authModal").classList.remove("show"); }
     function closeBulkModal() { document.getElementById("bulkModal").classList.remove("show"); }
 

@@ -3,7 +3,9 @@ include "db_connect.php";
 require_once __DIR__ . '/../includes/mailer.php';
 
 $register_error = "";
-$show_success_modal = false; 
+$show_success_modal = false;
+// Carry the redirect param through the entire registration flow
+$reg_redirect = trim($_POST['redirect'] ?? $_GET['redirect'] ?? '');
 
 if(isset($_POST['register'])){
     $fullname =$_POST['reg_fullname'];
@@ -230,10 +232,13 @@ if(isset($_POST['register'])){
                     <button type="submit" name="register" class="auth-btn">
                         Create Account & Send Email <i class="fa-solid fa-paper-plane"></i>
                     </button>
+                    <?php if (!empty($reg_redirect)): ?>
+                        <input type="hidden" name="redirect" value="<?= htmlspecialchars($reg_redirect) ?>">
+                    <?php endif; ?>
                 </form>
 
                 <div class="auth-footer">
-                    Already have an account? <a href="login.php">Sign In</a>
+                    Already have an account? <a href="login.php<?= !empty($reg_redirect) ? '?redirect=' . urlencode($reg_redirect) : '' ?>">Sign In</a>
                 </div>
             </div>
         </div>
@@ -248,7 +253,7 @@ if(isset($_POST['register'])){
             </div>
             <h3>Check Your Inbox!</h3>
             <p>Registration successful! We've sent a verification link to your email. Please verify your account to log in.</p>
-            <button onclick="window.location.href='login.php'" class="modal-btn">Got it, thanks!</button>
+            <button onclick="window.location.href='login.php<?= !empty($reg_redirect) ? '?redirect=' . urlencode($reg_redirect) : '' ?>'" class="modal-btn">Got it, thanks!</button>
         </div>
     </div>
     <?php endif; ?>

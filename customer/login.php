@@ -179,7 +179,7 @@ if (isset($_POST['login'])) {
                 </form>
 
                 <div class="auth-footer">
-                    Don't have an account? <a href="register.php">Register</a>
+                    Don't have an account? <a href="register.php<?= !empty($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : (!empty($_POST['redirect']) ? '?redirect=' . urlencode($_POST['redirect']) : '') ?>">Register</a>
                 </div>
             </div>
 

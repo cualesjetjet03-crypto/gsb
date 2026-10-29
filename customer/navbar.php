@@ -195,8 +195,14 @@ if (!function_exists('nav_link')) {
                     
                 <?php else: ?>
                     <!-- SHOW LOGIN AND REGISTER BUTTONS TO GUESTS -->
-                    <a href="login.php" class="auth-nav-btn login-nav">Login</a>
-                    <a href="register.php" class="auth-nav-btn register-nav">Sign Up</a>
+                    <?php
+                        // Preserve current page as redirect target so login/signup returns here
+                        $nav_current = htmlspecialchars(basename($_SERVER['PHP_SELF']) . (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : ''));
+                        $nav_login_href   = 'login.php?redirect='    . urlencode($nav_current);
+                        $nav_register_href = 'register.php?redirect=' . urlencode($nav_current);
+                    ?>
+                    <a href="<?php echo $nav_login_href; ?>" class="auth-nav-btn login-nav">Login</a>
+                    <a href="<?php echo $nav_register_href; ?>" class="auth-nav-btn register-nav">Sign Up</a>
                 <?php endif; ?>
             </div>
         </div>
