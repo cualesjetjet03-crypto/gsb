@@ -35,6 +35,24 @@ if ($user_stmt) {
 }
 
 // Fetch default address structured fields from user_addresses
+// Lazy backfill: if no saved address yet but user has address in users table, create it now
+$_addr_count_stmt = $conn->prepare("SELECT COUNT(*) AS c FROM user_addresses WHERE user_id = ?");
+if ($_addr_count_stmt) {
+    $_addr_count_stmt->bind_param('i', $user_id);
+    $_addr_count_stmt->execute();
+    $_addr_c = (int)$_addr_count_stmt->get_result()->fetch_assoc()['c'];
+    $_addr_count_stmt->close();
+    if ($_addr_c === 0 && !empty($user_data['address'] ?? '')) {
+        $_raw = $user_data['address'];
+        $_parts = array_map('trim', explode(',', $_raw));
+        $_bf_ins = $conn->prepare("INSERT INTO user_addresses (user_id, label, address, province, city, barangay, street_address, is_default) VALUES (?, 'Home', ?, ?, ?, ?, ?, 1)");
+        if ($_bf_ins) {
+            $_bf_ins->bind_param("issssss", $user_id, $_raw, $_parts[3] ?? '', $_parts[2] ?? '', $_parts[1] ?? '', $_parts[0] ?? '');
+            $_bf_ins->execute(); $_bf_ins->close();
+        }
+    }
+}
+
 $addr_stmt = $conn->prepare(
     "SELECT province, city, barangay, street_address
      FROM user_addresses WHERE user_id = ? AND is_default = 1 LIMIT 1"

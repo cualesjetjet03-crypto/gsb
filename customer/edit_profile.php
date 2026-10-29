@@ -21,6 +21,26 @@ if (!$user) {
 
 /* Fetch saved addresses for the Saved Addresses section */
 $saved_addresses = [];
+
+// Lazy backfill: if user has no saved addresses but has an address in users table, create it
+$count_stmt = $conn->prepare("SELECT COUNT(*) AS c FROM user_addresses WHERE user_id = ?");
+if ($count_stmt) {
+    $count_stmt->bind_param('i', $user_id);
+    $count_stmt->execute();
+    $addr_count = (int)$count_stmt->get_result()->fetch_assoc()['c'];
+    $count_stmt->close();
+    if ($addr_count === 0 && !empty($user['address'])) {
+        $parts = array_map('trim', explode(',', $user['address']));
+        $bf_street = $parts[0] ?? ''; $bf_brgy = $parts[1] ?? '';
+        $bf_city = $parts[2] ?? ''; $bf_prov = $parts[3] ?? '';
+        $bf_ins = $conn->prepare("INSERT INTO user_addresses (user_id, label, address, province, city, barangay, street_address, is_default) VALUES (?, 'Home', ?, ?, ?, ?, ?, 1)");
+        if ($bf_ins) {
+            $bf_ins->bind_param("issssss", $user_id, $user['address'], $bf_prov, $bf_city, $bf_brgy, $bf_street);
+            $bf_ins->execute(); $bf_ins->close();
+        }
+    }
+}
+
 $addr_stmt = $conn->prepare(
     "SELECT id, label, address, province, city, barangay, street_address, is_default
      FROM user_addresses WHERE user_id = ?

@@ -55,6 +55,22 @@ if(isset($_POST['register'])){
 
             if ($ins->execute()) {
                 $ins->close();
+                $new_user_id = $conn->insert_id;
+
+                // Automatically create default saved address from registration fields
+                if (!empty($street) || !empty($barangay) || !empty($city) || !empty($province)) {
+                    $addr_ins = $conn->prepare(
+                        "INSERT INTO user_addresses (user_id, label, address, province, city, barangay, street_address, is_default)
+                         VALUES (?, 'Home', ?, ?, ?, ?, ?, 1)"
+                    );
+                    if ($addr_ins) {
+                        $addr_ins->bind_param("issssss",
+                            $new_user_id, $address, $province, $city, $barangay, $street
+                        );
+                        $addr_ins->execute();
+                        $addr_ins->close();
+                    }
+                }
 
                 $verify_link = rtrim(APP_BASE_URL, '/') . '/verify.php?token=' . urlencode($verification_code);
 
