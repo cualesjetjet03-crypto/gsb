@@ -82,7 +82,12 @@ if(isset($_POST['register'])){
 
                 $result = gsb_send_email($email, $fullname, 'Verify Your GSB Account', $body);
 
-                if ($result === true) {
+                // On localhost: auto-verify since email can't be sent
+                if (APP_ENV === 'development') {
+                    $conn->query("UPDATE users SET is_verified=1, verification_code=NULL WHERE email='" . $conn->real_escape_string($email) . "'");
+                    $show_success_modal = true;
+                    $_POST = [];
+                } elseif ($result === true) {
                     $show_success_modal = true;
                     $_POST = [];
                 } else {
