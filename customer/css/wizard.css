@@ -380,17 +380,17 @@ body { font-family: 'Poppins', sans-serif; background: #f5f7fb; margin: 0; paddi
 /* =======================================================
    FULLCALENDAR TWEAKS — matches inquiry.php calendar styling
 ======================================================= */
-.fc-today { background-color: #fef9c3 !important; box-shadow: none !important; cursor: not-allowed !important; }
-.fc-past-day { background-color: #f1f5f9 !important; box-shadow: none !important; cursor: not-allowed !important; }
-.fc-buffer-day { background-color: #f1f5f9 !important; cursor: not-allowed !important; }
+.fc-today { background-color: #fef9c3 !important; box-shadow: none !important; cursor: not-allowed !important; pointer-events: none !important; }
+.fc-past-day { background-color: #f1f5f9 !important; box-shadow: none !important; cursor: not-allowed !important; pointer-events: none !important; }
+.fc-buffer-day { background-color: #f1f5f9 !important; cursor: not-allowed !important; pointer-events: none !important; }
 
 /* Available days — light green */
 .fc-available-day { background-color: #dcfce7 !important; }
 .fc-available-day .fc-day-number { color: #15803d !important; }
 
-/* UNAVAILABLE/FULL — light red matching inquiry.php */
-.fc-full-day { background-color: #fee2e2 !important; cursor: not-allowed; }
-.fc-unavailable-day { background-color: #fee2e2 !important; cursor: not-allowed !important; }
+/* UNAVAILABLE/FULL — light red, completely unclickable */
+.fc-full-day { background-color: #fee2e2 !important; cursor: not-allowed !important; pointer-events: none !important; }
+.fc-unavailable-day { background-color: #fee2e2 !important; cursor: not-allowed !important; pointer-events: none !important; }
 
 .fc-day:hover:not(.fc-past-day):not(.fc-full-day):not(.fc-unavailable-day):not(.fc-buffer-day):not(.fc-today) { background-color: #bbf7d0 !important; cursor: pointer; }
 

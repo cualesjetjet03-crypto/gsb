@@ -194,9 +194,13 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                  ========================================== -->
             <form action="process_schedule.php" method="POST" id="bookingWizardForm">
                 
-                <!-- Service type pre-filled from services.php ?service= param -->
+                <!-- Service type pre-filled from services.php ?service= param, preserved across error redirects -->
+                <?php
+                    // Preserve service across error redirects: ?service= comes back from process_schedule.php
+                    $service_value = $_GET['service'] ?? '';
+                ?>
                 <input type="hidden" id="service_type" name="service_type" 
-                       value="<?php echo clean($_GET['service'] ?? ''); ?>" required>
+                       value="<?php echo clean($service_value); ?>" required>
 
                 <!-- STEP 1: Contact Details (was Step 2) -->
                 <div class="wizard-step active" id="step1">
@@ -861,11 +865,14 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                         var minAllowedDate = moment().add(1, 'days').format('YYYY-MM-DD');
                         var selectedDate = date.format('YYYY-MM-DD');
 
+                        // Block past / same-day
                         if (selectedDate < minAllowedDate) {
                             showModal("Invalid Date", "Same-day booking is not allowed. Please select a date starting tomorrow.");
+                            $("#schedule_date").val(""); $("#dateDisplay").hide(); checkNextButton();
                             return false;
                         }
 
+                        // Block unavailable / fully booked
                         var unavailableInfo = getUnavailableInfo(selectedDate);
                         if (unavailableInfo) {
                             var isFullyBooked = (unavailableInfo.notes && unavailableInfo.notes.toLowerCase().indexOf('fully booked') !== -1)
@@ -879,10 +886,13 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
                                 }
                                 showModal("Date Unavailable", msg);
                             }
+                            // Always clear and disable Next for blocked dates
+                            $("#schedule_date").val(""); $("#dateDisplay").hide(); checkNextButton();
                             return false;
                         }
 
-                        $('.fc-day').css('background-color', '');$(this).css('background-color', '#dbeafe'); 
+                        // Valid available date — set it
+                        $('.fc-day').css('background-color', '');$(this).css('background-color', '#dbeafe');
                         
                         $("#schedule_date").val(selectedDate);
                         $("#displayDateText").text(selectedDate);
@@ -896,6 +906,7 @@ if ($availabilityResult && $availabilityResult->num_rows > 0) {
 
                         if (selectedDate < minAllowedDate || getUnavailableInfo(selectedDate)) {
                             $('#calendar').fullCalendar('unselect');
+                            $("#schedule_date").val(""); $("#dateDisplay").hide(); checkNextButton();
                             
                             if (selectedDate < minAllowedDate) {
                                 showModal("Invalid Date", "Same-day booking is not allowed. Please select a date starting tomorrow.");

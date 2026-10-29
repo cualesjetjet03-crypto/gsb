@@ -56,7 +56,7 @@ if (
     empty($service_date)
 ) {
     error_log("process_schedule.php: Missing required fields. name=$customer_name email=$email phone=$phone service=$service_type date=$service_date address=$address");
-    header("Location: book_service.php?error=failed");
+    header("Location: book_service.php?error=failed&service=" . urlencode($service_type));
     exit();
 }
 
@@ -66,7 +66,7 @@ if (empty($address)) {
 }
 if (empty($address)) {
     error_log("process_schedule.php: Address is empty after fallback.");
-    header("Location: book_service.php?error=failed");
+    header("Location: book_service.php?error=failed&service=" . urlencode($service_type));
     exit();
 }
 
@@ -74,12 +74,12 @@ if (empty($address)) {
 // VALIDATE SERVICE & PHONE
 // ==========================
 if (!in_array($service_type, $allowed_services)) {
-    header("Location: book_service.php?error=failed");
+    header("Location: book_service.php?error=failed&service=" . urlencode($service_type));
     exit();
 }
 
 if (!preg_match('/^09\d{9}$/', $phone)) {
-    header("Location: book_service.php?error=failed");
+    header("Location: book_service.php?error=failed&service=" . urlencode($service_type));
     exit();
 }
 
@@ -99,14 +99,13 @@ if ($stmt_block) {
 }
 
 if ($block_count > 0) {
-    header("Location: book_service.php?error=unavailable");
+    header("Location: book_service.php?error=unavailable&service=" . urlencode($service_type));
     exit();
 }
 
 $s_count = 0;
-$i_count = 0;
 
-// 2. Count active services (Excluding inquiries to prevent double-counting)
+// 2. Count active service bookings ONLY (not product inquiries — different capacity system)
 $stmt1 = $conn->prepare("SELECT COUNT(*) FROM services_schedule WHERE service_date = ? AND (inquiry_id IS NULL OR inquiry_id = 0) AND IFNULL(status, 'Pending') NOT IN ('Completed', 'Cancelled', 'Declined', 'Rejected', 'Deleted')");
 if ($stmt1) {
     $stmt1->bind_param("s", $service_date);
@@ -116,21 +115,13 @@ if ($stmt1) {
     $stmt1->close();
 }
 
-// 3. Count active inquiries/deliveries
-$stmt2 = $conn->prepare("SELECT COUNT(*) FROM inquiries WHERE delivery_date = ? AND IFNULL(status, 'Pending') NOT IN ('Completed', 'Cancelled', 'Declined', 'Rejected', 'Deleted')");
-if ($stmt2) {
-    $stmt2->bind_param("s", $service_date);
-    $stmt2->execute();
-    $stmt2->bind_result($i_count);
-    $stmt2->fetch();
-    $stmt2->close();
-}
+// Product inquiries/deliveries are NOT counted toward the 3-slot service capacity.
+// They have a separate scheduling system via inquiries.delivery_date.
+$current_active_bookings = $s_count;
 
-$current_active_bookings = $s_count + $i_count;
-
-// Block submission if there are already 3 or more bookings
+// Block submission if there are already 3 or more SERVICE bookings
 if ($current_active_bookings >= 3) {
-    header("Location: book_service.php?error=full");
+    header("Location: book_service.php?error=full&service=" . urlencode($service_type));
     exit();
 }
 
@@ -234,7 +225,7 @@ try {
 
 } catch (Exception $e) {
     $conn->rollback();
-    header("Location: book_service.php?error=failed");
+    header("Location: book_service.php?error=failed&service=" . urlencode($service_type));
     exit();
 }
 ?>
