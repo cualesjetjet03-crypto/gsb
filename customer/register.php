@@ -64,7 +64,7 @@ if(isset($_POST['register'])){
                          VALUES (?, 'Home', ?, ?, ?, ?, ?, 1)"
                     );
                     if ($addr_ins) {
-                        $addr_ins->bind_param("issssss",
+                        $addr_ins->bind_param("isssss",
                             $new_user_id, $address, $province, $city, $barangay, $street
                         );
                         $addr_ins->execute();
