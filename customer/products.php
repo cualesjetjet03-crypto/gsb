@@ -50,7 +50,6 @@ $promo_result = $conn->query($promo_query);
 
         <div class="deals-section">
             <div class="deals-header">
-                <span class="deals-fire">🔥</span>
                 <h2>HOT DEALS &amp; DISCOUNTS</h2>
                 <p>Limited-time promos — grab them before they're gone</p>
             </div>

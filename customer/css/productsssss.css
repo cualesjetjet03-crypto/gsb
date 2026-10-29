@@ -89,7 +89,6 @@ body {
     padding: 28px 20px 8px;
     color: #fff;
 }
-.deals-fire { font-size: 28px; display: block; margin-bottom: 6px; }
 .deals-header h2 {
     margin: 0 0 6px;
     font-size: 26px;
@@ -1388,7 +1387,6 @@ body {
     .deals-header   { padding: 20px 16px 6px; }
     .deals-header h2 { font-size: 18px; letter-spacing: 1px; }
     .deals-header p  { font-size: 11px; }
-    .deals-fire      { font-size: 22px; }
     .deals-stage    { height: 470px; perspective: 700px; }
     .deals-card     { width: 230px; margin-left: -115px; margin-top: -200px; }
     .dc-photo       { height: 145px; }
