@@ -778,20 +778,6 @@ $catalog_result = $conn->query($catalog_query);
             if (e.target === this) closeIndexAuthModal();
         });
 
-            fetch(window.location.href, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `action=add_to_cart&product_id=${currentProductId}&quantity=${qty}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                window.location.href = `inquiry.php?product_id=${currentProductId}&qty=${qty}`; 
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                window.location.href = `inquiry.php?product_id=${currentProductId}&qty=${qty}`; 
-            });
-        }
     </script>
 </body>
 </html>
