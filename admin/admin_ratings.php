@@ -215,6 +215,17 @@ if($total_gsb > 0) {
     $conic_gradient = "conic-gradient(#e2e8f0 0deg 360deg)";
 }
 
+// Helper: mask a full name GCash-style — keep first letter, replace rest with *
+// e.g. "Caryl Alfonso" → "C**** A******"
+function maskName($name) {
+    $words = explode(' ', trim($name));
+    $masked = array_map(function($word) {
+        if (strlen($word) <= 1) return $word;
+        return substr($word, 0, 1) . str_repeat('*', strlen($word) - 1);
+    }, $words);
+    return implode(' ', $masked);
+}
+
 // Fetch 10 most recent reviews for admin moderation
 $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_rating, image_1, image_2, image_3, video_url, is_approved FROM technician_ratings ORDER BY created_at DESC LIMIT 10");
 ?>
@@ -410,7 +421,7 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
                                 <div class="fb-avatar"><i class="fa-solid fa-user"></i></div>
                                 <div class="fb-content">
                                     <div class="fb-top">
-                                        <span class="fb-name"><?php echo e($c['customer_name']); ?></span>
+                                        <span class="fb-name"><?php echo e(maskName($c['customer_name'])); ?></span>
                                         <div class="fb-meta">
                                             <div class="fb-stars">
                                                 <?php for($i=0; $i<$stars; $i++) echo '<i class="fa-solid fa-star"></i>'; ?>
@@ -424,13 +435,13 @@ $comments = $conn->query("SELECT id, customer_name, comment, created_at, tech_ra
                                     <?php if (!empty($c['image_1']) || !empty($c['image_2']) || !empty($c['image_3']) || !empty($c['video_url'])): ?>
                                         <div class="fb-media">
                                             <?php if (!empty($c['image_1'])): ?>
-                                                <a href="<?php echo e($c['image_1']); ?>" target="_blank"><img src="<?php echo e($c['image_1']); ?>" class="fb-media-img" alt="Review Media"></a>
+                                                <a href="<?php echo e($c['image_1']); ?>" target="_blank"><img src="<?php echo e($c['image_1']); ?>" class="fb-media-img" alt="Review Media" onerror="this.closest('a').style.display='none'"></a>
                                             <?php endif; ?>
                                             <?php if (!empty($c['image_2'])): ?>
-                                                <a href="<?php echo e($c['image_2']); ?>" target="_blank"><img src="<?php echo e($c['image_2']); ?>" class="fb-media-img" alt="Review Media"></a>
+                                                <a href="<?php echo e($c['image_2']); ?>" target="_blank"><img src="<?php echo e($c['image_2']); ?>" class="fb-media-img" alt="Review Media" onerror="this.closest('a').style.display='none'"></a>
                                             <?php endif; ?>
                                             <?php if (!empty($c['image_3'])): ?>
-                                                <a href="<?php echo e($c['image_3']); ?>" target="_blank"><img src="<?php echo e($c['image_3']); ?>" class="fb-media-img" alt="Review Media"></a>
+                                                <a href="<?php echo e($c['image_3']); ?>" target="_blank"><img src="<?php echo e($c['image_3']); ?>" class="fb-media-img" alt="Review Media" onerror="this.closest('a').style.display='none'"></a>
                                             <?php endif; ?>
                                             <?php if (!empty($c['video_url'])): ?>
                                                 <video src="<?php echo e($c['video_url']); ?>" controls class="fb-media-video"></video>

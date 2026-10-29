@@ -5,6 +5,28 @@ include 'db_connect.php';
 // Check if the user is logged in
 $is_logged_in = isset($_SESSION['user_id']);
 
+// Helper: mask a full name GCash-style — keep first letter, replace rest with *
+// e.g. "Caryl Alfonso" → "C**** A******"
+function maskName($name) {
+    $words = explode(' ', trim($name));
+    $masked = array_map(function($word) {
+        if (strlen($word) <= 1) return $word;
+        return substr($word, 0, 1) . str_repeat('*', strlen($word) - 1);
+    }, $words);
+    return implode(' ', $masked);
+}
+
+// Helper: fix review image path for use as a browser URL from the customer/ context
+// DB stores: ../images/ratings/filename.jpg  → serve as: images/ratings/filename.jpg
+function reviewImgUrl($rawPath) {
+    if (empty($rawPath)) return '';
+    // Strip leading ../ so it's relative to the site root from customer/
+    $path = ltrim($rawPath, './');
+    $path = ltrim($path, '/');
+    // Remove any leading 'images/' duplication just in case
+    return htmlspecialchars($path, ENT_QUOTES, 'UTF-8');
+}
+
 // Fetch ALL published reviews (is_approved = 1) — no star rating filter, no arbitrary limit
 $reviews_query = "SELECT customer_name, comment, tech_rating, gsb_rating, created_at, image_1, image_2, image_3, video_url 
                   FROM technician_ratings 
@@ -197,14 +219,14 @@ $reviews_result = $conn->query($reviews_query);
                     <div class="review-media"><div class="review-images">
                         <?php foreach (['image_1','image_2','image_3'] as $imgKey): ?>
                             <?php if (!empty($rev[$imgKey])): ?>
-                                <img src="<?php echo htmlspecialchars($rev[$imgKey]); ?>" alt="Review photo" class="review-img" loading="lazy">
+                                <img src="<?php echo reviewImgUrl($rev[$imgKey]); ?>" alt="Review photo" class="review-img" loading="lazy" onerror="this.style.display='none'">
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </div></div>
                     <?php endif; ?>
                     <?php if (!empty($rev['video_url'])): ?>
                     <div class="review-media">
-                        <video src="<?php echo htmlspecialchars($rev['video_url']); ?>" controls class="review-video"></video>
+                        <video src="<?php echo reviewImgUrl($rev['video_url']); ?>" controls class="review-video"></video>
                     </div>
                     <?php endif; ?>
 
@@ -213,7 +235,7 @@ $reviews_result = $conn->query($reviews_query);
                             <?php echo strtoupper(substr(htmlspecialchars($rev['customer_name']),0,1)); ?>
                         </div>
                         <div class="review-author-info">
-                            <h4><?php echo htmlspecialchars($rev['customer_name']); ?></h4>
+                            <h4><?php echo htmlspecialchars(maskName($rev['customer_name'])); ?></h4>
                             <span class="review-date"><?php echo date('F d, Y', strtotime($rev['created_at'])); ?></span>
                         </div>
                     </div>
