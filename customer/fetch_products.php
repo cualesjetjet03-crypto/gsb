@@ -1,158 +1,119 @@
 <?php
 include "db_connect.php";
-
 header('Content-Type: application/json');
 
-// ==========================================
-// 1. BASE CONDITION: EXCLUDE ARCHIVED PRODUCTS
-// ==========================================
-// This ensures that no matter what filters the customer clicks,
-// archived items will never show up on the frontend.
+// BASE: never show archived products
 $conditions = ["is_archived = 0"];
 
-// ==========================================
-// SMART SEARCH LOGIC
-// ==========================================
+// ── SEARCH ─────────────────────────────────────────────────────────────────
 if (!empty($_GET['search'])) {
-    $raw_search = trim($_GET['search']);
-    $search = $conn->real_escape_string($raw_search);
-    
-    // SMART HP DETECTION: 
-    // If they type "2.5", "1.0", or "2.5 hp" (any number under 10), target ONLY the CapacityHP column.
-    // This stops "2.5" from accidentally matching the "2.5 kW" cooling capacity of a 1.0HP unit.
-    if (preg_match('/^([0-9\.]+)\s*(hp)?$/i', $raw_search, $matches) && floatval($matches[1]) <= 10) {
-        $hp_val = $conn->real_escape_string($matches[1]);
-        $conditions[] = "CapacityHP = '$hp_val'";
+    $raw = trim($_GET['search']);
+    $s   = $conn->real_escape_string($raw);
+    // HP-only search (e.g. "1.5", "2hp")
+    if (preg_match('/^([0-9]+\.?[0-9]*)\s*(hp)?$/i', $raw, $m) && floatval($m[1]) <= 10) {
+        $conditions[] = "CapacityHP = '" . $conn->real_escape_string($m[1]) . "'";
     } else {
-        // Normal broad search for Models, Brands, Prices (e.g. 37195), etc.
         $conditions[] = "(
-            IndoorUnitModel LIKE '%$search%' OR 
-            SeriesName LIKE '%$search%' OR 
-            CapacityHP LIKE '%$search%' OR 
-            SRP_PHP LIKE '%$search%' OR 
-            cooling_capacity LIKE '%$search%' OR 
-            warranty LIKE '%$search%' OR 
-            brand LIKE '%$search%' OR
-            IF(is_non_inverter = 1, 'Non-Inverter', 'Inverter') LIKE '%$search%'
+            IndoorUnitModel   LIKE '%$s%' OR
+            SeriesName        LIKE '%$s%' OR
+            brand             LIKE '%$s%' OR
+            SRP_PHP           LIKE '%$s%' OR
+            cooling_capacity  LIKE '%$s%' OR
+            warranty          LIKE '%$s%' OR
+            IF(is_non_inverter=1,'Non-Inverter','Inverter') LIKE '%$s%'
         )";
     }
 }
 
-// ✅ DAIKIN SERIES FILTER
-if (!empty($_GET['series'])) {
-    $series = is_array($_GET['series']) ? $_GET['series'] : [$_GET['series']];
-    $seriesConditions = [];
-    
-    foreach ($series as $s) {
-        if (stripos($s, 'Cooling King') !== false) {
-            $seriesConditions[] = "SeriesName LIKE '%Cooling King%'";
-        } else {
-            $safe_s = $conn->real_escape_string($s);
-            $seriesConditions[] = "SeriesName LIKE '%$safe_s%'";
-        }
-    }
-    
-    $conditions[] = "(" . implode(" OR ", $seriesConditions) . ")";
-}
-
-// ✅ CARRIER SERIES FILTER (AURA & NEXUS)
-if (!empty($_GET['carrier_series'])) {
-    $c_series = is_array($_GET['carrier_series']) ? $_GET['carrier_series'] : [$_GET['carrier_series']];
-    $carrierConditions = [];
-    
-    foreach ($c_series as $c) {
-        $safe_c = $conn->real_escape_string($c);
-        $carrierConditions[] = "SeriesName LIKE '%$safe_c%'";
-    }
-    
-    // Ensure it only searches Carrier products
-    $conditions[] = "(" . implode(" OR ", $carrierConditions) . ") AND brand = 'Carrier'";
-}
-
-// INVERTER FILTER — cast each value to int (0 or 1) to prevent injection
-if (!empty($_GET['is_non_inverter'])) {
-    $types = is_array($_GET['is_non_inverter']) ? $_GET['is_non_inverter'] : [$_GET['is_non_inverter']];
-    $safe_types = array_unique(array_map(fn($v) => (int)$v === 1 ? 1 : 0, $types));
-    $conditions[] = "is_non_inverter IN (" . implode(",", $safe_types) . ")";
-}
-
-// BRAND FILTER — case-insensitive
+// ── BRAND ──────────────────────────────────────────────────────────────────
 if (!empty($_GET['brand'])) {
     $brands = is_array($_GET['brand']) ? $_GET['brand'] : [$_GET['brand']];
-    $brand_conditions = [];
-    foreach ($brands as $b) {
-        $safe_b = $conn->real_escape_string(trim($b));
-        $brand_conditions[] = "LOWER(brand) = LOWER('$safe_b')";
-    }
-    $conditions[] = "(" . implode(" OR ", $brand_conditions) . ")";
+    $bc = array_map(fn($b) => "LOWER(brand)=LOWER('" . $conn->real_escape_string(trim($b)) . "')", $brands);
+    $conditions[] = "(" . implode(" OR ", $bc) . ")";
 }
 
-// MIDEA TYPE FILTER
+// ── DAIKIN SERIES ──────────────────────────────────────────────────────────
+if (!empty($_GET['series'])) {
+    $series = is_array($_GET['series']) ? $_GET['series'] : [$_GET['series']];
+    $sc = [];
+    foreach ($series as $sv) {
+        $safe = $conn->real_escape_string(trim($sv));
+        $sc[] = "SeriesName LIKE '%$safe%'";
+    }
+    $conditions[] = "(" . implode(" OR ", $sc) . ")";
+}
+
+// ── CARRIER SERIES ─────────────────────────────────────────────────────────
+if (!empty($_GET['carrier_series'])) {
+    $cs = is_array($_GET['carrier_series']) ? $_GET['carrier_series'] : [$_GET['carrier_series']];
+    $cc = [];
+    foreach ($cs as $cv) {
+        $safe = $conn->real_escape_string(trim($cv));
+        $cc[] = "SeriesName LIKE '%$safe%'";
+    }
+    $conditions[] = "brand='Carrier' AND (" . implode(" OR ", $cc) . ")";
+}
+
+// ── TYPE (Inverter / Non-Inverter) ─────────────────────────────────────────
+if (!empty($_GET['is_non_inverter'])) {
+    $types = is_array($_GET['is_non_inverter']) ? $_GET['is_non_inverter'] : [$_GET['is_non_inverter']];
+    $tv = array_unique(array_map(fn($v) => (int)$v, $types)); // 0 or 1 only
+    $conditions[] = "is_non_inverter IN (" . implode(",", $tv) . ")";
+}
+
+// ── MIDEA TYPE ─────────────────────────────────────────────────────────────
 if (!empty($_GET['midea_type'])) {
-    $types = is_array($_GET['midea_type']) ? $_GET['midea_type'] : [$_GET['midea_type']];
-    $mapped = [];
-
-    foreach ($types as $type) {
-        $t = strtolower(trim($type));
-        if ($t === "split") $mapped[] = "'split'";
-        if ($t === "window") $mapped[] = "'window'";
-        if ($t === "portable") $mapped[] = "'portable'";
+    $mt = is_array($_GET['midea_type']) ? $_GET['midea_type'] : [$_GET['midea_type']];
+    $mmap = [];
+    foreach ($mt as $m) {
+        $t = strtolower(trim($m));
+        if (in_array($t, ['split','window','portable'])) {
+            $mmap[] = "'" . $conn->real_escape_string($t) . "'";
+        }
     }
-
-    if (!empty($mapped)) {
-        $conditions[] = "LOWER(midea_type) IN (" . implode(",", $mapped) . ") AND brand = 'Midea'";
+    if (!empty($mmap)) {
+        $conditions[] = "brand='Midea' AND LOWER(midea_type) IN (" . implode(",", $mmap) . ")";
     }
 }
 
-// HP FILTER — use ROUND to normalize decimal precision (e.g., 1.0 == 1.00)
+// ── HORSEPOWER ─────────────────────────────────────────────────────────────
 if (!empty($_GET['hp'])) {
-    $hp_vals = is_array($_GET['hp']) ? $_GET['hp'] : [$_GET['hp']];
-    $hp_floats = array_unique(array_map(fn($h) => (float)$h, $hp_vals));
-    $hp_list = implode(",", $hp_floats);
-    $conditions[] = "ROUND(CapacityHP, 1) IN ($hp_list)";
+    $hp = is_array($_GET['hp']) ? $_GET['hp'] : [$_GET['hp']];
+    // Cast to float then back to string to avoid injection, use ROUND for decimal precision
+    $hpv = array_unique(array_map(fn($h) => round((float)$h, 1), $hp));
+    $conditions[] = "ROUND(CapacityHP,1) IN (" . implode(",", $hpv) . ")";
 }
 
-// STOCK STATUS FILTER
+// ── STOCK STATUS ───────────────────────────────────────────────────────────
 if (!empty($_GET['stock_status'])) {
-    $stocks = is_array($_GET['stock_status']) ? $_GET['stock_status'] : [$_GET['stock_status']];
-    $stocks = array_map(fn($s) => "'" . $conn->real_escape_string($s) . "'", $stocks);
-    $conditions[] = "stock_status IN (" . implode(",", $stocks) . ")";
+    $ss = is_array($_GET['stock_status']) ? $_GET['stock_status'] : [$_GET['stock_status']];
+    $ssv = array_map(fn($s) => "'" . $conn->real_escape_string(trim($s)) . "'", $ss);
+    $conditions[] = "stock_status IN (" . implode(",", $ssv) . ")";
 }
 
-// BUILD QUERY
-$sql = "SELECT * FROM products";
+// ── BUILD SQL ──────────────────────────────────────────────────────────────
+$sql = "SELECT * FROM products WHERE " . implode(" AND ", $conditions);
 
-if (!empty($conditions)) {
-    $sql .= " WHERE " . implode(" AND ", $conditions);
-}
+// ── SORT ───────────────────────────────────────────────────────────────────
+$sort = $_GET['sort'] ?? '';
+if ($sort === 'price_asc')  $sql .= " ORDER BY SRP_PHP ASC";
+elseif ($sort === 'price_desc') $sql .= " ORDER BY SRP_PHP DESC";
+elseif ($sort === 'name_asc')   $sql .= " ORDER BY SeriesName ASC";
+else $sql .= " ORDER BY (stock_status='Out of Stock' OR stock_quantity<=0) ASC, (is_promo=1 AND discount_percent>0 AND promo_end_date>=NOW()) DESC, id DESC";
 
-// SORT
-if (!empty($_GET['sort'])) {
-    if ($_GET['sort'] == "price_asc") {
-        $sql .= " ORDER BY SRP_PHP ASC";
-    } elseif ($_GET['sort'] == "price_desc") {
-        $sql .= " ORDER BY SRP_PHP DESC";
-    } elseif ($_GET['sort'] == "name_asc") {
-        $sql .= " ORDER BY SeriesName ASC";
-    }
-}
-
-// EXECUTE
+// ── EXECUTE ────────────────────────────────────────────────────────────────
 $result = $conn->query($sql);
 
 if (!$result) {
-    error_log("fetch_products query error: " . $conn->error);
-    echo json_encode(["Products" => [], "error" => "Query failed."]);
+    error_log("fetch_products error: " . $conn->error . " | SQL: " . $sql);
+    echo json_encode(["Products" => [], "error" => "Query failed: " . $conn->error]);
     exit;
 }
 
-// FETCH
 $products = [];
-
 while ($row = $result->fetch_assoc()) {
     $products[] = $row;
 }
 
-// RESPONSE
 echo json_encode(["Products" => $products]);
 ?>

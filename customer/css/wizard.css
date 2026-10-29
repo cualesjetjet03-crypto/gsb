@@ -378,39 +378,69 @@ body { font-family: 'Poppins', sans-serif; background: #f5f7fb; margin: 0; paddi
 .btn-submit:hover { background: #001699; }
 
 /* =======================================================
-   FULLCALENDAR TWEAKS 
+   FULLCALENDAR TWEAKS — matches inquiry.php calendar styling
 ======================================================= */
-.fc-today { background-color: #fef9c3 !important; }
-.fc-past-day { background-color: #f3f4f6 !important; cursor: not-allowed; }
-.fc-buffer-day { cursor: not-allowed; }
+.fc-today { background-color: #fef9c3 !important; box-shadow: none !important; cursor: not-allowed !important; }
+.fc-past-day { background-color: #f1f5f9 !important; box-shadow: none !important; cursor: not-allowed !important; }
+.fc-buffer-day { background-color: #f1f5f9 !important; cursor: not-allowed !important; }
 
-/* ENHANCED UNAVAILABLE/FULL RED SHADE */
-.fc-full-day { background-color: #fca5a5 !important; cursor: not-allowed; }
-.fc-unavailable-day { background-color: #fca5a5 !important; cursor: not-allowed; }
+/* UNAVAILABLE/FULL — light red matching inquiry.php */
+.fc-full-day { background-color: #fee2e2 !important; cursor: not-allowed; }
+.fc-unavailable-day { background-color: #fee2e2 !important; cursor: not-allowed !important; }
 
 .fc-day:hover:not(.fc-past-day):not(.fc-full-day):not(.fc-unavailable-day):not(.fc-buffer-day) { background-color: #f0f9ff; cursor: pointer; }
 
-/* Perfectly center the calendar title */
+/* Greyed-out day numbers for unselectable dates */
+.fc-disabled-day-text .fc-day-number {
+    color: #9ca3af !important;
+    opacity: 0.7;
+    cursor: not-allowed !important;
+}
+
+/* ── Toolbar: centered title, nav buttons left ── */
 .fc-toolbar.fc-header-toolbar {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    margin-bottom: 12px !important;
 }
 
-.fc-toolbar .fc-left {
-    position: absolute;
-    left: 0;
-}
+.fc-toolbar .fc-left  { position: absolute; left: 0; }
+.fc-toolbar .fc-right { position: absolute; right: 0; }
 
-.fc-toolbar .fc-right {
-    position: absolute;
-    right: 0;
-}
-
+/* Title — navy, 1.1rem, matching inquiry.php */
 .fc-toolbar .fc-center h2 {
-    font-size: 24px;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #0f1f78 !important;
     margin: 0;
+}
+
+/* ── Nav buttons styling — matching inquiry.php ── */
+.fc-button {
+    background: #f9fafb !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #374151 !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+    text-transform: capitalize !important;
+    font-weight: 500 !important;
+    padding: 4px 10px !important;
+    font-size: 12px !important;
+    transition: background 0.2s, color 0.2s;
+}
+
+.fc-button:hover,
+.fc-state-hover {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+}
+
+.fc-state-active {
+    background: #0f1f78 !important;
+    color: #ffffff !important;
+    border-color: #0f1f78 !important;
 }
 
 /* Mobile — stack accordion vertically */
