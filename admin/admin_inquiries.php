@@ -816,7 +816,7 @@ if ($availability && $availability->num_rows > 0) {
                                 <th>Details</th>
                                 <th>Status</th>
                                 <th>Change Status</th>
-                                <th>Service Schedule</th>
+                                <?php if ($tab_status === 'Pending'): ?><th>Service Schedule</th><?php endif; ?>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -1010,6 +1010,7 @@ if ($availability && $availability->num_rows > 0) {
                                             <button type="button" class="primary-btn mini-btn" onclick="openUpdateStatusModal(this)">Update</button>
                                         </form>
                                     </td>
+                                    <?php if ($tab_status === 'Pending'): ?>
                                     <td>
                                         <?php if ($schedule) { ?>
                                             <div class="schedule-info">
@@ -1078,6 +1079,7 @@ if ($availability && $availability->num_rows > 0) {
                                             </button>
                                         <?php } ?>
                                     </td>
+                                    <?php endif; // Pending only — Service Schedule ?>
                                     <td>
                                         <a href="admin_inquiries.php?delete=<?php echo clean($row['id']); ?>" class="delete-icon" onclick="event.preventDefault(); customConfirm('Are you sure you want to delete this order?', this.href);" title="Delete order">
                                             <i class="fa-regular fa-trash-can"></i>
@@ -1086,7 +1088,7 @@ if ($availability && $availability->num_rows > 0) {
                                 </tr>
                             <?php } ?>
                         <?php } else { ?>
-                            <tr><td colspan="7" class="empty-row">No <?php echo strtolower($tab_status); ?> orders found.</td></tr>
+                            <tr><td colspan="<?php echo $tab_status === 'Pending' ? 7 : 6; ?>" class="empty-row">No <?php echo strtolower($tab_status); ?> orders found.</td></tr>
                         <?php } ?>
                         </tbody>
                     </table>

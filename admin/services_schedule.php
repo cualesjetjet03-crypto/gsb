@@ -697,7 +697,7 @@ if ($availability && $availability->num_rows > 0) {
                                 <th>Details</th>
                                 <th>Status</th>
                                 <th>Change Status</th>
-                                <th>Service Request</th>
+                                <?php if ($tab_status === 'Pending'): ?><th>Service Request</th><?php endif; ?>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -828,6 +828,7 @@ if ($availability && $availability->num_rows > 0) {
                                         </form>
                                     </td>
 
+                                    <?php if ($tab_status === 'Pending'): ?>
                                     <td>
                                         <div class="schedule-info">
                                             <strong><?php echo clean($row['service_type'] ?? 'AC Installation'); ?></strong>
@@ -863,6 +864,7 @@ if ($availability && $availability->num_rows > 0) {
                                             <i class="fa-regular fa-calendar-pen"></i> Update Request
                                         </button>
                                     </td>
+                                    <?php endif; // Pending only — Service Request ?>
 
                                     <td>
                                         <!-- USE GLOBAL CUSTOM CONFIRM -->
@@ -874,7 +876,7 @@ if ($availability && $availability->num_rows > 0) {
                                 </tr>
                             <?php } ?>
                         <?php } else { ?>
-                            <tr><td colspan="7" class="empty-row">No active <?php echo strtolower($tab_status); ?> requests found.</td></tr>
+                            <tr><td colspan="<?php echo $tab_status === 'Pending' ? 7 : 6; ?>" class="empty-row">No active <?php echo strtolower($tab_status); ?> requests found.</td></tr>
                         <?php } ?>
                         </tbody>
                     </table>
