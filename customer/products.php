@@ -84,13 +84,11 @@ $promo_result = $conn->query($promo_query);
                 <div class="deals-card <?php echo $stock_class; ?>" data-index="<?php echo $idx; ?>"
                      onclick="dealsCardClick(<?php echo $idx; ?>, <?php echo $promo['id']; ?>)">
 
-                    <!-- TOP: full-bleed product photo -->
+                    <!-- TOP: full-bleed product photo — NO discount badge here (moved to modal) -->
                     <div class="dc-photo">
                         <img src="<?php echo $img_src; ?>"
                              alt="<?php echo htmlspecialchars($model_text); ?>"
                              onerror="this.src='../images/no-image.png'">
-                        <!-- % off badge top-left -->
-                        <div class="dc-badge"><?php echo $discount_pct; ?>%<br><small>OFF</small></div>
                     </div>
 
                     <!-- BOTTOM: info panel (white / light) -->
@@ -113,7 +111,7 @@ $promo_result = $conn->query($promo_query);
                         <!-- Model / series sub-line -->
                         <p class="dc-model"><?php echo htmlspecialchars($model_text); ?></p>
 
-                        <!-- Stats row — mirrors Distance / Temp / Rating in inspo -->
+                        <!-- Stats row — Capacity + Cooling only (Warranty shown in modal) -->
                         <div class="dc-stats">
                             <div class="dc-stat">
                                 <span class="dc-stat-label">Capacity</span>
@@ -122,10 +120,6 @@ $promo_result = $conn->query($promo_query);
                             <div class="dc-stat">
                                 <span class="dc-stat-label">Cooling</span>
                                 <span class="dc-stat-value"><?php echo $cool_cap; ?></span>
-                            </div>
-                            <div class="dc-stat">
-                                <span class="dc-stat-label">Warranty</span>
-                                <span class="dc-stat-value"><?php echo $warranty; ?></span>
                             </div>
                         </div>
 
@@ -305,6 +299,7 @@ $promo_result = $conn->query($promo_query);
                     <h2 id="modalSeries"></h2>
                     <h3 id="modalModel"></h3>
                     <span id="modalStock" class="stock-badge"></span>
+                    <span id="modalDiscountBadge" style="display:none; background:#d31b27; color:#fff; font-size:12px; font-weight:800; padding:3px 10px; border-radius:20px; margin-left:8px; letter-spacing:0.3px; vertical-align:middle;"></span>
                     <div class="modal-price" id="modalPrice"></div>
                     
                     <div class="modal-details-grid">
@@ -1100,6 +1095,16 @@ $promo_result = $conn->query($promo_query);
         document.getElementById("modalModel").innerHTML = safeText(selectedProduct.IndoorUnitModel);
         document.getElementById("modalStock").className = "stock-badge " + stockClass;
         document.getElementById("modalStock").innerHTML = safeText(selectedProduct.stock_status || "Available");
+        
+        // Discount badge next to Available pill
+        let discBadge = document.getElementById("modalDiscountBadge");
+        if (selectedProduct.is_promo == 1 && selectedProduct.discount_percent > 0) {
+            discBadge.style.display = "inline-block";
+            discBadge.innerHTML = selectedProduct.discount_percent + "% OFF";
+        } else {
+            discBadge.style.display = "none";
+        }
+        
         document.getElementById("modalPrice").innerHTML = priceHtml;
         document.getElementById("modalHP").innerHTML = safeText(selectedProduct.CapacityHP) + " HP";
         document.getElementById("modalType").innerHTML = selectedProduct.is_non_inverter == 1 ? "Non-Inverter" : "Inverter";
