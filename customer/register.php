@@ -8,9 +8,7 @@ $show_success_modal = false;
 $reg_redirect = trim($_POST['redirect'] ?? $_GET['redirect'] ?? '');
 
 if(isset($_POST['register'])){
-    $first_name = trim($_POST['reg_first_name'] ?? '');
-    $last_name  = trim($_POST['reg_last_name']  ?? '');
-    $fullname   = trim($first_name . ' ' . $last_name);
+    $fullname =$_POST['reg_fullname'];
     $phone =$_POST['reg_phone'];
     $email =$_POST['reg_email'];
     $username =$_POST['reg_username'];
@@ -20,8 +18,7 @@ if(isset($_POST['register'])){
     $street = trim($_POST['reg_street']);$barangay = $_POST['reg_barangay'];$city = $_POST['reg_city'];$province = $_POST['reg_province'];$address = "$street,$barangay, $city,$province";
 
     // Backend check: Phone number format (Exactly 11 digits, starts with 09)
-    if (empty($first_name) || empty($last_name)) {$register_error = "First Name and Last Name are required.";
-    } elseif(!preg_match('/^09[0-9]{9}$/', $phone)) {$register_error = "Phone number must be exactly 11 digits and start with 09.";
+    if(!preg_match('/^09[0-9]{9}$/', $phone)) {$register_error = "Phone number must be exactly 11 digits and start with 09.";
     }
     // Backend check: Enforce @gmail.com only
     elseif(!preg_match('/@gmail\.com$/i', $email)) {$register_error = "Only @gmail.com email addresses are allowed.";
@@ -140,20 +137,11 @@ if(isset($_POST['register'])){
 
                 <form method="post" onsubmit="return validateForm()">
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>First Name <span class="req">*</span></label>
-                            <div class="input-icon-wrapper">
-                                <i class="fa-regular fa-user input-icon"></i>
-                                <input type="text" name="reg_first_name" value="<?= isset($_POST['reg_first_name']) ? htmlspecialchars($_POST['reg_first_name']) : '' ?>" placeholder="Juan" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Last Name <span class="req">*</span></label>
-                            <div class="input-icon-wrapper">
-                                <i class="fa-regular fa-user input-icon"></i>
-                                <input type="text" name="reg_last_name" value="<?= isset($_POST['reg_last_name']) ? htmlspecialchars($_POST['reg_last_name']) : '' ?>" placeholder="dela Cruz" required>
-                            </div>
+                    <div class="form-group full-width">
+                        <label>Full Name <span class="req">*</span></label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input type="text" name="reg_fullname" value="<?= isset($_POST['reg_fullname']) ? htmlspecialchars($_POST['reg_fullname']) : '' ?>" placeholder="" required>
                         </div>
                     </div>
 
